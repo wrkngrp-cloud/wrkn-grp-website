@@ -20,9 +20,9 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <head>
         <link rel="preconnect" href="https://api.fontshare.com" />
-        {/* Larken is a licensed family — it leads the CSS stack and will be
-            picked up the moment its files are self-hosted. Sentient (display)
-            and General Sans (body) are the live Fontshare fallbacks. */}
+        {/* Balkist is the licensed display family — it leads the CSS stack and
+            will be picked up the moment its files are self-hosted. Sentient
+            (display) and General Sans (body) are the live Fontshare fallbacks. */}
         <link
           href="https://api.fontshare.com/v2/css?f[]=sentient@300,301,400,401,500,501,700,701&f[]=general-sans@400,401,500,600,700&display=swap"
           rel="stylesheet"

@@ -12,7 +12,7 @@
   --cream-faint: rgba(244, 239, 230, 0.14);
   --black-faint: rgba(10, 10, 10, 0.12);
 
-  --font-display: "Larken", "Sentient", "Times New Roman", serif;
+  --font-display: "Balkist", "Sentient", "Times New Roman", serif;
   --font-body: "Heuvel Grotesk", "General Sans", "Neue Montreal", "Helvetica Neue", sans-serif;
 
   --gutter: clamp(1.25rem, 4vw, 4.5rem);
@@ -86,9 +86,14 @@ button {
 .display {
   font-family: var(--font-display);
   font-weight: 500;
-  font-style: italic;
+  font-style: normal;
   line-height: 0.98;
   letter-spacing: -0.02em;
+}
+/* Italic is reserved for emphasis inside a heading, never the whole title. */
+.display em,
+.display i {
+  font-style: italic;
 }
 
 .display-xl {
