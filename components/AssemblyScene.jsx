@@ -80,6 +80,10 @@ function BlockField({ progressRef, blocks }) {
           rz: b.rot * DEG,
           rx: b.rx * DEG,
           ry: b.ry * DEG,
+          // Every piece of execution flips to its blank back as it seats
+          // into the mark; only the gold "one true thing" lands face-out,
+          // so its label is the single line of text left standing.
+          flipY: b.gold ? 0 : Math.PI,
         };
       }),
     [blocks]
@@ -107,7 +111,9 @@ function BlockField({ progressRef, blocks }) {
       const v = easeOutCubic((p - f.start) / (f.end - f.start));
       const inv = 1 - v;
       mesh.position.set(f.fx + f.sx * inv, f.fy + f.sy * inv, f.sz * inv);
-      mesh.rotation.set(f.rx * inv, f.ry * inv, f.rz * inv);
+      // Y resolves to flipY (π for cream, 0 for gold) so the piece turns
+      // its labelled face away as it lands; X and Z resolve flat.
+      mesh.rotation.set(f.rx * inv, f.flipY + (f.ry - f.flipY) * inv, f.rz * inv);
       const sc = 0.84 + 0.16 * v;
       mesh.scale.setScalar(sc);
     });
