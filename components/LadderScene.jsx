@@ -5,16 +5,20 @@ import * as THREE from "three";
 import { Canvas, useFrame } from "@react-three/fiber";
 
 /*
- * The service ladder as a real 3D ladder.
+ * The service ladder as a real 3D ladder — rungs are rings.
  *
- * Two warm-black rails, five ceramic rungs numbered 01–05 — the same
- * material language as the assembly bricks. Scroll progress climbs the
- * view up the ladder; the rung underfoot pulls forward, scales up and
- * turns gold. A damped cursor orbit keeps it alive between rungs.
+ * Two warm-black rails carry five ceramic rings, numbered 01–05, threaded
+ * between them like climbing rings. Same material language as the assembly
+ * bricks. Scroll progress climbs the view up the ladder; the ring underfoot
+ * pulls forward, scales up and turns gold, its numeral floating in the hole.
+ * A damped cursor orbit keeps it alive between rungs.
  */
 
 export const RUNGS = 5;
-const SPACING = 1.3;
+const SPACING = 1.35;
+const RING_R = 0.7; // torus centre radius
+const RING_TUBE = 0.13; // torus tube radius
+const RAIL_X = 0.7; // rails sit on the ring's tube so they read as threaded
 
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 
@@ -36,25 +40,26 @@ export default function LadderScene({ progressRef }) {
 
 function Ladder({ progressRef }) {
   const group = useRef();
-  const rungs = useRef([]);
+  const rings = useRef([]);
+  const settled = useRef(false);
 
-  const railGeo = useMemo(() => roundedBar(0.16, (RUNGS - 1) * SPACING + 1.7, 0.16, 0.05), []);
-  const rungGeo = useMemo(() => roundedBar(2.0, 0.24, 0.26, 0.09), []);
+  const railGeo = useMemo(() => roundedBar(0.16, (RUNGS - 1) * SPACING + 1.6, 0.16, 0.05), []);
+  const ringGeo = useMemo(() => new THREE.TorusGeometry(RING_R, RING_TUBE, 22, 64), []);
   const railMat = useMemo(
     () => new THREE.MeshStandardMaterial({ color: "#141310", roughness: 0.55, metalness: 0.12 }),
     []
   );
   const cream = useMemo(() => new THREE.Color("#f4efe6"), []);
   const gold = useMemo(() => new THREE.Color("#efc835"), []);
-  const rungMats = useMemo(
+  const ringMats = useMemo(
     () =>
       Array.from(
         { length: RUNGS },
         () =>
           new THREE.MeshStandardMaterial({
             color: "#f4efe6",
-            roughness: 0.42,
-            metalness: 0.08,
+            roughness: 0.4,
+            metalness: 0.1,
             emissive: new THREE.Color("#efc835"),
             emissiveIntensity: 0,
           })
@@ -69,7 +74,13 @@ function Ladder({ progressRef }) {
 
     // Slide the whole ladder down so the view climbs up it
     const targetY = ((RUNGS - 1) / 2) * SPACING - climb * SPACING;
-    group.current.position.y += (targetY - group.current.position.y) * 0.075;
+    // Snap on the first frame so entering the pin never shows a half-slid ladder
+    if (!settled.current) {
+      group.current.position.y = targetY;
+      settled.current = true;
+    } else {
+      group.current.position.y += (targetY - group.current.position.y) * 0.075;
+    }
 
     // Three-quarter stance + damped cursor orbit
     const targetRX = 0.1 + -state.pointer.y * 0.12;
@@ -80,28 +91,28 @@ function Ladder({ progressRef }) {
     const s = Math.min(1, state.viewport.width / 3.6);
     group.current.scale.setScalar(s);
 
-    // Active rung: gold, forward, slightly larger — falls off by distance
-    rungs.current.forEach((mesh, i) => {
+    // Active ring: gold, forward, slightly larger — falls off by distance
+    rings.current.forEach((mesh, i) => {
       if (!mesh) return;
       const g = Math.max(0, 1 - Math.abs(climb - i));
-      rungMats[i].color.lerpColors(cream, gold, g);
-      rungMats[i].emissiveIntensity = g * 0.32;
-      const sc = 1 + 0.1 * g;
+      ringMats[i].color.lerpColors(cream, gold, g);
+      ringMats[i].emissiveIntensity = g * 0.34;
+      const sc = 1 + 0.12 * g;
       mesh.scale.set(sc, sc, sc);
-      mesh.position.z = 0.28 * g;
+      mesh.position.z = 0.32 * g;
     });
   });
 
   return (
     <group ref={group} rotation={[0.1, -0.42, 0]}>
-      <mesh geometry={railGeo} material={railMat} position={[-1.05, 0, 0]} />
-      <mesh geometry={railGeo} material={railMat} position={[1.05, 0, 0]} />
+      <mesh geometry={railGeo} material={railMat} position={[-RAIL_X, 0, 0]} />
+      <mesh geometry={railGeo} material={railMat} position={[RAIL_X, 0, 0]} />
       {Array.from({ length: RUNGS }, (_, i) => (
         <mesh
           key={i}
-          ref={(el) => (rungs.current[i] = el)}
-          geometry={rungGeo}
-          material={rungMats[i]}
+          ref={(el) => (rings.current[i] = el)}
+          geometry={ringGeo}
+          material={ringMats[i]}
           position={[0, (i - (RUNGS - 1) / 2) * SPACING, 0]}
         >
           <NumeralPlane index={i} />
@@ -111,13 +122,13 @@ function Ladder({ progressRef }) {
   );
 }
 
-/* The rung's number, drawn onto its front face. */
+/* The rung's number, floating in the centre of its ring. */
 function NumeralPlane({ index }) {
   const text = String(index + 1).padStart(2, "0");
   const texture = useMemo(() => {
     const canvas = document.createElement("canvas");
     canvas.width = 256;
-    canvas.height = 96;
+    canvas.height = 128;
     drawNumeral(canvas, text);
     const tex = new THREE.CanvasTexture(canvas);
     tex.anisotropy = 4;
@@ -139,8 +150,8 @@ function NumeralPlane({ index }) {
   }, [text, texture]);
 
   return (
-    <mesh position={[0, 0, 0.145]} raycast={() => null}>
-      <planeGeometry args={[0.52, 0.195]} />
+    <mesh position={[0, 0, 0.02]} raycast={() => null}>
+      <planeGeometry args={[0.66, 0.33]} />
       <meshBasicMaterial map={texture} transparent toneMapped={false} />
     </mesh>
   );
@@ -152,7 +163,7 @@ function drawNumeral(canvas, text) {
   ctx.fillStyle = "#0a0a0a";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.font = "600 56px 'Heuvel Grotesk', 'General Sans', sans-serif";
+  ctx.font = "600 68px 'Heuvel Grotesk', 'General Sans', sans-serif";
   if ("letterSpacing" in ctx) ctx.letterSpacing = "6px";
   ctx.fillText(text, canvas.width / 2, canvas.height / 2 + 4);
 }
