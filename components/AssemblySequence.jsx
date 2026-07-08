@@ -22,13 +22,13 @@ const AssemblyScene = dynamic(() => import("./AssemblyScene"), { ssr: false });
  * the visitor scrolls the pinned section. The gold block, the one true
  * thing, lands last. Then the mark resolves into the actual wordmark.
  *
- * The argument of the whole firm, made physical: execution is just
- * pieces until strategy pulls them into one coherent brand.
+ * The argument of the whole firm, made physical: the parts are just
+ * noise until cultural intelligence tunes them into one resonant brand.
  */
 
 // col, row, scatter dx/dy/dz, scatter rotations (z, x, y axes), label, gold flag.
 // Every brick carries its label on its face — a piece of execution.
-// The gold brick is the strategic insight the rest take their order from.
+// The gold brick is the cultural through-line the rest take their key from.
 export const BLOCKS = [
   { c: 0, r: 0, dx: -420, dy: -260, dz: -380, rot: -38, rx: 70, ry: -50, label: "Identity" },
   { c: 6, r: 0, dx: 430, dy: -300, dz: 240, rot: 44, rx: -60, ry: 80, label: "Campaign" },
@@ -45,7 +45,7 @@ export const BLOCKS = [
   { c: 5, r: 4, dx: 440, dy: 160, dz: 300, rot: 48, rx: 60, ry: -45, label: "Voice" },
 ];
 
-const PHASES = ["Scattered Pieces", "Strategy Sequences", "One Thing, Remembered"];
+const PHASES = ["Scattered Pieces", "Tuned to Culture", "One Thing, Remembered"];
 
 export default function AssemblySequence() {
   const wrapperRef = useRef(null);
@@ -84,15 +84,15 @@ export default function AssemblySequence() {
         <div style={{ display: "flex", justifyContent: "center", color: "var(--cream)" }}>
           <Logo width="min(60vw, 22rem)" />
         </div>
-        <p className="lede" style={{ maxWidth: "34ch", margin: "2.5rem auto 0" }}>
-          One thing. Everywhere. Remembered. Strategy pulls the pieces into a single coherent brand.
+        <p className="lede" style={{ maxWidth: "36ch", margin: "2.5rem auto 0" }}>
+          One thing. Everywhere. Remembered. Cultural intelligence tunes every part of a brand into one resonant whole.
         </p>
       </section>
     );
   }
 
   return (
-    <section ref={wrapperRef} aria-label="How strategy assembles a brand" style={{ height: "420vh", position: "relative" }}>
+    <section ref={wrapperRef} aria-label="How cultural intelligence harmonises a brand" style={{ height: "420vh", position: "relative" }}>
       <div
         style={{
           position: "sticky",
@@ -127,15 +127,18 @@ export default function AssemblySequence() {
           <motion.div style={{ opacity: capA, y: capAY, ...captionStyle, top: "6%" }}>
             <h2 className="display display-md">A brand isn&rsquo;t the pieces.</h2>
             <p style={{ opacity: 0.7, marginTop: "0.8rem", maxWidth: "44ch" }}>
-              Identity here. Motion there. A campaign somewhere else. Individually impressive. Collectively forgettable.
+              Identity here. Motion there. A campaign somewhere else. Each one sharp on its own. Together, noise. And noise doesn&rsquo;t stick.
             </p>
           </motion.div>
 
-          {/* Caption B — sequencing */}
+          {/* Caption B — cultural intelligence tunes the parts into harmony */}
           <motion.div style={{ opacity: capB, ...captionStyle, top: "6%" }}>
-            <h2 className="display display-md">Strategy writes the brief.</h2>
-            <p style={{ opacity: 0.7, marginTop: "0.8rem", maxWidth: "44ch" }}>
-              Every piece takes its position from the same argument. Execution never runs ahead of it.
+            <h2 className="display display-md">
+              Everything in the same <em>key</em>.
+            </h2>
+            <p style={{ opacity: 0.7, marginTop: "0.8rem", maxWidth: "46ch" }}>
+              Cultural intelligence is the edge. We tune every part of a brand to the same cultural key, so the
+              pieces resonate instead of compete, relevant to the moment, and felt before they&rsquo;re read.
             </p>
           </motion.div>
 
