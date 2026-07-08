@@ -1,12 +1,11 @@
 import SectionDivider from "../../components/SectionDivider";
 import Reveal from "../../components/Reveal";
 import WorkCard from "../../components/WorkCard";
-import Marquee from "../../components/Marquee";
 
 export const metadata = {
   title: "The Work",
   description:
-    "A small, deliberate body of work. Case studies for Nyla and the Aliko Dangote Foundation — every project here is real.",
+    "Relevant, culturally intelligent work made with intent. Case studies for Nyla and the Aliko Dangote Foundation. Every project here is real.",
 };
 
 export default function WorkPage() {
@@ -15,8 +14,9 @@ export default function WorkPage() {
       <section className="theme-dark" style={{ paddingTop: "7rem", paddingBottom: "3rem" }}>
         <SectionDivider numeral="W" title="The Work." label="Index" right="Two Case Studies" />
         <div className="container">
-          <p className="lede" style={{ maxWidth: "38rem", opacity: 0.8 }}>
-            A small, deliberate body of work. Every project here is real.
+          <p className="lede" style={{ maxWidth: "40rem", opacity: 0.8 }}>
+            Relevant, culturally intelligent work, made with intent. Every project here is real,
+            chosen for the quality of the thinking behind it, not the length of a list.
           </p>
         </div>
       </section>
@@ -49,8 +49,6 @@ export default function WorkPage() {
           </Reveal>
         </div>
       </section>
-
-      <Marquee items={["Real Work Only", "No Invented Clients", "No Borrowed Stats", "Strategy First"]} speed={34} />
     </>
   );
 }
