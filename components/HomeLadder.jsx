@@ -11,8 +11,6 @@ import {
   useMotionValueEvent,
   useReducedMotion,
 } from "framer-motion";
-import CursorField from "./CursorField";
-import Reveal from "./Reveal";
 
 const LadderScene = dynamic(() => import("./LadderScene"), { ssr: false });
 
@@ -65,7 +63,9 @@ export default function HomeLadder() {
 
   useMotionValueEvent(scrollYProgress, "change", (v) => {
     progressRef.current = v;
-    setActive(Math.min(PRODUCTS.length - 1, Math.max(0, Math.floor(v * PRODUCTS.length))));
+    // Camera walks linearly from the first checkpoint to the last, so the
+    // active product is the nearest checkpoint — round, not floor.
+    setActive(Math.min(PRODUCTS.length - 1, Math.max(0, Math.round(v * (PRODUCTS.length - 1)))));
   });
 
   const progressScale = useTransform(scrollYProgress, [0, 1], [0, 1]);
@@ -101,40 +101,84 @@ export default function HomeLadder() {
   }
 
   return (
-    <section ref={wrapperRef} className="theme-cream" style={{ height: "340vh", position: "relative" }}>
+    <section ref={wrapperRef} className="theme-cream" style={{ height: "460vh", position: "relative" }}>
       <div
         style={{
           position: "sticky",
           top: 0,
           height: "100vh",
           overflow: "hidden",
-          display: "flex",
-          flexDirection: "column",
           background: "var(--cream)",
         }}
       >
-        <CursorField tone="cream" opacity={0.55} />
+        {/* Full-bleed corridor you climb through */}
+        <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
+          <LadderScene progressRef={progressRef} />
+        </div>
 
-        <div className="container" style={{ width: "100%", position: "relative", zIndex: 3 }}>
+        {/* Cream scrims: frame the corridor and keep the copy legible */}
+        <div
+          aria-hidden
+          style={{
+            position: "absolute",
+            inset: 0,
+            zIndex: 1,
+            pointerEvents: "none",
+            background:
+              "linear-gradient(102deg, var(--cream) 0%, rgba(244,239,230,0.9) 22%, rgba(244,239,230,0.28) 44%, rgba(244,239,230,0) 60%)",
+          }}
+        />
+        <div
+          aria-hidden
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            top: 0,
+            height: "30%",
+            zIndex: 1,
+            pointerEvents: "none",
+            background: "linear-gradient(var(--cream) 8%, rgba(244,239,230,0))",
+          }}
+        />
+        <div
+          aria-hidden
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: "22%",
+            zIndex: 1,
+            pointerEvents: "none",
+            background: "linear-gradient(rgba(244,239,230,0), var(--cream))",
+          }}
+        />
+
+        {/* Top wayfinding */}
+        <div className="container" style={{ position: "absolute", top: 0, left: 0, right: 0, zIndex: 3, pointerEvents: "none" }}>
           <div className="wayfinding" style={{ marginTop: "4.6rem" }}>
             <span>04 — What We Do</span>
-            <span style={{ color: "#b8960f" }}>The Ascent — Step {item.n} / 05</span>
+            <span style={{ color: "#8a6d0a" }}>The Ascent — Step {item.n} / 05</span>
           </div>
         </div>
 
-        {/* Stage: text panel + ladder */}
-        <div className="home-ladder__stage container">
-          <div className="home-ladder__panel">
+        {/* The copy pops up over the climb, one product at a time */}
+        <div
+          className="container"
+          style={{ position: "absolute", inset: 0, zIndex: 3, display: "flex", alignItems: "center", pointerEvents: "none" }}
+        >
+          <div style={{ maxWidth: "32rem" }}>
             <p className="small-caps" style={{ opacity: 0.55, marginBottom: "1.2rem" }}>
               Every product leads to the next
             </p>
             <AnimatePresence mode="wait">
               <motion.div
                 key={active}
-                initial={{ opacity: 0, y: 28 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                initial={{ opacity: 0, y: 34, filter: "blur(7px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                exit={{ opacity: 0, y: -22, filter: "blur(7px)" }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
               >
                 <span
                   className="display"
@@ -152,25 +196,21 @@ export default function HomeLadder() {
                 <h3 className="display display-sm" style={{ margin: "1.2rem 0 0.9rem", maxWidth: "16ch" }}>
                   {item.name}
                 </h3>
-                <p style={{ maxWidth: "44ch", opacity: 0.8, fontSize: "1.02rem" }}>{item.sum}</p>
+                <p style={{ maxWidth: "40ch", opacity: 0.82, fontSize: "1.02rem" }}>{item.sum}</p>
               </motion.div>
             </AnimatePresence>
             <Link
               href="/services"
               className="link-draw small-caps"
-              style={{ marginTop: "1.8rem", display: "inline-block" }}
+              style={{ marginTop: "1.8rem", display: "inline-block", pointerEvents: "auto" }}
             >
               See How the Ladder Works →
             </Link>
           </div>
-
-          <div className="home-ladder__scene">
-            <LadderScene progressRef={progressRef} />
-          </div>
         </div>
 
         {/* Progress hairline */}
-        <div className="container" style={{ width: "100%", paddingBottom: "1.2rem", position: "relative", zIndex: 3 }}>
+        <div className="container" style={{ position: "absolute", bottom: 0, left: 0, right: 0, paddingBottom: "1.2rem", zIndex: 3, pointerEvents: "none" }}>
           <div style={{ height: 1, background: "var(--black-faint)", position: "relative", marginBottom: "0.8rem" }}>
             <motion.div
               style={{
