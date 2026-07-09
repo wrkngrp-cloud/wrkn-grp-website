@@ -7,12 +7,12 @@ import { Canvas, useFrame } from "@react-three/fiber";
 /*
  * The service ladder, portrayed as an ascent.
  *
- * Five broad ceramic steps climb diagonally into depth like a grand
- * staircase. Scroll walks the camera up the flight: the step underfoot
- * rises to the focal point, lifts, turns gold and glows, while a gold
- * path-line threads step to step and draws itself upward as you climb —
- * every product leading to the next. Steps ahead recede toward the cream;
- * steps already climbed hold their light.
+ * Five ceramic steps interlock into one solid flight climbing into depth.
+ * Scroll walks the camera up it: the step underfoot detaches from the
+ * structure, lifts and pulls forward to the focal point, turns gold and
+ * glows. A gold path-line runs up the left like a banister and draws
+ * itself upward as you climb — every product leading to the next. Steps
+ * ahead recede toward the cream; climbed steps hold a little warmth.
  *
  * Warm-charcoal ceramic on cream keeps the contrast; the gold lamp,
  * emissive step and cream/charcoal palette are the same language as the
@@ -21,27 +21,31 @@ import { Canvas, useFrame } from "@react-three/fiber";
 
 export const RUNGS = 5;
 const HALF = (RUNGS - 1) / 2;
-const RISE = 1.04; // how much each step climbs
-const RUN = 1.44; // how far each step recedes
-const FOCAL_Y = -0.15; // where the active step is framed
-const FOCAL_Z = 2.0;
+const RISE = 0.92; // vertical climb per step
+const RUN = 1.16; // depth each step recedes
+const STEP_W = 2.5;
+const STEP_H = RISE + 0.14; // riser face height — overlaps the step below
+const STEP_D = RUN + 0.28; // tread depth — overlaps the step in front
+const FOCAL_Y = 0.05; // where the active step is framed
+const FOCAL_Z = 2.15;
 
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 
-// Local resting position of step i along the flight
-const stepPos = (i) => ({ y: (i - HALF) * RISE, z: -(i - HALF) * RUN });
+// Reference point of step i: the front-top edge of its tread. The solid
+// block hangs below and behind it so consecutive steps interlock.
+const refPos = (i) => ({ y: (i - HALF) * RISE, z: -(i - HALF) * RUN });
 
 export default function LadderScene({ progressRef }) {
   return (
     <Canvas
       dpr={[1, 2]}
-      camera={{ position: [0, 0.4, 7.4], fov: 36 }}
+      camera={{ position: [0, 0.5, 7.6], fov: 36 }}
       gl={{ alpha: true, antialias: true }}
       style={{ position: "absolute", inset: 0 }}
     >
       {/* Low ambient for real shading; warm key gives the flight dimension */}
       <ambientLight intensity={0.36} />
-      <directionalLight position={[5, 9, 6]} intensity={2.0} color="#fff4dc" />
+      <directionalLight position={[5, 9, 6]} intensity={2.05} color="#fff4dc" />
       <directionalLight position={[-6, -2, 5]} intensity={0.5} color="#f4efe6" />
       <Ascent progressRef={progressRef} />
     </Canvas>
@@ -56,7 +60,7 @@ function Ascent({ progressRef }) {
   const lamp = useRef();
   const litTube = useRef();
 
-  const stepGeo = useMemo(() => roundedBox(2.4, 0.5, 1.25, 0.09), []);
+  const stepGeo = useMemo(() => roundedBox(STEP_W, STEP_H, STEP_D, 0.08), []);
 
   const charcoal = useMemo(() => new THREE.Color("#1c1812"), []);
   const gold = useMemo(() => new THREE.Color("#efc835"), []);
@@ -80,19 +84,21 @@ function Ascent({ progressRef }) {
     []
   );
 
-  // Gold path-line running up the left side like a banister, so it reads as
-  // the route through the flight rather than a spike through the steps
+  // Gold path-line up the left side like a banister — the route through the
+  // flight rather than a spike through the steps
   const curve = useMemo(() => {
     const pts = Array.from({ length: RUNGS }, (_, i) => {
-      const s = stepPos(i);
-      return new THREE.Vector3(-1.32, s.y + 0.18, s.z + 0.52);
+      const r = refPos(i);
+      // Hug the front-left top corner of each tread so it reads as an
+      // inlaid gold route climbing the stairs, not a floating line
+      return new THREE.Vector3(-STEP_W / 2 + 0.07, r.y + 0.05, r.z + 0.5);
     });
     return new THREE.CatmullRomCurve3(pts, false, "catmullrom", 0.5);
   }, []);
-  const tubeGeo = useMemo(() => new THREE.TubeGeometry(curve, 140, 0.026, 8, false), [curve]);
-  const litGeo = useMemo(() => new THREE.TubeGeometry(curve, 140, 0.03, 8, false), [curve]);
+  const tubeGeo = useMemo(() => new THREE.TubeGeometry(curve, 140, 0.03, 8, false), [curve]);
+  const litGeo = useMemo(() => new THREE.TubeGeometry(curve, 140, 0.034, 8, false), [curve]);
   const faintTubeMat = useMemo(
-    () => new THREE.MeshBasicMaterial({ color: "#b8960f", transparent: true, opacity: 0.28, toneMapped: false }),
+    () => new THREE.MeshBasicMaterial({ color: "#b8960f", transparent: true, opacity: 0.26, toneMapped: false }),
     []
   );
   const litTubeMat = useMemo(
@@ -106,20 +112,20 @@ function Ascent({ progressRef }) {
     const climb = clamp(p * RUNGS - 0.5, 0, RUNGS - 1);
 
     // Fit to viewport, then a gentle three-quarter stance + cursor orbit
-    const s = Math.min(1, state.viewport.width / 4.1);
+    const s = Math.min(1, state.viewport.width / 4.9);
     fit.current.scale.setScalar(s);
-    const targetRY = -0.26 + state.pointer.x * 0.18;
-    const targetRX = 0.14 + -state.pointer.y * 0.08;
+    const targetRY = -0.28 + state.pointer.x * 0.16;
+    const targetRX = 0.16 + -state.pointer.y * 0.07;
     fit.current.rotation.y += (targetRY - fit.current.rotation.y) * 0.06;
     fit.current.rotation.x += (targetRX - fit.current.rotation.x) * 0.06;
 
-    // Walk the flight so the active step arrives at the focal point
-    const active = stepPos(climb);
+    // Walk the flight so the active step's edge arrives at the focal point
+    const active = refPos(climb);
     rig.current.position.y += (FOCAL_Y - active.y - rig.current.position.y) * 0.09;
     rig.current.position.z += (FOCAL_Z - active.z - rig.current.position.z) * 0.09;
 
     // Gold lamp pools on whatever sits at the focal point
-    if (lamp.current) lamp.current.position.set(0, FOCAL_Y + 0.35, FOCAL_Z + 0.7);
+    if (lamp.current) lamp.current.position.set(0, FOCAL_Y + 0.4, FOCAL_Z + 0.9);
 
     steps.current.forEach((mesh, i) => {
       if (!mesh) return;
@@ -130,9 +136,15 @@ function Ascent({ progressRef }) {
       const behind = Math.max(0, climb - i);
       const focus = clamp(1 - ahead * 0.5 - behind * 0.24, 0.12, 1);
 
-      const base = stepPos(i);
-      mesh.position.set(0, base.y + 0.36 * g, base.z + 0.5 * g);
-      const sc = 1 + 0.1 * g;
+      // Solid block hangs below/behind its front-top reference; the active
+      // step detaches, rising and pulling forward out of the structure.
+      const r = refPos(i);
+      mesh.position.set(
+        0,
+        r.y - STEP_H / 2 + 0.34 * g,
+        r.z - STEP_D / 2 + 0.48 * g
+      );
+      const sc = 1 + 0.07 * g;
       mesh.scale.set(sc, sc, sc);
 
       stepMats[i].color.lerpColors(charcoal, gold, g);
@@ -155,22 +167,22 @@ function Ascent({ progressRef }) {
   });
 
   return (
-    <group ref={fit} rotation={[0.14, -0.26, 0]}>
-      <pointLight ref={lamp} color="#ffcf4a" intensity={5} distance={4.2} decay={2.2} />
+    <group ref={fit} rotation={[0.16, -0.28, 0]}>
+      <pointLight ref={lamp} color="#ffcf4a" intensity={3.4} distance={4.6} decay={2.2} />
       <group ref={rig}>
         {/* Gold path-line: faint full run + bright climbed portion */}
         <mesh geometry={tubeGeo} material={faintTubeMat} raycast={() => null} />
         <mesh ref={litTube} geometry={litGeo} material={litTubeMat} raycast={() => null} />
 
         {Array.from({ length: RUNGS }, (_, i) => {
-          const s = stepPos(i);
+          const r = refPos(i);
           return (
             <mesh
               key={i}
               ref={(el) => (steps.current[i] = el)}
               geometry={stepGeo}
               material={stepMats[i]}
-              position={[0, s.y, s.z]}
+              position={[0, r.y - STEP_H / 2, r.z - STEP_D / 2]}
             >
               <NumeralPlane index={i} matRef={(m) => (numerals.current[i] = m)} />
             </mesh>
@@ -182,8 +194,9 @@ function Ascent({ progressRef }) {
 }
 
 /*
- * The step's number, on its front face. White glyph on transparent canvas
- * so the parent can tint it per frame (cream on charcoal, charcoal on gold).
+ * The step's number, on its front riser face. White glyph on transparent
+ * canvas so the parent can tint it per frame (cream on charcoal, charcoal
+ * on gold when active).
  */
 function NumeralPlane({ index, matRef }) {
   const text = String(index + 1).padStart(2, "0");
@@ -217,8 +230,9 @@ function NumeralPlane({ index, matRef }) {
     };
   }, [text, texture]);
 
+  // Sit on the front riser face, a touch above centre so it reads on the tread edge
   return (
-    <mesh position={[0, 0, 0.63]} raycast={() => null}>
+    <mesh position={[0, STEP_H / 2 - 0.34, STEP_D / 2 + 0.01]} raycast={() => null}>
       <planeGeometry args={[0.82, 0.273]} />
       <meshBasicMaterial
         ref={materialRef}
