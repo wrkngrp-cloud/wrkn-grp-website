@@ -118,7 +118,7 @@ export default function HomeLadder() {
         <div className="container" style={{ width: "100%", position: "relative", zIndex: 3 }}>
           <div className="wayfinding" style={{ marginTop: "4.6rem" }}>
             <span>04 — What We Do</span>
-            <span style={{ color: "#b8960f" }}>The Ladder — Rung {item.n} / 05</span>
+            <span style={{ color: "#b8960f" }}>The Ascent — Step {item.n} / 05</span>
           </div>
         </div>
 
