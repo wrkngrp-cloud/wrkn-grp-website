@@ -175,10 +175,10 @@ export default function HomeLadder() {
             <AnimatePresence mode="wait">
               <motion.div
                 key={active}
-                initial={{ opacity: 0, y: 34, filter: "blur(7px)" }}
+                initial={{ opacity: 0, y: 28, filter: "blur(3px)" }}
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                exit={{ opacity: 0, y: -22, filter: "blur(7px)" }}
-                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                exit={{ opacity: 0, y: -18, filter: "blur(3px)" }}
+                transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
               >
                 <span
                   className="display"
