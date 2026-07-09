@@ -59,8 +59,32 @@ function Ascent({ progressRef }) {
   const numerals = useRef([]);
   const lamp = useRef();
   const litTube = useRef();
+  const shadow = useRef();
+
+  // Per-step spring state so a step overshoots and settles as it arrives
+  const disp = useRef(new Float32Array(RUNGS));
+  const vel = useRef(new Float32Array(RUNGS));
 
   const stepGeo = useMemo(() => roundedBox(STEP_W, STEP_H, STEP_D, 0.08), []);
+
+  // Soft contact shadow — a radial smudge that grounds the flight on the cream
+  const shadowTex = useMemo(() => {
+    const c = document.createElement("canvas");
+    c.width = c.height = 128;
+    const g = c.getContext("2d");
+    const grad = g.createRadialGradient(64, 64, 3, 64, 64, 62);
+    grad.addColorStop(0, "rgba(20,18,14,0.5)");
+    grad.addColorStop(0.5, "rgba(20,18,14,0.2)");
+    grad.addColorStop(1, "rgba(20,18,14,0)");
+    g.fillStyle = grad;
+    g.fillRect(0, 0, 128, 128);
+    const tex = new THREE.CanvasTexture(c);
+    return tex;
+  }, []);
+  const shadowMat = useMemo(
+    () => new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, opacity: 0.32, depthWrite: false, toneMapped: false }),
+    [shadowTex]
+  );
 
   const charcoal = useMemo(() => new THREE.Color("#1c1812"), []);
   const gold = useMemo(() => new THREE.Color("#efc835"), []);
@@ -108,16 +132,19 @@ function Ascent({ progressRef }) {
 
   useFrame((state) => {
     const p = clamp(progressRef.current, 0, 1);
+    const t = state.clock.elapsedTime;
     // Which step is underfoot: a short dwell on each across the scroll
     const climb = clamp(p * RUNGS - 0.5, 0, RUNGS - 1);
 
     // Fit to viewport, then a gentle three-quarter stance + cursor orbit
+    // with a slow autonomous drift so it breathes even when idle.
     const s = Math.min(1, state.viewport.width / 4.9);
     fit.current.scale.setScalar(s);
-    const targetRY = -0.28 + state.pointer.x * 0.16;
-    const targetRX = 0.16 + -state.pointer.y * 0.07;
+    const targetRY = -0.28 + state.pointer.x * 0.16 + Math.sin(t * 0.3) * 0.02;
+    const targetRX = 0.16 + -state.pointer.y * 0.07 + Math.sin(t * 0.24) * 0.012;
     fit.current.rotation.y += (targetRY - fit.current.rotation.y) * 0.06;
     fit.current.rotation.x += (targetRX - fit.current.rotation.x) * 0.06;
+    fit.current.rotation.z = Math.sin(t * 0.4) * 0.005;
 
     // Walk the flight so the active step's edge arrives at the focal point
     const active = refPos(climb);
@@ -130,33 +157,50 @@ function Ascent({ progressRef }) {
     steps.current.forEach((mesh, i) => {
       if (!mesh) return;
       const d = Math.abs(climb - i);
-      const g = Math.max(0, 1 - d); // activeness within one step
-      // Ahead of the climb fades quickly; already-climbed steps hold light
+      const g = Math.max(0, 1 - d); // target activeness within one step
+
+      // Spring the display activeness toward its target so an arriving step
+      // overshoots a touch and settles, rather than tracking rigidly.
+      vel.current[i] += (g - disp.current[i]) * 0.16;
+      vel.current[i] *= 0.72;
+      disp.current[i] += vel.current[i];
+      const gv = disp.current[i]; // may slightly overshoot 1 — used for the pop
+      const gc = clamp(gv, 0, 1); // clamped — used for colour/light
+
+      // Ahead of the climb stays present (leads to the next); climbed steps
+      // hold a little light behind you.
       const ahead = Math.max(0, i - climb);
       const behind = Math.max(0, climb - i);
-      const focus = clamp(1 - ahead * 0.5 - behind * 0.24, 0.12, 1);
+      const focus = clamp(1 - ahead * 0.36 - behind * 0.22, 0.22, 1);
 
       // Solid block hangs below/behind its front-top reference; the active
-      // step detaches, rising and pulling forward out of the structure.
+      // step detaches, rising and pulling forward out of the structure, with
+      // a gentle idle bob so it feels alive at the focal point.
+      const bob = Math.sin(t * 1.15 + i * 0.7) * 0.02 * gc;
       const r = refPos(i);
       mesh.position.set(
         0,
-        r.y - STEP_H / 2 + 0.34 * g,
-        r.z - STEP_D / 2 + 0.48 * g
+        r.y - STEP_H / 2 + 0.34 * gv + bob,
+        r.z - STEP_D / 2 + 0.48 * gv
       );
-      const sc = 1 + 0.07 * g;
+      const sc = 1 + 0.07 * gv;
       mesh.scale.set(sc, sc, sc);
 
-      stepMats[i].color.lerpColors(charcoal, gold, g);
-      stepMats[i].emissiveIntensity = g * 0.95;
+      stepMats[i].color.lerpColors(charcoal, gold, gc);
+      stepMats[i].emissiveIntensity = gc * 0.95;
       stepMats[i].opacity = focus;
 
       const nm = numerals.current[i];
       if (nm) {
-        nm.color.lerpColors(cream, charcoal, g);
+        nm.color.lerpColors(cream, charcoal, gc);
         nm.opacity = clamp(focus + 0.12, 0, 1);
       }
     });
+
+    // Ground shadow sits under the focal step and softly breathes
+    if (shadow.current) {
+      shadow.current.material.opacity = 0.3 + Math.sin(t * 1.15) * 0.02;
+    }
 
     // Gold path draws itself from the base up to the current step
     if (litTube.current?.geometry.index) {
@@ -169,6 +213,19 @@ function Ascent({ progressRef }) {
   return (
     <group ref={fit} rotation={[0.16, -0.28, 0]}>
       <pointLight ref={lamp} color="#ffcf4a" intensity={3.4} distance={4.6} decay={2.2} />
+
+      {/* Soft contact shadow beneath the focal step, grounding the flight */}
+      <mesh
+        ref={shadow}
+        material={shadowMat}
+        position={[0, FOCAL_Y - STEP_H - 0.12, FOCAL_Z + 0.15]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        scale={[STEP_W * 1.05, STEP_D * 1.35, 1]}
+        raycast={() => null}
+      >
+        <planeGeometry args={[1, 1]} />
+      </mesh>
+
       <group ref={rig}>
         {/* Gold path-line: faint full run + bright climbed portion */}
         <mesh geometry={tubeGeo} material={faintTubeMat} raycast={() => null} />
