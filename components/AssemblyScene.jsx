@@ -21,7 +21,19 @@ const ROWS = 5;
 const SPACING = 1.04;
 
 const easeOutCubic = (v) => 1 - Math.pow(1 - Math.min(Math.max(v, 0), 1), 3);
+const easeInOut = (v) => {
+  const t = Math.min(Math.max(v, 0), 1);
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+};
 const DEG = Math.PI / 180;
+
+// The cream pieces land and hold long enough to be read, then flip their
+// labels away as the gold "One True Thing" rises into the mark. The reading
+// beat lives between the last cream landing (~0.5) and FLIP_START.
+const FLIP_START = 0.6;
+const FLIP_END = 0.74;
+const GOLD_START = 0.58;
+const GOLD_END = 0.75;
 
 export default function AssemblyScene({ progressRef, blocks }) {
   return (
@@ -62,14 +74,26 @@ function BlockField({ progressRef, blocks }) {
   );
 
   // Precompute per-block flight data: final grid slot + scattered pose
-  const flights = useMemo(
-    () =>
-      blocks.map((b, i) => {
-        const order = b.gold ? blocks.length - 1 : i;
-        const start = 0.08 + (order / blocks.length) * 0.28;
+  const creamCount = useMemo(() => blocks.filter((b) => !b.gold).length, [blocks]);
+  const flights = useMemo(() => {
+    let creamOrder = 0;
+    return blocks.map((b) => {
+        // Cream pieces stream in early and settle by ~0.5 so they can be
+        // read; the gold piece is held back and rises during the flip.
+        let start;
+        let end;
+        if (b.gold) {
+          start = GOLD_START;
+          end = GOLD_END;
+        } else {
+          const o = creamOrder++;
+          start = 0.05 + (o / Math.max(1, creamCount - 1)) * 0.32;
+          end = start + 0.15;
+        }
         return {
+          gold: !!b.gold,
           start,
-          end: start + 0.3,
+          end,
           fx: (b.c - (COLS - 1) / 2) * SPACING,
           fy: ((ROWS - 1) / 2 - b.r) * SPACING,
           // Scatter tuned to the camera frustum: pieces start visible in
@@ -81,9 +105,8 @@ function BlockField({ progressRef, blocks }) {
           rx: b.rx * DEG,
           ry: b.ry * DEG,
         };
-      }),
-    [blocks]
-  );
+    });
+  }, [blocks, creamCount]);
 
   useFrame((state) => {
     const p = progressRef.current;
@@ -101,15 +124,26 @@ function BlockField({ progressRef, blocks }) {
     group.current.rotation.x += (targetRX - group.current.rotation.x) * 0.07;
     group.current.rotation.y += (targetRY - group.current.rotation.y) * 0.07;
 
+    // Cream labels stay put until the gold piece is about to arrive, then
+    // flip away together so the reader has time on each label first.
+    const flip = easeInOut((p - FLIP_START) / (FLIP_END - FLIP_START));
+
     flights.forEach((f, i) => {
       const mesh = meshes.current[i];
       if (!mesh) return;
       const v = easeOutCubic((p - f.start) / (f.end - f.start));
       const inv = 1 - v;
       mesh.position.set(f.fx + f.sx * inv, f.fy + f.sy * inv, f.sz * inv);
-      mesh.rotation.set(f.rx * inv, f.ry * inv, f.rz * inv);
-      const sc = 0.84 + 0.16 * v;
-      mesh.scale.setScalar(sc);
+      if (f.gold) {
+        // The one true thing never flips — it stays face-forward into the mark.
+        mesh.rotation.set(f.rx * inv, f.ry * inv, f.rz * inv);
+        const sc = (0.84 + 0.16 * v) * (1 + 0.08 * flip);
+        mesh.scale.setScalar(sc);
+      } else {
+        mesh.rotation.set(f.rx * inv, f.ry * inv + flip * Math.PI, f.rz * inv);
+        const sc = 0.84 + 0.16 * v;
+        mesh.scale.setScalar(sc);
+      }
     });
   });
 

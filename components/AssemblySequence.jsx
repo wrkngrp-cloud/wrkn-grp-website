@@ -60,17 +60,19 @@ export default function AssemblySequence() {
 
   useMotionValueEvent(scrollYProgress, "change", (v) => {
     progressRef.current = v;
-    setPhase(v < 0.34 ? 0 : v < 0.64 ? 1 : 2);
+    setPhase(v < 0.3 ? 0 : v < 0.6 ? 1 : 2);
   });
 
   const progressScale = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
-  // Caption opacities for the three narrative beats
-  const capA = useTransform(scrollYProgress, [0, 0.24, 0.32], [1, 1, 0]);
-  const capB = useTransform(scrollYProgress, [0.34, 0.42, 0.56, 0.64], [0, 1, 1, 0]);
-  const capC = useTransform(scrollYProgress, [0.68, 0.78], [0, 1]);
-  const capAY = useTransform(scrollYProgress, [0.24, 0.34], [0, -30]);
-  const capCY = useTransform(scrollYProgress, [0.68, 0.8], [30, 0]);
+  // Caption opacities for the three narrative beats. Beat B holds through
+  // the reading window (pieces landed, labels legible) and clears just as
+  // the flip begins; beat C arrives with the gold one true thing.
+  const capA = useTransform(scrollYProgress, [0, 0.18, 0.26], [1, 1, 0]);
+  const capB = useTransform(scrollYProgress, [0.3, 0.38, 0.54, 0.6], [0, 1, 1, 0]);
+  const capC = useTransform(scrollYProgress, [0.66, 0.76], [0, 1]);
+  const capAY = useTransform(scrollYProgress, [0.18, 0.28], [0, -30]);
+  const capCY = useTransform(scrollYProgress, [0.66, 0.78], [30, 0]);
 
   // Final beat: the 3D mark gives way to the actual wordmark
   const sceneOpacity = useTransform(scrollYProgress, [0.8, 0.9], [1, 0]);
