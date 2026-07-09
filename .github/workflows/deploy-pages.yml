@@ -1,10 +1,11 @@
-name: Deploy preview to GitHub Pages
+name: Deploy to GitHub Pages
 
 # Builds the Next.js static export and publishes it to GitHub Pages so the
-# full site can be previewed at https://<owner>.github.io/<repo>/.
+# full site is served at https://<owner>.github.io/<repo>/. main is the
+# single source of truth for the live site.
 on:
   push:
-    branches: [claude/hero-loader-animations-9vkgoj]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
