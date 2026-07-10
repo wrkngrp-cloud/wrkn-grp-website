@@ -11,6 +11,7 @@ import {
 } from "framer-motion";
 import Logo from "./Logo";
 import CursorField from "./CursorField";
+import { useInView } from "./perf";
 
 const AssemblyScene = dynamic(() => import("./AssemblyScene"), { ssr: false });
 
@@ -52,6 +53,8 @@ export default function AssemblySequence() {
   const progressRef = useRef(0);
   const reduced = useReducedMotion();
   const [phase, setPhase] = useState(0);
+  // Don't spin up this WebGL scene until it's near the viewport.
+  const near = useInView(wrapperRef, "50% 0px");
 
   const { scrollYProgress } = useScroll({
     target: wrapperRef,
@@ -120,9 +123,9 @@ export default function AssemblySequence() {
 
         {/* Stage */}
         <div style={{ flex: 1, position: "relative" }}>
-          {/* WebGL scene, full bleed */}
+          {/* WebGL scene, full bleed — mounted only once near the viewport */}
           <motion.div style={{ position: "absolute", inset: 0, opacity: sceneOpacity, zIndex: 1 }}>
-            <AssemblyScene progressRef={progressRef} blocks={BLOCKS} />
+            {near && <AssemblyScene progressRef={progressRef} blocks={BLOCKS} />}
           </motion.div>
 
           {/* Caption A — scattered */}

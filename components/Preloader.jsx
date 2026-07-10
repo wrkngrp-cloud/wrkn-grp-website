@@ -27,6 +27,8 @@ export default function Preloader() {
   const progressRef = useRef({ p: 0, explode: 0 });
   const plateRef = useRef(null);
   const contentRef = useRef(null);
+  // Only load the WebGL loader scene on capable (non-phone) devices.
+  const [scene, setScene] = useState(false);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || document.hidden) {
@@ -38,6 +40,11 @@ export default function Preloader() {
     };
     document.addEventListener("visibilitychange", onHide);
 
+    // Phones skip the 3D loader entirely (no three.js, no WebGL context).
+    if (!window.matchMedia("(max-width: 820px), (pointer: coarse)").matches) {
+      setScene(true);
+    }
+
     let frame;
     let alive = true;
 
@@ -45,7 +52,7 @@ export default function Preloader() {
     // into the hero, then unmount.
     const startExplode = () => {
       const start = performance.now();
-      const dur = 900;
+      const dur = 520;
       const step = (now) => {
         if (!alive) return;
         const e = Math.min(1, (now - start) / dur);
@@ -60,7 +67,7 @@ export default function Preloader() {
     };
 
     const start = performance.now();
-    const duration = 1500;
+    const duration = 900;
     const tick = (now) => {
       if (!alive) return;
       const raw = Math.min(1, (now - start) / duration);
@@ -69,7 +76,7 @@ export default function Preloader() {
       progressRef.current.p = eased;
       setCount(Math.round(100 * eased));
       if (raw < 1) frame = requestAnimationFrame(tick);
-      else setTimeout(() => alive && startExplode(), 320);
+      else setTimeout(() => alive && startExplode(), 140);
     };
     frame = requestAnimationFrame(tick);
 
@@ -94,10 +101,12 @@ export default function Preloader() {
       {/* Dark backing plate — dissolves at handoff to reveal the hero */}
       <div ref={plateRef} style={{ position: "absolute", inset: 0, background: "#0a0a0a" }} />
 
-      {/* The blocks: compact into a mark, then explode outward */}
-      <div style={{ position: "absolute", inset: 0 }}>
-        <PreloaderScene progressRef={progressRef} />
-      </div>
+      {/* The blocks: compact into a mark, then explode outward (desktop only) */}
+      {scene && (
+        <div style={{ position: "absolute", inset: 0 }}>
+          <PreloaderScene progressRef={progressRef} />
+        </div>
+      )}
 
       {/* Wordmark + counter, anchored below the mark */}
       <div

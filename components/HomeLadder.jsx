@@ -12,6 +12,8 @@ import {
   useReducedMotion,
 } from "framer-motion";
 
+import { useInView } from "./perf";
+
 const LadderScene = dynamic(() => import("./LadderScene"), { ssr: false });
 
 /*
@@ -55,6 +57,8 @@ export default function HomeLadder() {
   const progressRef = useRef(0);
   const reduced = useReducedMotion();
   const [active, setActive] = useState(0);
+  // Only build the corridor once you're near it.
+  const near = useInView(wrapperRef, "50% 0px");
 
   const { scrollYProgress } = useScroll({
     target: wrapperRef,
@@ -103,9 +107,9 @@ export default function HomeLadder() {
   return (
     <section ref={wrapperRef} className="theme-dark" style={{ height: "460vh", position: "relative" }}>
       <div className="home-ascent">
-        {/* Full-bleed corridor you climb through */}
+        {/* Full-bleed corridor you climb through — mounted only when near */}
         <div className="home-ascent__scene">
-          <LadderScene progressRef={progressRef} />
+          {near && <LadderScene progressRef={progressRef} />}
         </div>
 
         {/* Dark scrims: hold the copy against the light, frame the corridor */}

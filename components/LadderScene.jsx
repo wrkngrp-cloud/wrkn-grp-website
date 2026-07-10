@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { Canvas, useFrame } from "@react-three/fiber";
+import { isMobileDevice } from "./perf";
 
 /*
  * The service ladder as a climb through rooms.
@@ -34,22 +35,24 @@ const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const c255 = (v) => Math.max(0, Math.min(255, v | 0));
 
 export default function LadderScene({ progressRef }) {
+  // Phones can't afford shadow maps or 2x DPR here — dial the scene down.
+  const mobile = isMobileDevice();
   return (
     <Canvas
-      shadows
-      dpr={[1, 2]}
+      shadows={!mobile}
+      dpr={mobile ? [1, 1.3] : [1, 1.75]}
       camera={{ position: [0, 1.6, 3], fov: 62, near: 0.1, far: 60 }}
-      gl={{ alpha: true, antialias: true }}
+      gl={{ alpha: true, antialias: !mobile, powerPreference: "high-performance" }}
       style={{ position: "absolute", inset: 0 }}
     >
       {/* Dark warm haze so unlit rooms fall away into shadow */}
       <fogExp2 attach="fog" args={["#1a150d", 0.04]} />
-      <Corridor progressRef={progressRef} />
+      <Corridor progressRef={progressRef} mobile={mobile} />
     </Canvas>
   );
 }
 
-function Corridor({ progressRef }) {
+function Corridor({ progressRef, mobile }) {
   const headlamp = useRef();
   const sun = useRef();
   const roomLight = useRef();
@@ -128,8 +131,9 @@ function Corridor({ progressRef }) {
   useEffect(() => {
     if (!sun.current) return;
     sun.current.target = sunTarget;
+    if (mobile) return; // no shadow map on phones
     const s = sun.current.shadow;
-    s.mapSize.set(2048, 2048);
+    s.mapSize.set(1024, 1024);
     s.camera.left = -4;
     s.camera.right = 4;
     s.camera.top = 6;
@@ -139,7 +143,7 @@ function Corridor({ progressRef }) {
     s.bias = -0.0004;
     s.normalBias = 0.02;
     s.camera.updateProjectionMatrix();
-  }, [sunTarget]);
+  }, [sunTarget, mobile]);
 
   useFrame((state) => {
     const p = clamp(progressRef.current, 0, 1);
@@ -190,7 +194,7 @@ function Corridor({ progressRef }) {
   return (
     <group>
       <ambientLight intensity={0.7} color="#fff2da" />
-      <directionalLight ref={sun} castShadow position={[1.5, 8, -6]} intensity={1.45} color="#ffe6b0" />
+      <directionalLight ref={sun} castShadow={!mobile} position={[1.5, 8, -6]} intensity={1.45} color="#ffe6b0" />
       <primitive object={sunTarget} />
       <pointLight ref={headlamp} color="#ffe4ab" intensity={4.8} distance={10.5} decay={2} />
       <pointLight ref={roomLight} color="#ffca6e" intensity={0.8} distance={7.5} decay={2} />
