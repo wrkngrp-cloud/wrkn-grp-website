@@ -133,6 +133,14 @@ function Corridor({ progressRef, mobile }) {
     () => new THREE.MeshStandardMaterial({ color: "#e8c25c", roughness: 0.28, metalness: 0.7 }),
     []
   );
+  // The apex: a warm, luminous back wall that turns the final room into a
+  // light-filled destination rather than a dead end.
+  const apexTex = useMemo(() => makeApexTexture(), []);
+  const apexGeo = useMemo(() => new THREE.PlaneGeometry(STAIR_W + 0.6, CEIL - FLOORY + 0.5), []);
+  const apexMat = useMemo(
+    () => new THREE.MeshBasicMaterial({ map: apexTex, toneMapped: false }),
+    [apexTex]
+  );
 
   const tubeMid = -(NSTEPS * LSTEP) / 2 + 1;
   const jambX = (DOOR_W + (STAIR_W + 0.3 - DOOR_W) / 2) / 2; // centre of each jamb
@@ -254,6 +262,9 @@ function Corridor({ progressRef, mobile }) {
             </group>
           );
         })}
+
+        {/* Apex: the luminous back wall of the room at the top of the climb */}
+        <mesh geometry={apexGeo} material={apexMat} position={[0, (CEIL + FLOORY) / 2, -NSTEPS * LSTEP]} />
       </group>
 
       {/* Steps climbing away from the viewer — cast + receive shadows */}
@@ -268,10 +279,34 @@ function Corridor({ progressRef, mobile }) {
         />
       ))}
 
-      {/* A quiet warm light in the final room at the top of the climb */}
-      <pointLight color="#ffcf7a" intensity={2.6} distance={11} decay={2} position={[0, NSTEPS * RISE + 1.4, -NSTEPS * RUN - 1.5]} />
+      {/* The apex room floods with warm light: the payoff at the top. A
+          camera-side fill lights the near steps and walls so it reads as a
+          bright room you arrive in, not a lit window in a dark corridor. */}
+      <pointLight color="#ffe6b0" intensity={6} distance={13} decay={2} position={[0, NSTEPS * RISE + 0.4, -NSTEPS * RUN + 1.6]} />
+      <pointLight color="#ffdf9a" intensity={6.5} distance={16} decay={2} position={[0, NSTEPS * RISE + 0.3, -(NSTEPS - 6) * RUN]} />
+      <pointLight color="#ffd27a" intensity={4} distance={12} decay={2} position={[0, NSTEPS * RISE - 1.4, -(NSTEPS - 3) * RUN]} />
+      <pointLight color="#fff0cf" intensity={2.6} distance={8} decay={2} position={[0, NSTEPS * RISE + 1.2, -NSTEPS * RUN - 0.6]} />
     </group>
   );
+}
+
+// Warm luminous panel for the apex room: a glow that reads as light pouring
+// into a corner-office / summit space at the top of the climb.
+function makeApexTexture() {
+  const size = 256;
+  const c = document.createElement("canvas");
+  c.width = c.height = size;
+  const g = c.getContext("2d");
+  g.fillStyle = "#392c11";
+  g.fillRect(0, 0, size, size);
+  const grad = g.createRadialGradient(size / 2, size * 0.56, 12, size / 2, size * 0.56, size * 0.78);
+  grad.addColorStop(0, "#ffeec2");
+  grad.addColorStop(0.4, "#f0d488");
+  grad.addColorStop(0.72, "#c99b42");
+  grad.addColorStop(1, "#5a4518");
+  g.fillStyle = grad;
+  g.fillRect(0, 0, size, size);
+  return new THREE.CanvasTexture(c);
 }
 
 // Mottled charcoal plaster: base tint + per-pixel grain + soft blotches

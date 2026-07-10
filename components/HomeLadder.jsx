@@ -27,33 +27,38 @@ const LadderScene = dynamic(() => import("./LadderScene"), { ssr: false });
 const PRODUCTS = [
   {
     n: "01",
-    stage: "Where every climb starts",
+    stage: "The first door",
     name: "Brand Positioning Workshop",
     sum: "A focused session that pins down what you stand for, who it's for, and what makes you impossible to replace.",
+    who: "For founders who suspect the real problem is positioning.",
   },
   {
     n: "02",
     stage: "Turn the position into a plan",
     name: "Brand Strategy Sprint",
     sum: "A multi-week intensive that builds the whole strategy: positioning, narrative architecture, messaging.",
+    who: "For pre-launch brands, or a serious rebrand.",
   },
   {
     n: "03",
-    stage: "Keep the thinking alive",
+    stage: "Keep the thinking in the room",
     name: "Creative Advisory Retainer",
     sum: "Ongoing monthly advisory, where the deepest work compounds over time, not in a single sprint.",
+    who: "For brands that want a thinking partner every month, not a vendor at arm's length.",
   },
   {
     n: "04",
     stage: "Take it to market",
     name: "Campaign Strategy & Brand Initiatives",
     sum: "360° campaign architecture for brands that know their position and are ready to act from it.",
+    who: "For brands ready to act from a position they already own.",
   },
   {
     n: "05",
-    stage: "Own the whole climb",
+    stage: "The room at the top",
     name: "Fractional CMO",
     sum: "WRKN GRP as your marketing leadership. Executive ownership, not advice from the sidelines.",
+    who: "For scaling brands that need marketing leadership now, before a full-time hire.",
   },
 ];
 
@@ -90,7 +95,7 @@ export default function HomeLadder() {
             <span>The Ascent</span>
           </div>
           <h2 className="display display-md" style={{ maxWidth: "20ch", marginBottom: "3rem" }}>
-            Our services, offered as products. One rung at a time.
+            Our services, offered as products. One door at a time.
           </h2>
           <div className="products-grid">
             {PRODUCTS.map((p) => (
@@ -98,11 +103,12 @@ export default function HomeLadder() {
                 <span className="display product-card__n">{p.n}</span>
                 <span className="display product-card__name">{p.name}</span>
                 <span className="product-card__sum">{p.sum}</span>
+                <span className="product-card__who">{p.who}</span>
               </Link>
             ))}
           </div>
           <Link href="/services" className="link-draw small-caps" style={{ marginTop: "2.5rem", display: "inline-block" }}>
-            See How the Ladder Works →
+            See How It Works →
           </Link>
         </div>
       </section>
@@ -133,7 +139,7 @@ export default function HomeLadder() {
         <div className="container home-ascent__copy">
           <div className="home-ascent__copy-inner">
             <p className="small-caps home-ascent__eyebrow" style={{ opacity: 0.55, marginBottom: "1.1rem" }}>
-              Our services, offered as products. One rung at a time.
+              Our services, offered as products. One door at a time.
             </p>
             <AnimatePresence mode="wait">
               <motion.div
@@ -149,14 +155,17 @@ export default function HomeLadder() {
                 </span>
                 <h3 className="display display-sm home-ascent__name">{item.name}</h3>
                 <p className="home-ascent__sum">{item.sum}</p>
+                <p className="home-ascent__who">
+                  <span className="small-caps">Who it&rsquo;s for</span> {item.who}
+                </p>
               </motion.div>
             </AnimatePresence>
             <Link
               href="/services"
               className="link-draw small-caps"
-              style={{ marginTop: "1.6rem", display: "inline-block", pointerEvents: "auto" }}
+              style={{ marginTop: "1.5rem", display: "inline-block", pointerEvents: "auto" }}
             >
-              See How the Ladder Works →
+              See How It Works →
             </Link>
           </div>
         </div>

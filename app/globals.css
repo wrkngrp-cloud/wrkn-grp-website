@@ -643,6 +643,24 @@ section {
   opacity: 0.8;
   font-size: 1.02rem;
 }
+.home-ascent__who {
+  margin: 1rem 0 0;
+  max-width: 42ch;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  opacity: 0.72;
+}
+.home-ascent__who .small-caps {
+  color: var(--gold);
+  opacity: 0.95;
+  margin-right: 0.55rem;
+}
+.product-card__who {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  opacity: 0.6;
+  margin-top: 0.5rem;
+}
 .home-ascent__bottom {
   position: absolute;
   bottom: 0;
@@ -674,7 +692,7 @@ section {
   }
   .home-ascent__copy-inner {
     max-width: 100%;
-    padding-bottom: 5rem;
+    padding-bottom: 3.5rem;
   }
   .home-ascent__eyebrow {
     display: none;
@@ -690,6 +708,11 @@ section {
     font-size: 0.94rem;
     max-width: 38ch;
     opacity: 0.78;
+  }
+  .home-ascent__who {
+    font-size: 0.82rem;
+    max-width: 36ch;
+    margin-top: 0.7rem;
   }
   .home-ascent__legend {
     display: none;
