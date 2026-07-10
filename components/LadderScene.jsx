@@ -177,12 +177,22 @@ function Corridor({ progressRef, mobile }) {
     () => new THREE.MeshBasicMaterial({ color: "#f4c65e", toneMapped: false, side: THREE.DoubleSide }),
     []
   );
-  // Unlit paper for the candidate notes on the positioning wall — plain stock
-  // so the one chosen position (emissive) reads as the thing that's lit up.
-  const cardMat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: "#c8bca1", roughness: 0.92, metalness: 0, side: THREE.DoubleSide }),
-    []
-  );
+  // Every sheet in the corridor carries real writing. Rejected positions are
+  // struck through; the chosen one reads "THE ONE TRUE THING". The sprint
+  // pages are titled documents. The banners carry the campaign's arc. The
+  // nameplate on the summit desk says whose seat it is.
+  const writtenMats = useMemo(() => {
+    const mk = (map) => new THREE.MeshBasicMaterial({ map, toneMapped: false, side: THREE.DoubleSide });
+    return {
+      rejected: ["LOUDEST", "CHEAPEST", "TRENDY", "SAFE", "FASTEST", "EVERYONE"].map((wd) =>
+        mk(makeNoteTex([wd], true))
+      ),
+      chosen: mk(makeNoteTex(["THE ONE", "TRUE THING"], false, "#fff3d6")),
+      docs: ["POSITION", "STORY", "VOICE", "MESSAGE", "AUDIENCE", "PLAN"].map((t) => mk(makeDocTex(t))),
+      banners: ["SEEN", "HEARD", "FELT", "REMEMBERED"].map((wd) => mk(makeBannerTex(wd))),
+      plate: mk(makePlateTex()),
+    };
+  }, []);
 
   const tubeMid = -(NSTEPS * LSTEP) / 2 + 1;
   const jambX = (DOOR_W + (STAIR_W + 0.3 - DOOR_W) / 2) / 2; // centre of each jamb
@@ -350,15 +360,15 @@ function Corridor({ progressRef, mobile }) {
             <mesh material={boardMat} castShadow receiveShadow>
               <boxGeometry args={[1.7, 1.4, 0.06]} />
             </mesh>
-            {/* candidate notes, plain paper */}
+            {/* candidate positions, each struck through in ink */}
             {[[-0.55, 0.4, 0.16], [-0.13, 0.46, -0.1], [0.5, 0.42, 0.09], [-0.52, -0.34, -0.12], [0.54, -0.32, 0.11], [0.14, -0.4, 0.05]].map((cp, i) => (
-              <mesh key={i} material={cardMat} position={[cp[0], cp[1], 0.05]} rotation={[0, 0, cp[2]]}>
-                <planeGeometry args={[0.3, 0.22]} />
+              <mesh key={i} material={writtenMats.rejected[i]} position={[cp[0], cp[1], 0.05]} rotation={[0, 0, cp[2]]}>
+                <planeGeometry args={[0.32, 0.224]} />
               </mesh>
             ))}
-            {/* the one position: lit, pinned, underlined */}
-            <mesh material={emCream} position={[0.02, 0.03, 0.06]}>
-              <planeGeometry args={[0.48, 0.34]} />
+            {/* the one that survives the workshop: lit, pinned, underlined */}
+            <mesh material={writtenMats.chosen} position={[0.02, 0.03, 0.06]}>
+              <planeGeometry args={[0.5, 0.35]} />
             </mesh>
             <mesh material={emGold} position={[0.02, 0.22, 0.08]}>
               <boxGeometry args={[0.07, 0.07, 0.04]} />
@@ -378,16 +388,22 @@ function Corridor({ progressRef, mobile }) {
       <group position={[0, 12 * RISE, -12 * RUN]}>
         {[-1, 1].map((side) => (
           <group key={side} position={[side * 1.5, 1.28, 0]} rotation={[0, -side * Math.PI / 2, 0]}>
-            {[-0.52, 0, 0.52].map((x) =>
-              [0.42, -0.24].map((y) => (
-                <mesh key={`${x}-${y}`} material={emCream} position={[x, y, 0.03]}>
-                  <planeGeometry args={[0.4, 0.54]} />
-                </mesh>
-              ))
-            )}
+            {/* six titled pages of the sprint: position, story, voice,
+                message, audience, plan */}
+            {[[-0.52, 0.42], [0, 0.42], [0.52, 0.42], [-0.52, -0.24], [0, -0.24], [0.52, -0.24]].map((pp, i) => (
+              <mesh key={i} material={writtenMats.docs[i]} position={[pp[0], pp[1], 0.03]}>
+                <planeGeometry args={[0.42, 0.55]} />
+              </mesh>
+            ))}
+            {/* the gold thread that ties the pages into one argument */}
             <mesh material={emGold} position={[0, 0.09, 0.04]}>
               <boxGeometry args={[1.45, 0.014, 0.02]} />
             </mesh>
+            {[-0.52, 0, 0.52].map((x) => (
+              <mesh key={x} material={emGold} position={[x, 0.09, 0.05]}>
+                <boxGeometry args={[0.05, 0.05, 0.03]} />
+              </mesh>
+            ))}
           </group>
         ))}
       </group>
@@ -428,6 +444,16 @@ function Corridor({ progressRef, mobile }) {
         <mesh material={emGold} position={[0.06, 0.705, 0.035]}>
           <boxGeometry args={[0.24, 0.03, 0.24]} />
         </mesh>
+        {/* Two well-used books at the table's corner, gold-marked */}
+        <mesh material={chairMat} position={[-0.26, 0.565, 0.24]} rotation={[0, 0.3, 0]} castShadow>
+          <boxGeometry args={[0.2, 0.05, 0.15]} />
+        </mesh>
+        <mesh material={boardMat} position={[-0.25, 0.61, 0.23]} rotation={[0, 0.14, 0]} castShadow>
+          <boxGeometry args={[0.18, 0.04, 0.14]} />
+        </mesh>
+        <mesh material={emGold} position={[-0.25, 0.612, 0.3]} rotation={[0, 0.14, 0]}>
+          <boxGeometry args={[0.16, 0.012, 0.012]} />
+        </mesh>
         {/* Pendant lamp on a cord */}
         <mesh material={apexDarkMat} position={[0, 2.34, 0]}>
           <boxGeometry args={[0.02, 1.1, 0.02]} />
@@ -445,7 +471,9 @@ function Corridor({ progressRef, mobile }) {
       <group position={[0, 24 * RISE, -24 * RUN]}>
         {[-1.4, -0.8, 0.8, 1.4].map((x, i) => (
           <group key={i} position={[x, 2.05, i < 2 ? -0.3 : 0.3]}>
-            <mesh material={emCream}>
+            {/* the campaign's arc, one word per banner:
+                seen, heard, felt, remembered */}
+            <mesh material={writtenMats.banners[i]}>
               <planeGeometry args={[0.46, 1.5]} />
             </mesh>
             <mesh material={emGold} position={[0, -0.78, 0.01]}>
@@ -499,6 +527,21 @@ function Corridor({ progressRef, mobile }) {
         </mesh>
         <mesh material={handleMat} position={[0, 1.09, -1.02]}>
           <boxGeometry args={[2.55, 0.02, 0.07]} />
+        </mesh>
+        {/* The nameplate: this seat belongs to WRKN GRP */}
+        <mesh material={writtenMats.plate} position={[0, 1.2, -1.1]}>
+          <planeGeometry args={[0.78, 0.195]} />
+        </mesh>
+        {/* Work in progress on the desk: the plan out, a page beside it,
+            a gold pen mid-thought */}
+        <mesh material={writtenMats.docs[5]} position={[-0.62, 1.085, -1.42]} rotation={[-Math.PI / 2, 0, 0.25]}>
+          <planeGeometry args={[0.32, 0.42]} />
+        </mesh>
+        <mesh material={emCream} position={[0.68, 1.085, -1.5]} rotation={[-Math.PI / 2, 0, -0.18]}>
+          <planeGeometry args={[0.3, 0.4]} />
+        </mesh>
+        <mesh material={handleMat} position={[0.2, 1.095, -1.3]} rotation={[0, 0.5, 0]}>
+          <boxGeometry args={[0.24, 0.014, 0.02]} />
         </mesh>
 
         {/* High-backed leadership chair, facing the climber */}
@@ -578,6 +621,114 @@ function makeApexTexture() {
     }
     x += bw + 3 + Math.random() * 6;
   }
+  return new THREE.CanvasTexture(c);
+}
+
+// A pinned workshop note: a candidate position in ink, struck through if
+// rejected. The chosen one stays clean on brighter stock.
+function makeNoteTex(lines, struck, bg = "#c9bc9e", ink = "#241c10") {
+  const w = 200;
+  const h = 140;
+  const c = document.createElement("canvas");
+  c.width = w;
+  c.height = h;
+  const g = c.getContext("2d");
+  g.fillStyle = bg;
+  g.fillRect(0, 0, w, h);
+  g.strokeStyle = "rgba(36,28,16,0.25)";
+  g.lineWidth = 3;
+  g.strokeRect(1.5, 1.5, w - 3, h - 3);
+  g.fillStyle = ink;
+  g.font = "600 30px Georgia, serif";
+  g.textAlign = "center";
+  g.textBaseline = "middle";
+  const mid = h / 2;
+  const step = 36;
+  lines.forEach((ln, i) => {
+    const y = mid + (i - (lines.length - 1) / 2) * step;
+    g.fillText(ln, w / 2, y);
+    if (struck) {
+      g.strokeStyle = "rgba(36,28,16,0.9)";
+      g.lineWidth = 4;
+      g.beginPath();
+      g.moveTo(w * 0.12, y + 3);
+      g.lineTo(w * 0.88, y - 4);
+      g.stroke();
+    }
+  });
+  return new THREE.CanvasTexture(c);
+}
+
+// A strategy document: a titled page with a gold rule and written lines
+function makeDocTex(title) {
+  const w = 160;
+  const h = 210;
+  const c = document.createElement("canvas");
+  c.width = w;
+  c.height = h;
+  const g = c.getContext("2d");
+  g.fillStyle = "#efe5cc";
+  g.fillRect(0, 0, w, h);
+  g.fillStyle = "#241c10";
+  g.font = "600 22px Georgia, serif";
+  g.textAlign = "center";
+  g.textBaseline = "middle";
+  g.fillText(title, w / 2, 30);
+  g.fillStyle = "#b08a1e";
+  g.fillRect(w / 2 - 44, 46, 88, 3);
+  g.strokeStyle = "rgba(36,28,16,0.34)";
+  g.lineWidth = 2.5;
+  const widths = [0.78, 0.72, 0.75, 0.5, 0.76, 0.7, 0.42];
+  widths.forEach((f, i) => {
+    const y = 72 + i * 18;
+    g.beginPath();
+    g.moveTo(w * 0.12, y);
+    g.lineTo(w * (0.12 + f), y);
+    g.stroke();
+  });
+  return new THREE.CanvasTexture(c);
+}
+
+// A campaign banner: one word, set tall
+function makeBannerTex(word) {
+  const w = 128;
+  const h = 420;
+  const c = document.createElement("canvas");
+  c.width = w;
+  c.height = h;
+  const g = c.getContext("2d");
+  g.fillStyle = "#efe5cc";
+  g.fillRect(0, 0, w, h);
+  g.fillStyle = "#241c10";
+  g.font = "700 44px Georgia, serif";
+  g.textAlign = "center";
+  g.textBaseline = "middle";
+  g.save();
+  g.translate(w / 2, h / 2);
+  g.rotate(-Math.PI / 2);
+  g.fillText(word, 0, 0);
+  g.restore();
+  return new THREE.CanvasTexture(c);
+}
+
+// The desk nameplate at the summit: the seat is taken
+function makePlateTex() {
+  const w = 256;
+  const h = 64;
+  const c = document.createElement("canvas");
+  c.width = w;
+  c.height = h;
+  const g = c.getContext("2d");
+  g.fillStyle = "#e8c25c";
+  g.fillRect(0, 0, w, h);
+  g.strokeStyle = "rgba(36,28,16,0.5)";
+  g.lineWidth = 3;
+  g.strokeRect(4, 4, w - 8, h - 8);
+  g.fillStyle = "#241c10";
+  g.font = "700 30px Georgia, serif";
+  g.textAlign = "center";
+  g.textBaseline = "middle";
+  g.fillText("W R K N   G R P", w / 2, h / 2 + 1);
   return new THREE.CanvasTexture(c);
 }
 
