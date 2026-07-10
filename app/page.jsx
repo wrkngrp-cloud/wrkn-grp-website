@@ -56,11 +56,12 @@ export default function HomePage() {
               <div className="arm arm--lead">
                 <span className="eyebrow">The Strategy Arm</span>
                 <h3 className="display display-sm" style={{ margin: "1.2rem 0 1rem" }}>
-                  Sets the argument.
+                  Decides how you win.
                 </h3>
                 <p style={{ opacity: 0.78, maxWidth: "42ch" }}>
-                  Before anything gets made, someone has to decide what the brand is for, who it
-                  stands against, and why it earns attention now. Every execution answers to that.
+                  Strategy is the reason and the route: why you deserve attention, who you are really
+                  up against, and the sharpest way through. It is the thinking that tells the rest of
+                  the work what to do, and why. Nothing gets made until it is settled.
                 </p>
                 <dl className="arm-list">
                   <div className="arm-list__row">
@@ -92,11 +93,11 @@ export default function HomePage() {
                   The Creative Execution Arm
                 </span>
                 <h3 className="display display-sm" style={{ margin: "1.2rem 0 1rem" }}>
-                  Gives it a body.
+                  Makes it undeniable.
                 </h3>
                 <p style={{ opacity: 0.78, maxWidth: "42ch" }}>
-                  Strategy that never ships is just a document. This is where the argument becomes an
-                  identity, a film, a page: something people can actually meet.
+                  A strategy nobody sees stays a theory. This is where the argument becomes an
+                  identity, a film, a product: the work people actually meet, remember, and act on.
                 </p>
                 <dl className="arm-list">
                   <div className="arm-list__row">

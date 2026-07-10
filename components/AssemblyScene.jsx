@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { isMobileDevice } from "./perf";
 
 /*
  * WebGL version of the assembly mechanic. Thirteen bevel-extruded
@@ -37,12 +36,11 @@ const GOLD_START = 0.58;
 const GOLD_END = 0.75;
 
 export default function AssemblyScene({ progressRef, blocks }) {
-  const mobile = isMobileDevice();
   return (
     <Canvas
-      dpr={mobile ? [1, 1.3] : [1, 1.75]}
+      dpr={[1, 2]}
       camera={{ position: [0, 0, 13], fov: 34 }}
-      gl={{ alpha: true, antialias: !mobile, powerPreference: "high-performance" }}
+      gl={{ alpha: true, antialias: true, powerPreference: "high-performance" }}
       style={{ position: "absolute", inset: 0 }}
     >
       <ambientLight intensity={0.62} />

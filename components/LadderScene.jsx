@@ -35,14 +35,15 @@ const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const c255 = (v) => Math.max(0, Math.min(255, v | 0));
 
 export default function LadderScene({ progressRef }) {
-  // Phones can't afford shadow maps or 2x DPR here — dial the scene down.
+  // Phones skip shadow maps (the heavy cost) but keep full resolution and
+  // antialiasing so nothing looks pixelated.
   const mobile = isMobileDevice();
   return (
     <Canvas
       shadows={!mobile}
-      dpr={mobile ? [1, 1.3] : [1, 1.75]}
+      dpr={[1, 2]}
       camera={{ position: [0, 1.6, 3], fov: 62, near: 0.1, far: 60 }}
-      gl={{ alpha: true, antialias: !mobile, powerPreference: "high-performance" }}
+      gl={{ alpha: true, antialias: true, powerPreference: "high-performance" }}
       style={{ position: "absolute", inset: 0 }}
     >
       {/* Dark warm haze so unlit rooms fall away into shadow */}
@@ -58,6 +59,8 @@ function Corridor({ progressRef, mobile }) {
   const roomLight = useRef();
   const doorL = useRef([]);
   const doorR = useRef([]);
+  const leverL = useRef([]);
+  const leverR = useRef([]);
   const sunTarget = useMemo(() => new THREE.Object3D(), []);
 
   // Procedural plaster: mottled colour map + grayscale bump
@@ -94,7 +97,9 @@ function Corridor({ progressRef, mobile }) {
   const jambGeo = useMemo(() => new THREE.BoxGeometry((STAIR_W + 0.3 - DOOR_W) / 2, CEIL - FLOORY, 0.2), []);
   const lintelGeo = useMemo(() => new THREE.BoxGeometry(DOOR_W + 0.24, CEIL - (OPEN_B + DOOR_H), 0.2), []);
   const panelGeo = useMemo(() => new THREE.BoxGeometry(DOOR_W / 2, DOOR_H, 0.07), []);
-  const seamGeo = useMemo(() => new THREE.BoxGeometry(0.05, DOOR_H * 0.9, 0.09), []);
+  const seamGeo = useMemo(() => new THREE.BoxGeometry(0.045, DOOR_H * 0.9, 0.09), []);
+  const plateGeo = useMemo(() => new THREE.BoxGeometry(0.075, 0.3, 0.03), []);
+  const leverGeo = useMemo(() => new THREE.BoxGeometry(0.22, 0.045, 0.05), []);
 
   const stepMat = useMemo(
     () => new THREE.MeshStandardMaterial({ color: "#211c15", roughness: 0.72, metalness: 0.08, bumpMap: tex.stepBump, bumpScale: 0.012 }),
@@ -124,6 +129,10 @@ function Corridor({ progressRef, mobile }) {
     () => new THREE.MeshStandardMaterial({ color: "#b08a1e", roughness: 0.4, metalness: 0.5 }),
     []
   );
+  const handleMat = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: "#e8c25c", roughness: 0.28, metalness: 0.7 }),
+    []
+  );
 
   const tubeMid = -(NSTEPS * LSTEP) / 2 + 1;
   const jambX = (DOOR_W + (STAIR_W + 0.3 - DOOR_W) / 2) / 2; // centre of each jamb
@@ -133,7 +142,7 @@ function Corridor({ progressRef, mobile }) {
     sun.current.target = sunTarget;
     if (mobile) return; // no shadow map on phones
     const s = sun.current.shadow;
-    s.mapSize.set(1024, 1024);
+    s.mapSize.set(2048, 2048);
     s.camera.left = -4;
     s.camera.right = 4;
     s.camera.top = 6;
@@ -150,15 +159,16 @@ function Corridor({ progressRef, mobile }) {
     const c = MARK[0] - 3 + p * (MARK[RUNGS - 1] + 1.5 - (MARK[0] - 3));
     const t = state.clock.elapsedTime;
 
-    // First-person camera: climbing, gentle idle sway + mouse-look
+    // First-person camera: climbing, with a slow, smooth idle sway + mouse-look.
+    // Kept low-frequency so it reads as a gentle drift, never a shake.
     const px = state.pointer.x;
     const py = state.pointer.y;
     const cam = state.camera;
-    const bob = Math.sin(t * 1.4) * 0.03;
-    cam.position.x += (px * 0.6 - cam.position.x) * 0.06;
-    cam.position.y += (c * RISE + 1.55 + bob - cam.position.y) * 0.1;
-    cam.position.z += (-c * RUN + 1.5 - cam.position.z) * 0.1;
-    cam.lookAt(px * 1.4, c * RISE + 1.3 + py * 1.0 + Math.sin(t * 0.5) * 0.04, -c * RUN - 5);
+    const bob = Math.sin(t * 0.7) * 0.015;
+    cam.position.x += (px * 0.5 - cam.position.x) * 0.05;
+    cam.position.y += (c * RISE + 1.55 + bob - cam.position.y) * 0.08;
+    cam.position.z += (-c * RUN + 1.5 - cam.position.z) * 0.08;
+    cam.lookAt(px * 1.2, c * RISE + 1.3 + py * 0.85 + Math.sin(t * 0.4) * 0.025, -c * RUN - 5);
 
     if (headlamp.current) headlamp.current.position.set(cam.position.x, cam.position.y + 0.2, cam.position.z - 0.2);
     if (sun.current) {
@@ -173,7 +183,11 @@ function Corridor({ progressRef, mobile }) {
     for (let k = 0; k < RUNGS; k++) {
       const m = MARK[k];
       const open = clamp((c - (m - 3.5)) / 2.6, 0, 1);
-      const a = open * 1.95;
+      // The handle turns down first, then the door swings open behind it.
+      const turn = clamp(open * 4, 0, 1);
+      const a = clamp((open - 0.12) / 0.88, 0, 1) * 1.95;
+      if (leverL.current[k]) leverL.current[k].rotation.z = turn * 0.85;
+      if (leverR.current[k]) leverR.current[k].rotation.z = -turn * 0.85;
       if (doorL.current[k]) doorL.current[k].rotation.y = -a;
       if (doorR.current[k]) doorR.current[k].rotation.y = a;
       const d = Math.abs(c - m);
@@ -215,14 +229,27 @@ function Corridor({ progressRef, mobile }) {
               <mesh geometry={jambGeo} material={frameMat} position={[jambX, (CEIL + FLOORY) / 2, 0]} receiveShadow />
               <mesh geometry={lintelGeo} material={frameMat} position={[0, (CEIL + OPEN_B + DOOR_H) / 2, 0]} receiveShadow />
 
-              {/* Two doors, hinged at the jambs, swinging into the next room */}
+              {/* Two doors, hinged at the jambs, swinging into the next room,
+                  each with a gold lever handle that turns as it opens. */}
               <group ref={(el) => (doorL.current[k] = el)} position={[-DOOR_W / 2, OPEN_B + DOOR_H / 2, 0]}>
                 <mesh geometry={panelGeo} material={panelMat} position={[DOOR_W / 4, 0, 0]} castShadow receiveShadow />
                 <mesh geometry={seamGeo} material={seamMat} position={[DOOR_W / 2 - 0.02, 0, 0.05]} />
+                <group position={[DOOR_W / 2 - 0.15, -0.02, 0.055]}>
+                  <mesh geometry={plateGeo} material={handleMat} castShadow />
+                  <group ref={(el) => (leverL.current[k] = el)} position={[-0.015, 0, 0.03]}>
+                    <mesh geometry={leverGeo} material={handleMat} position={[-0.1, 0, 0]} castShadow />
+                  </group>
+                </group>
               </group>
               <group ref={(el) => (doorR.current[k] = el)} position={[DOOR_W / 2, OPEN_B + DOOR_H / 2, 0]}>
                 <mesh geometry={panelGeo} material={panelMat} position={[-DOOR_W / 4, 0, 0]} castShadow receiveShadow />
                 <mesh geometry={seamGeo} material={seamMat} position={[-DOOR_W / 2 + 0.02, 0, 0.05]} />
+                <group position={[-DOOR_W / 2 + 0.15, -0.02, 0.055]}>
+                  <mesh geometry={plateGeo} material={handleMat} castShadow />
+                  <group ref={(el) => (leverR.current[k] = el)} position={[0.015, 0, 0.03]}>
+                    <mesh geometry={leverGeo} material={handleMat} position={[0.1, 0, 0]} castShadow />
+                  </group>
+                </group>
               </group>
             </group>
           );

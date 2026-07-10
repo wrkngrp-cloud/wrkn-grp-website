@@ -621,6 +621,12 @@ section {
 .home-ascent__copy-inner {
   max-width: 34rem;
 }
+.home-ascent__stage {
+  display: block;
+  color: var(--gold);
+  opacity: 0.85;
+  margin-bottom: 0.7rem;
+}
 .home-ascent__num {
   font-style: italic;
   font-size: clamp(3.2rem, 8vw, 6rem);

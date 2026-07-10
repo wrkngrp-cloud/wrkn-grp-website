@@ -27,28 +27,33 @@ const LadderScene = dynamic(() => import("./LadderScene"), { ssr: false });
 const PRODUCTS = [
   {
     n: "01",
+    stage: "Where every climb starts",
     name: "Brand Positioning Workshop",
-    sum: "A structured two-hour session that pins down what you stand for, who it's for, and what makes you irreplaceable.",
+    sum: "A focused session that pins down what you stand for, who it's for, and what makes you impossible to replace.",
   },
   {
     n: "02",
+    stage: "Turn the position into a plan",
     name: "Brand Strategy Sprint",
-    sum: "A focused multi-week intensive producing the complete strategy: positioning, narrative architecture, messaging.",
+    sum: "A multi-week intensive that builds the whole strategy: positioning, narrative architecture, messaging.",
   },
   {
     n: "03",
+    stage: "Keep the thinking alive",
     name: "Creative Advisory Retainer",
-    sum: "Ongoing monthly advisory. Where the deepest work happens, over time, not in a sprint.",
+    sum: "Ongoing monthly advisory, where the deepest work compounds over time, not in a single sprint.",
   },
   {
     n: "04",
+    stage: "Take it to market",
     name: "Campaign Strategy & Brand Initiatives",
-    sum: "360° campaign architecture for brands that know their positioning and are ready to act from it.",
+    sum: "360° campaign architecture for brands that know their position and are ready to act from it.",
   },
   {
     n: "05",
+    stage: "Own the whole climb",
     name: "Fractional CMO",
-    sum: "WRKN GRP as your marketing leadership. Executive responsibility, not advisory.",
+    sum: "WRKN GRP as your marketing leadership. Executive ownership, not advice from the sidelines.",
   },
 ];
 
@@ -82,10 +87,10 @@ export default function HomeLadder() {
         <div className="container">
           <div className="wayfinding wayfinding--bottom" style={{ marginBottom: "3rem" }}>
             <span>04 — What We Do</span>
-            <span>The Ladder</span>
+            <span>The Ascent</span>
           </div>
-          <h2 className="display display-md" style={{ maxWidth: "18ch", marginBottom: "3rem" }}>
-            Every product leads to the next.
+          <h2 className="display display-md" style={{ maxWidth: "20ch", marginBottom: "3rem" }}>
+            Our services, offered as products. One rung at a time.
           </h2>
           <div className="products-grid">
             {PRODUCTS.map((p) => (
@@ -128,7 +133,7 @@ export default function HomeLadder() {
         <div className="container home-ascent__copy">
           <div className="home-ascent__copy-inner">
             <p className="small-caps home-ascent__eyebrow" style={{ opacity: 0.55, marginBottom: "1.1rem" }}>
-              Every product leads to the next
+              Our services, offered as products. One rung at a time.
             </p>
             <AnimatePresence mode="wait">
               <motion.div
@@ -138,6 +143,7 @@ export default function HomeLadder() {
                 exit={{ opacity: 0, y: -18, filter: "blur(3px)" }}
                 transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
               >
+                <span className="small-caps home-ascent__stage">{item.stage}</span>
                 <span className="display home-ascent__num" aria-hidden>
                   {item.n}
                 </span>
