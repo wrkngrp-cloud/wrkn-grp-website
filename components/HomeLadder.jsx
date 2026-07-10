@@ -101,75 +101,29 @@ export default function HomeLadder() {
   }
 
   return (
-    <section ref={wrapperRef} className="theme-cream" style={{ height: "460vh", position: "relative" }}>
-      <div
-        style={{
-          position: "sticky",
-          top: 0,
-          height: "100vh",
-          overflow: "hidden",
-          background: "var(--cream)",
-        }}
-      >
+    <section ref={wrapperRef} className="theme-dark" style={{ height: "460vh", position: "relative" }}>
+      <div className="home-ascent">
         {/* Full-bleed corridor you climb through */}
-        <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
+        <div className="home-ascent__scene">
           <LadderScene progressRef={progressRef} />
         </div>
 
-        {/* Cream scrims: frame the corridor and keep the copy legible */}
-        <div
-          aria-hidden
-          style={{
-            position: "absolute",
-            inset: 0,
-            zIndex: 1,
-            pointerEvents: "none",
-            background:
-              "linear-gradient(102deg, var(--cream) 0%, rgba(244,239,230,0.9) 22%, rgba(244,239,230,0.28) 44%, rgba(244,239,230,0) 60%)",
-          }}
-        />
-        <div
-          aria-hidden
-          style={{
-            position: "absolute",
-            left: 0,
-            right: 0,
-            top: 0,
-            height: "30%",
-            zIndex: 1,
-            pointerEvents: "none",
-            background: "linear-gradient(var(--cream) 8%, rgba(244,239,230,0))",
-          }}
-        />
-        <div
-          aria-hidden
-          style={{
-            position: "absolute",
-            left: 0,
-            right: 0,
-            bottom: 0,
-            height: "22%",
-            zIndex: 1,
-            pointerEvents: "none",
-            background: "linear-gradient(rgba(244,239,230,0), var(--cream))",
-          }}
-        />
+        {/* Dark scrims: hold the copy against the light, frame the corridor */}
+        <div aria-hidden className="home-ascent__scrim home-ascent__scrim--side" />
+        <div aria-hidden className="home-ascent__scrim home-ascent__scrim--bottom" />
 
         {/* Top wayfinding */}
-        <div className="container" style={{ position: "absolute", top: 0, left: 0, right: 0, zIndex: 3, pointerEvents: "none" }}>
-          <div className="wayfinding" style={{ marginTop: "4.6rem" }}>
+        <div className="container home-ascent__top">
+          <div className="wayfinding">
             <span>04 — What We Do</span>
-            <span style={{ color: "#8a6d0a" }}>The Ascent — Step {item.n} / 05</span>
+            <span style={{ color: "var(--gold)" }}>The Ascent — Step {item.n} / 05</span>
           </div>
         </div>
 
         {/* The copy pops up over the climb, one product at a time */}
-        <div
-          className="container"
-          style={{ position: "absolute", inset: 0, zIndex: 3, display: "flex", alignItems: "center", pointerEvents: "none" }}
-        >
-          <div style={{ maxWidth: "32rem" }}>
-            <p className="small-caps" style={{ opacity: 0.55, marginBottom: "1.2rem" }}>
+        <div className="container home-ascent__copy">
+          <div className="home-ascent__copy-inner">
+            <p className="small-caps home-ascent__eyebrow" style={{ opacity: 0.55, marginBottom: "1.1rem" }}>
               Every product leads to the next
             </p>
             <AnimatePresence mode="wait">
@@ -180,29 +134,17 @@ export default function HomeLadder() {
                 exit={{ opacity: 0, y: -18, filter: "blur(3px)" }}
                 transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
               >
-                <span
-                  className="display"
-                  aria-hidden
-                  style={{
-                    fontStyle: "italic",
-                    fontSize: "clamp(3.4rem, 9vw, 6.5rem)",
-                    lineHeight: 0.9,
-                    color: "#b8960f",
-                    display: "block",
-                  }}
-                >
+                <span className="display home-ascent__num" aria-hidden>
                   {item.n}
                 </span>
-                <h3 className="display display-sm" style={{ margin: "1.2rem 0 0.9rem", maxWidth: "16ch" }}>
-                  {item.name}
-                </h3>
-                <p style={{ maxWidth: "40ch", opacity: 0.82, fontSize: "1.02rem" }}>{item.sum}</p>
+                <h3 className="display display-sm home-ascent__name">{item.name}</h3>
+                <p className="home-ascent__sum">{item.sum}</p>
               </motion.div>
             </AnimatePresence>
             <Link
               href="/services"
               className="link-draw small-caps"
-              style={{ marginTop: "1.8rem", display: "inline-block", pointerEvents: "auto" }}
+              style={{ marginTop: "1.6rem", display: "inline-block", pointerEvents: "auto" }}
             >
               See How the Ladder Works →
             </Link>
@@ -210,8 +152,8 @@ export default function HomeLadder() {
         </div>
 
         {/* Progress hairline */}
-        <div className="container" style={{ position: "absolute", bottom: 0, left: 0, right: 0, paddingBottom: "1.2rem", zIndex: 3, pointerEvents: "none" }}>
-          <div style={{ height: 1, background: "var(--black-faint)", position: "relative", marginBottom: "0.8rem" }}>
+        <div className="container home-ascent__bottom">
+          <div className="home-ascent__hair">
             <motion.div
               style={{
                 position: "absolute",
@@ -222,7 +164,7 @@ export default function HomeLadder() {
               }}
             />
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between" }} className="small-caps">
+          <div className="small-caps home-ascent__legend">
             <span style={{ opacity: 0.5 }}>Keep climbing</span>
             <span style={{ opacity: 0.5 }}>Strategy First, Always</span>
           </div>

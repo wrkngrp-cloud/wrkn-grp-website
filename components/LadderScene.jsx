@@ -5,28 +5,30 @@ import * as THREE from "three";
 import { Canvas, useFrame } from "@react-three/fiber";
 
 /*
- * The service ladder as a space you climb through.
+ * The service ladder as a climb through rooms.
  *
- * A first-person ascent up a lit corridor-staircase: real steps underfoot,
- * textured charcoal walls and ceiling flanking you, warm haze fading the
- * far end into the cream, dust drifting in the light and soft contact
- * shadows stacking down the flight. Scroll walks you up; the mouse looks
- * around. Five gold "checkpoints" — one per product — ignite as you reach
- * them, guiding the climb toward the light at the top.
- *
- * Charcoal ceramic + gold + a cream fog: the same palette as the homepage
- * assembly, now built as an interior.
+ * A first-person ascent up a staircase that passes through doorway after
+ * doorway: each product is a threshold, and as you reach it the doors
+ * swing open into the next room — another flight, another door, warm light
+ * spilling from beyond. Textured charcoal walls, real contact shadows, and
+ * a dark warm haze keep it cinematic; the copy reads over a dark scrim.
  */
 
 export const RUNGS = 5;
 const NSTEPS = 30;
-const RISE = 0.34; // step height
-const RUN = 0.62; // step depth
+const RISE = 0.34;
+const RUN = 0.62;
 const STAIR_W = 3.2;
-const CORR_H = 3.3; // corridor height above the steps
+const CORR_H = 3.3;
 const LSTEP = Math.hypot(RISE, RUN);
-const THETA = Math.atan2(RISE, RUN); // stair incline
-const MARK = [4, 10, 16, 22, 28]; // step index of each product checkpoint
+const THETA = Math.atan2(RISE, RUN);
+const MARK = [4, 10, 16, 22, 28]; // step index of each doorway
+
+const DOOR_W = 2.0; // opening width
+const DOOR_H = 2.55; // opening height
+const OPEN_B = -0.2; // opening bottom (just above the floor line)
+const CEIL = CORR_H - 0.5; // ceiling underside
+const FLOORY = -0.35;
 
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const c255 = (v) => Math.max(0, Math.min(255, v | 0));
@@ -40,8 +42,8 @@ export default function LadderScene({ progressRef }) {
       gl={{ alpha: true, antialias: true }}
       style={{ position: "absolute", inset: 0 }}
     >
-      {/* Cream haze so the corridor dissolves into the section background */}
-      <fogExp2 attach="fog" args={["#efe9de", 0.062]} />
+      {/* Dark warm haze so unlit rooms fall away into shadow */}
+      <fogExp2 attach="fog" args={["#1a150d", 0.04]} />
       <Corridor progressRef={progressRef} />
     </Canvas>
   );
@@ -50,13 +52,12 @@ export default function LadderScene({ progressRef }) {
 function Corridor({ progressRef }) {
   const headlamp = useRef();
   const sun = useRef();
-  const markerLights = useRef([]);
-  const bandMats = useRef([]);
-  const glowMat = useRef();
+  const roomLight = useRef();
+  const doorL = useRef([]);
+  const doorR = useRef([]);
   const sunTarget = useMemo(() => new THREE.Object3D(), []);
 
-  // Procedural plaster/concrete: a mottled colour map + a grayscale height
-  // map used for surface bump. Made once, reused with per-surface tiling.
+  // Procedural plaster: mottled colour map + grayscale bump
   const { colorCanvas, bumpCanvas } = useMemo(
     () => ({ colorCanvas: makeConcreteCanvas("#1b1712", 16), bumpCanvas: makeGrayNoiseCanvas(46) }),
     []
@@ -77,22 +78,23 @@ function Corridor({ progressRef }) {
       floorMap: make(colorCanvas, 3, 5),
       floorBump: make(bumpCanvas, 3, 5),
       stepBump: make(bumpCanvas, 2, 1),
+      panelBump: make(bumpCanvas, 1, 2),
     };
   }, [colorCanvas, bumpCanvas]);
 
   // Geometry --------------------------------------------------------------
   const stepGeo = useMemo(() => new THREE.BoxGeometry(STAIR_W, RISE, RUN), []);
-  const wallGeo = useMemo(() => new THREE.BoxGeometry(0.3, CORR_H + 1.2, NSTEPS * LSTEP + 10), []);
-  const ceilGeo = useMemo(() => new THREE.BoxGeometry(STAIR_W + 0.7, 0.3, NSTEPS * LSTEP + 10), []);
-  const floorGeo = useMemo(() => new THREE.BoxGeometry(STAIR_W + 0.7, 0.3, NSTEPS * LSTEP + 10), []);
-  const bandGeo = useMemo(() => new THREE.BoxGeometry(0.08, CORR_H * 0.82, 0.16), []);
+  const long = NSTEPS * LSTEP + 10;
+  const wallGeo = useMemo(() => new THREE.BoxGeometry(0.3, CORR_H + 1.2, long), [long]);
+  const ceilGeo = useMemo(() => new THREE.BoxGeometry(STAIR_W + 0.7, 0.3, long), [long]);
+  const floorGeo = useMemo(() => new THREE.BoxGeometry(STAIR_W + 0.7, 0.3, long), [long]);
+  const jambGeo = useMemo(() => new THREE.BoxGeometry((STAIR_W + 0.3 - DOOR_W) / 2, CEIL - FLOORY, 0.2), []);
+  const lintelGeo = useMemo(() => new THREE.BoxGeometry(DOOR_W + 0.24, CEIL - (OPEN_B + DOOR_H), 0.2), []);
+  const panelGeo = useMemo(() => new THREE.BoxGeometry(DOOR_W / 2, DOOR_H, 0.07), []);
+  const seamGeo = useMemo(() => new THREE.BoxGeometry(0.05, DOOR_H * 0.9, 0.09), []);
 
   const stepMat = useMemo(
     () => new THREE.MeshStandardMaterial({ color: "#211c15", roughness: 0.72, metalness: 0.08, bumpMap: tex.stepBump, bumpScale: 0.012 }),
-    [tex]
-  );
-  const markStepMat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: "#2a2114", roughness: 0.56, metalness: 0.12, emissive: new THREE.Color("#efc835"), emissiveIntensity: 0.12, bumpMap: tex.stepBump, bumpScale: 0.012 }),
     [tex]
   );
   const wallMat = useMemo(
@@ -100,20 +102,29 @@ function Corridor({ progressRef }) {
     [tex]
   );
   const ceilMat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: "#211d17", roughness: 0.96, metalness: 0.02, map: tex.ceilMap, bumpMap: tex.ceilBump, bumpScale: 0.03 }),
+    () => new THREE.MeshStandardMaterial({ color: "#201c16", roughness: 0.96, metalness: 0.02, map: tex.ceilMap, bumpMap: tex.ceilBump, bumpScale: 0.03 }),
     [tex]
   );
   const floorMat = useMemo(
     () => new THREE.MeshStandardMaterial({ color: "#2c261d", roughness: 0.86, metalness: 0.04, map: tex.floorMap, bumpMap: tex.floorBump, bumpScale: 0.02 }),
     [tex]
   );
+  const frameMat = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: "#221c15", roughness: 0.9, metalness: 0.05 }),
+    []
+  );
+  const panelMat = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: "#2c2519", roughness: 0.62, metalness: 0.12, bumpMap: tex.panelBump, bumpScale: 0.02 }),
+    [tex]
+  );
+  const seamMat = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: "#b08a1e", roughness: 0.4, metalness: 0.5 }),
+    []
+  );
 
-  const markerSet = useMemo(() => new Set(MARK), []);
   const tubeMid = -(NSTEPS * LSTEP) / 2 + 1;
-  const glowTex = useGlowTexture();
+  const jambX = (DOOR_W + (STAIR_W + 0.3 - DOOR_W) / 2) / 2; // centre of each jamb
 
-  // Shadow-casting "sun" pouring down from the exit; its frustum follows
-  // the viewer so the contact shadows stay crisp all the way up.
   useEffect(() => {
     if (!sun.current) return;
     sun.current.target = sunTarget;
@@ -132,197 +143,104 @@ function Corridor({ progressRef }) {
 
   useFrame((state) => {
     const p = clamp(progressRef.current, 0, 1);
-    const c = MARK[0] - 2.5 + p * (MARK[RUNGS - 1] + 1.5 - (MARK[0] - 2.5));
+    const c = MARK[0] - 3 + p * (MARK[RUNGS - 1] + 1.5 - (MARK[0] - 3));
     const t = state.clock.elapsedTime;
 
-    // First-person camera: on the step, looking up the flight, with a gentle
-    // idle sway and mouse-look so it feels hand-held and interactive.
+    // First-person camera: climbing, gentle idle sway + mouse-look
     const px = state.pointer.x;
     const py = state.pointer.y;
     const cam = state.camera;
     const bob = Math.sin(t * 1.4) * 0.03;
-    cam.position.x += (px * 0.7 - cam.position.x) * 0.06;
+    cam.position.x += (px * 0.6 - cam.position.x) * 0.06;
     cam.position.y += (c * RISE + 1.55 + bob - cam.position.y) * 0.1;
     cam.position.z += (-c * RUN + 1.5 - cam.position.z) * 0.1;
-    cam.lookAt(px * 1.6, c * RISE + 1.35 + py * 1.1 + Math.sin(t * 0.5) * 0.04, -c * RUN - 5);
+    cam.lookAt(px * 1.4, c * RISE + 1.3 + py * 1.0 + Math.sin(t * 0.5) * 0.04, -c * RUN - 5);
 
-    // Headlamp travels with the viewer so nearby steps read
-    if (headlamp.current) {
-      headlamp.current.position.set(cam.position.x, cam.position.y + 0.2, cam.position.z - 0.2);
-    }
-
-    // Sun + shadow frustum follow the climb, pouring down the flight
+    if (headlamp.current) headlamp.current.position.set(cam.position.x, cam.position.y + 0.2, cam.position.z - 0.2);
     if (sun.current) {
       sun.current.position.set(cam.position.x + 1.5, cam.position.y + 6.5, cam.position.z - 2.5);
       sunTarget.position.set(cam.position.x, cam.position.y - 1.6, cam.position.z - 4.5);
       sunTarget.updateMatrixWorld();
     }
 
-    // Checkpoints ignite as you reach them
+    // Doors swing open as you approach; track the nearest to light its room
+    let near = 0;
+    let nearDist = Infinity;
     for (let k = 0; k < RUNGS; k++) {
-      const prox = clamp(1 - Math.abs(c - MARK[k]) / 4.5, 0, 1);
-      const light = markerLights.current[k];
-      if (light) light.intensity = 0.8 + 11 * prox * prox;
-      const em = 0.32 + 1.7 * prox;
-      const bl = bandMats.current[k * 2];
-      const br = bandMats.current[k * 2 + 1];
-      if (bl) bl.emissiveIntensity = em;
-      if (br) br.emissiveIntensity = em;
+      const m = MARK[k];
+      const open = clamp((c - (m - 3.5)) / 2.6, 0, 1);
+      const a = open * 1.95;
+      if (doorL.current[k]) doorL.current[k].rotation.y = -a;
+      if (doorR.current[k]) doorR.current[k].rotation.y = a;
+      const d = Math.abs(c - m);
+      if (d < nearDist) {
+        nearDist = d;
+        near = k;
+      }
     }
-
-    if (glowMat.current) glowMat.current.opacity = 0.42 + Math.sin(t * 0.8) * 0.04;
+    // A single warm lamp pools in the room beyond the door you're at
+    if (roomLight.current) {
+      const m = MARK[near];
+      const open = clamp((c - (m - 3.5)) / 2.6, 0, 1);
+      roomLight.current.position.set(0, m * RISE + 1.05, -m * RUN - 1.4);
+      roomLight.current.intensity = 0.8 + open * 4.4;
+    }
   });
 
   return (
     <group>
-      <ambientLight intensity={0.42} color="#fff4e0" />
-      <directionalLight ref={sun} castShadow position={[1.5, 8, -6]} intensity={1.2} color="#ffe8b8" />
+      <ambientLight intensity={0.7} color="#fff2da" />
+      <directionalLight ref={sun} castShadow position={[1.5, 8, -6]} intensity={1.45} color="#ffe6b0" />
       <primitive object={sunTarget} />
-      <pointLight ref={headlamp} color="#ffe6b0" intensity={3} distance={8.5} decay={2} />
+      <pointLight ref={headlamp} color="#ffe4ab" intensity={4.8} distance={10.5} decay={2} />
+      <pointLight ref={roomLight} color="#ffca6e" intensity={0.8} distance={7.5} decay={2} />
 
-      {/* Corridor shell: floor, ceiling and two walls, tilted up the incline */}
+      {/* Corridor shell + doorways, tilted up the incline */}
       <group rotation={[THETA, 0, 0]}>
-        <mesh geometry={floorGeo} material={floorMat} position={[0, -0.32, tubeMid]} receiveShadow />
+        <mesh geometry={floorGeo} material={floorMat} position={[0, FLOORY, tubeMid]} receiveShadow />
         <mesh geometry={ceilGeo} material={ceilMat} position={[0, CORR_H - 0.35, tubeMid]} receiveShadow />
         <mesh geometry={wallGeo} material={wallMat} position={[-STAIR_W / 2 - 0.15, CORR_H / 2 - 0.35, tubeMid]} receiveShadow />
         <mesh geometry={wallGeo} material={wallMat} position={[STAIR_W / 2 + 0.15, CORR_H / 2 - 0.35, tubeMid]} receiveShadow />
 
-        {/* Gold checkpoint bands set into each wall at the marker steps */}
-        {MARK.map((m, k) => (
-          <group key={k} position={[0, CORR_H * 0.46, -m * LSTEP]}>
-            <mesh geometry={bandGeo} position={[-STAIR_W / 2 + 0.02, 0, 0]}>
-              <meshStandardMaterial ref={(el) => (bandMats.current[k * 2] = el)} color="#efc835" emissive={new THREE.Color("#efc835")} emissiveIntensity={0.5} roughness={0.3} metalness={0.2} toneMapped={false} />
-            </mesh>
-            <mesh geometry={bandGeo} position={[STAIR_W / 2 - 0.02, 0, 0]}>
-              <meshStandardMaterial ref={(el) => (bandMats.current[k * 2 + 1] = el)} color="#efc835" emissive={new THREE.Color("#efc835")} emissiveIntensity={0.5} roughness={0.3} metalness={0.2} toneMapped={false} />
-            </mesh>
-          </group>
-        ))}
+        {MARK.map((m, k) => {
+          const z = -m * LSTEP;
+          return (
+            <group key={k} position={[0, 0, z]}>
+              {/* Frame: two jambs + a lintel over the opening */}
+              <mesh geometry={jambGeo} material={frameMat} position={[-jambX, (CEIL + FLOORY) / 2, 0]} receiveShadow />
+              <mesh geometry={jambGeo} material={frameMat} position={[jambX, (CEIL + FLOORY) / 2, 0]} receiveShadow />
+              <mesh geometry={lintelGeo} material={frameMat} position={[0, (CEIL + OPEN_B + DOOR_H) / 2, 0]} receiveShadow />
+
+              {/* Two doors, hinged at the jambs, swinging into the next room */}
+              <group ref={(el) => (doorL.current[k] = el)} position={[-DOOR_W / 2, OPEN_B + DOOR_H / 2, 0]}>
+                <mesh geometry={panelGeo} material={panelMat} position={[DOOR_W / 4, 0, 0]} castShadow receiveShadow />
+                <mesh geometry={seamGeo} material={seamMat} position={[DOOR_W / 2 - 0.02, 0, 0.05]} />
+              </group>
+              <group ref={(el) => (doorR.current[k] = el)} position={[DOOR_W / 2, OPEN_B + DOOR_H / 2, 0]}>
+                <mesh geometry={panelGeo} material={panelMat} position={[-DOOR_W / 4, 0, 0]} castShadow receiveShadow />
+                <mesh geometry={seamGeo} material={seamMat} position={[-DOOR_W / 2 + 0.02, 0, 0.05]} />
+              </group>
+            </group>
+          );
+        })}
       </group>
 
-      {/* Gold checkpoint lamps out in world space, at each landing */}
-      {MARK.map((m, k) => (
-        <pointLight key={k} ref={(el) => (markerLights.current[k] = el)} color="#ffcf4a" intensity={1.2} distance={7} decay={2} position={[0, m * RISE + 1.1, -m * RUN]} />
-      ))}
-
-      {/* Steps climbing away from the viewer — cast and receive shadows */}
+      {/* Steps climbing away from the viewer — cast + receive shadows */}
       {Array.from({ length: NSTEPS }, (_, i) => (
         <mesh
           key={i}
           geometry={stepGeo}
-          material={markerSet.has(i) ? markStepMat : stepMat}
+          material={stepMat}
           position={[0, (i + 0.5) * RISE, -(i + 0.5) * RUN]}
           castShadow
           receiveShadow
         />
       ))}
 
-      {/* Dust drifting in the light */}
-      <Dust />
-
-      {/* Warm glow disc at the top of the flight — the exit light */}
-      <mesh position={[0, NSTEPS * RISE + 0.5, -NSTEPS * RUN - 1]}>
-        <planeGeometry args={[7, 7]} />
-        <meshBasicMaterial ref={glowMat} map={glowTex} transparent opacity={0.5} depthWrite={false} toneMapped={false} />
-      </mesh>
+      {/* A quiet warm light in the final room at the top of the climb */}
+      <pointLight color="#ffcf7a" intensity={2.6} distance={11} decay={2} position={[0, NSTEPS * RISE + 1.4, -NSTEPS * RUN - 1.5]} />
     </group>
   );
-}
-
-/* Fine motes suspended in the corridor, drifting slowly up the flight and
- * catching the gold light. Additive so they only ever add warmth. */
-function Dust() {
-  const ref = useRef();
-  const N = 320;
-  const dotTex = useMemo(() => makeDotTexture(), []);
-
-  const positions = useMemo(() => {
-    const arr = new Float32Array(N * 3);
-    for (let i = 0; i < N; i++) {
-      const u = Math.random() * NSTEPS;
-      arr[i * 3] = (Math.random() - 0.5) * (STAIR_W - 0.4);
-      arr[i * 3 + 1] = u * RISE + 0.25 + Math.random() * (CORR_H * 0.8);
-      arr[i * 3 + 2] = -u * RUN + (Math.random() - 0.5) * 0.5;
-    }
-    return arr;
-  }, []);
-
-  const speeds = useMemo(() => {
-    const arr = new Float32Array(N);
-    for (let i = 0; i < N; i++) arr[i] = 0.15 + Math.random() * 0.5;
-    return arr;
-  }, []);
-
-  const geo = useMemo(() => {
-    const g = new THREE.BufferGeometry();
-    g.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-    return g;
-  }, [positions]);
-
-  const maxY = NSTEPS * RISE + CORR_H;
-  useFrame((state, delta) => {
-    const dt = Math.min(delta, 0.05);
-    const t = state.clock.elapsedTime;
-    const arr = geo.attributes.position.array;
-    for (let i = 0; i < N; i++) {
-      arr[i * 3] += Math.sin(t * 0.5 + i) * 0.0016;
-      arr[i * 3 + 1] += speeds[i] * dt * 0.35; // drift up the flight
-      arr[i * 3 + 2] -= speeds[i] * dt * 0.35 * (RUN / RISE);
-      if (arr[i * 3 + 1] > maxY) {
-        const u = Math.random() * 3; // reappear near the bottom
-        arr[i * 3 + 1] = u * RISE + 0.2;
-        arr[i * 3 + 2] = -u * RUN + (Math.random() - 0.5) * 0.5;
-        arr[i * 3] = (Math.random() - 0.5) * (STAIR_W - 0.4);
-      }
-    }
-    geo.attributes.position.needsUpdate = true;
-    if (ref.current) ref.current.material.opacity = 0.42 + Math.sin(t * 0.6) * 0.08;
-  });
-
-  return (
-    <points ref={ref} geometry={geo}>
-      <pointsMaterial
-        map={dotTex}
-        color="#ffdca0"
-        size={0.05}
-        sizeAttenuation
-        transparent
-        opacity={0.45}
-        depthWrite={false}
-        blending={THREE.AdditiveBlending}
-        toneMapped={false}
-      />
-    </points>
-  );
-}
-
-// Soft radial gold-cream glow for the exit at the top of the stairs
-function useGlowTexture() {
-  return useMemo(() => {
-    const c = document.createElement("canvas");
-    c.width = c.height = 128;
-    const g = c.getContext("2d");
-    const grad = g.createRadialGradient(64, 64, 2, 64, 64, 64);
-    grad.addColorStop(0, "rgba(255,240,205,0.95)");
-    grad.addColorStop(0.4, "rgba(239,200,53,0.35)");
-    grad.addColorStop(1, "rgba(239,200,53,0)");
-    g.fillStyle = grad;
-    g.fillRect(0, 0, 128, 128);
-    return new THREE.CanvasTexture(c);
-  }, []);
-}
-
-function makeDotTexture() {
-  const c = document.createElement("canvas");
-  c.width = c.height = 64;
-  const g = c.getContext("2d");
-  const grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
-  grad.addColorStop(0, "rgba(255,255,255,1)");
-  grad.addColorStop(0.35, "rgba(255,246,220,0.6)");
-  grad.addColorStop(1, "rgba(255,246,220,0)");
-  g.fillStyle = grad;
-  g.fillRect(0, 0, 64, 64);
-  return new THREE.CanvasTexture(c);
 }
 
 // Mottled charcoal plaster: base tint + per-pixel grain + soft blotches
@@ -374,7 +292,6 @@ function makeGrayNoiseCanvas(spread) {
     d[i] = d[i + 1] = d[i + 2] = c255(n);
   }
   g.putImageData(img, 0, 0);
-  // a few faint scratches / trowel streaks
   g.strokeStyle = "rgba(150,150,150,0.5)";
   for (let k = 0; k < 40; k++) {
     g.lineWidth = 0.5 + Math.random();

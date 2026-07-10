@@ -53,33 +53,80 @@ export default function HomePage() {
         <div className="container">
           <div className="arms-grid">
             <Reveal>
-              <div style={{ border: "1px solid var(--cream-faint)", borderTop: "2px solid var(--gold)", padding: "2.5rem", height: "100%" }}>
+              <div className="arm arm--lead">
                 <span className="eyebrow">The Strategy Arm</span>
-                <h3 className="display display-sm" style={{ margin: "1.2rem 0" }}>
-                  Writes the brief.
+                <h3 className="display display-sm" style={{ margin: "1.2rem 0 1rem" }}>
+                  Sets the argument.
                 </h3>
-                <p style={{ opacity: 0.78 }}>
-                  Brand strategy, positioning, campaign strategy, cultural intelligence, Fractional CMO.
+                <p style={{ opacity: 0.78, maxWidth: "42ch" }}>
+                  Before anything gets made, someone has to decide what the brand is for, who it
+                  stands against, and why it earns attention now. Every execution answers to that.
                 </p>
+                <dl className="arm-list">
+                  <div className="arm-list__row">
+                    <dt>Brand Strategy</dt>
+                    <dd>The core argument: what you stand for, and why it matters now.</dd>
+                  </div>
+                  <div className="arm-list__row">
+                    <dt>Positioning</dt>
+                    <dd>The space you own in the category, and the language that defends it.</dd>
+                  </div>
+                  <div className="arm-list__row">
+                    <dt>Campaign Strategy</dt>
+                    <dd>How one idea travels a whole season without losing its edge.</dd>
+                  </div>
+                  <div className="arm-list__row">
+                    <dt>Cultural Intelligence</dt>
+                    <dd>Reading Lagos and the wider market so the work lands in context, not a vacuum.</dd>
+                  </div>
+                  <div className="arm-list__row">
+                    <dt>Fractional CMO</dt>
+                    <dd>Senior marketing leadership inside your team, owning the outcome.</dd>
+                  </div>
+                </dl>
               </div>
             </Reveal>
             <Reveal delay={0.15}>
-              <div style={{ border: "1px solid var(--cream-faint)", padding: "2.5rem", height: "100%" }}>
+              <div className="arm">
                 <span className="eyebrow" style={{ color: "var(--cream)", opacity: 0.7 }}>
                   The Creative Execution Arm
                 </span>
-                <h3 className="display display-sm" style={{ margin: "1.2rem 0" }}>
-                  Brings it to life.
+                <h3 className="display display-sm" style={{ margin: "1.2rem 0 1rem" }}>
+                  Gives it a body.
                 </h3>
-                <p style={{ opacity: 0.78 }}>
-                  Brand identity, visual direction, campaign creative, motion, digital design.
+                <p style={{ opacity: 0.78, maxWidth: "42ch" }}>
+                  Strategy that never ships is just a document. This is where the argument becomes an
+                  identity, a film, a page: something people can actually meet.
                 </p>
+                <dl className="arm-list">
+                  <div className="arm-list__row">
+                    <dt>Brand Identity</dt>
+                    <dd>The system of marks, type and colour that keeps you recognisable everywhere.</dd>
+                  </div>
+                  <div className="arm-list__row">
+                    <dt>Visual Direction</dt>
+                    <dd>The look and feel that carries the idea across every surface.</dd>
+                  </div>
+                  <div className="arm-list__row">
+                    <dt>Campaign Creative</dt>
+                    <dd>The work that makes a season impossible to scroll past.</dd>
+                  </div>
+                  <div className="arm-list__row">
+                    <dt>Motion</dt>
+                    <dd>Film and movement that give the brand rhythm and presence.</dd>
+                  </div>
+                  <div className="arm-list__row">
+                    <dt>Digital Design</dt>
+                    <dd>The sites and products where the brand does its daily work.</dd>
+                  </div>
+                </dl>
               </div>
             </Reveal>
           </div>
           <Reveal delay={0.25}>
-            <p className="small-caps" style={{ marginTop: "2.2rem", opacity: 0.6 }}>
-              Strategy writes the brief. Execution never runs ahead of it.
+            <p className="small-caps" style={{ marginTop: "2.2rem", opacity: 0.62, maxWidth: "64ch" }}>
+              One arm decides what is worth saying. The other makes sure it is worth remembering.
+              Neither moves without the other.
             </p>
           </Reveal>
         </div>
@@ -93,12 +140,12 @@ export default function HomePage() {
         </div>
         <div className="stats-grid">
           <Stat value={16} suffix="+" label="Projects Delivered" />
-          <Stat value={2} label="Years as WRKN GRP" />
-          <Stat value={4} label="Disciplines" />
+          <Stat value={10} suffix="+" label="Years in the Craft" />
+          <Stat value={6} label="Disciplines" />
         </div>
-        <p style={{ marginTop: "2.5rem", opacity: 0.6, maxWidth: "40ch" }}>
-          Two years as WRKN GRP. Four years of the practice that built it. Strategy, Brand Identity,
-          Motion, Print &amp; Editorial.
+        <p style={{ marginTop: "2.5rem", opacity: 0.6, maxWidth: "48ch" }}>
+          WRKN GRP is two years old, built on more than a decade in the craft. Six disciplines under
+          two arms: strategy, brand identity, campaign, motion, digital, and print &amp; editorial.
         </p>
       </section>
 
