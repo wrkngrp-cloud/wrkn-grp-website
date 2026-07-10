@@ -32,6 +32,8 @@ const CEIL = CORR_H - 0.5; // ceiling underside
 const FLOORY = -0.35;
 
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const lp = (a, b, t) => a + (b - a) * t;
+const smooth01 = (x) => x * x * (3 - 2 * x);
 const c255 = (v) => Math.max(0, Math.min(255, v | 0));
 
 export default function LadderScene({ progressRef }) {
@@ -136,10 +138,25 @@ function Corridor({ progressRef, mobile }) {
   // The apex: a warm, luminous back wall that turns the final room into a
   // light-filled destination rather than a dead end.
   const apexTex = useMemo(() => makeApexTexture(), []);
-  const apexGeo = useMemo(() => new THREE.PlaneGeometry(STAIR_W + 0.6, CEIL - FLOORY + 0.5), []);
+  const apexGeo = useMemo(() => new THREE.PlaneGeometry(6.6, 4.7), []);
+  const mullionMat = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: "#0e0b06", roughness: 0.7, metalness: 0.2 }),
+    []
+  );
   const apexMat = useMemo(
     () => new THREE.MeshBasicMaterial({ map: apexTex, toneMapped: false }),
     [apexTex]
+  );
+  // Warm charcoal for the dais/desk at the summit
+  const apexDarkMat = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: "#221a11", roughness: 0.52, metalness: 0.16 }),
+    []
+  );
+  // The leadership chair: a warmer, softer dark leather so it reads as an
+  // upholstered seat catching the room light, not a black cutout.
+  const chairMat = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: "#33261a", roughness: 0.62, metalness: 0.12 }),
+    []
   );
 
   const tubeMid = -(NSTEPS * LSTEP) / 2 + 1;
@@ -164,19 +181,38 @@ function Corridor({ progressRef, mobile }) {
 
   useFrame((state) => {
     const p = clamp(progressRef.current, 0, 1);
-    const c = MARK[0] - 3 + p * (MARK[RUNGS - 1] + 1.5 - (MARK[0] - 3));
+    // Climb from before the first door up past the last one, walking right
+    // into the command room at the summit.
+    const c = MARK[0] - 3 + p * (NSTEPS + 2 - (MARK[0] - 3));
     const t = state.clock.elapsedTime;
 
-    // First-person camera: climbing, with a slow, smooth idle sway + mouse-look.
-    // Kept low-frequency so it reads as a gentle drift, never a shake.
+    // First-person camera: climbing, with a slow idle sway + mouse-look. Near
+    // the top it levels off onto the landing and squares up to the command
+    // desk, so you arrive facing the leadership seat rather than overshooting.
     const px = state.pointer.x;
     const py = state.pointer.y;
     const cam = state.camera;
     const bob = Math.sin(t * 0.7) * 0.015;
-    cam.position.x += (px * 0.5 - cam.position.x) * 0.05;
-    cam.position.y += (c * RISE + 1.55 + bob - cam.position.y) * 0.08;
-    cam.position.z += (-c * RUN + 1.5 - cam.position.z) * 0.08;
-    cam.lookAt(px * 1.2, c * RISE + 1.3 + py * 0.85 + Math.sin(t * 0.4) * 0.025, -c * RUN - 5);
+    const sway = Math.sin(t * 0.4) * 0.025;
+    const arrive = smooth01(clamp((p - 0.72) / 0.16, 0, 1)); // fully in the room by ~0.88
+    const cc = Math.min(c, NSTEPS - 1.5); // climb pose stops at the top step
+    const yTop = NSTEPS * RISE;
+    const zTop = -NSTEPS * RUN;
+
+    // Arrival pose: stand just inside the threshold, offset to one side and
+    // looking gently down, so the whole command office composes in a 3/4 view
+    // rather than pressing the lens against the chair.
+    const camX = lp(px * 0.5, 0.3 + px * 0.15, arrive);
+    const camY = lp(cc * RISE + 1.55 + bob, yTop + 1.95 + bob * 0.4, arrive);
+    const camZ = lp(-cc * RUN + 1.5, zTop + 1.5, arrive); // just past the door, into the room
+    cam.position.x += (camX - cam.position.x) * 0.05;
+    cam.position.y += (camY - cam.position.y) * 0.08;
+    cam.position.z += (camZ - cam.position.z) * 0.08;
+
+    const lookX = lp(px * 1.2, px * 0.2, arrive);
+    const lookY = lp(cc * RISE + 1.3 + py * 0.85 + sway, yTop + 1.62 + py * 0.25 + sway * 0.5, arrive);
+    const lookZ = lp(-cc * RUN - 5, zTop - 2.1, arrive);
+    cam.lookAt(lookX, lookY, lookZ);
 
     if (headlamp.current) headlamp.current.position.set(cam.position.x, cam.position.y + 0.2, cam.position.z - 0.2);
     if (sun.current) {
@@ -262,9 +298,6 @@ function Corridor({ progressRef, mobile }) {
             </group>
           );
         })}
-
-        {/* Apex: the luminous back wall of the room at the top of the climb */}
-        <mesh geometry={apexGeo} material={apexMat} position={[0, (CEIL + FLOORY) / 2, -NSTEPS * LSTEP]} />
       </group>
 
       {/* Steps climbing away from the viewer — cast + receive shadows */}
@@ -279,33 +312,123 @@ function Corridor({ progressRef, mobile }) {
         />
       ))}
 
-      {/* The apex room floods with warm light: the payoff at the top. A
-          camera-side fill lights the near steps and walls so it reads as a
-          bright room you arrive in, not a lit window in a dark corridor. */}
-      <pointLight color="#ffe6b0" intensity={6} distance={13} decay={2} position={[0, NSTEPS * RISE + 0.4, -NSTEPS * RUN + 1.6]} />
-      <pointLight color="#ffdf9a" intensity={6.5} distance={16} decay={2} position={[0, NSTEPS * RISE + 0.3, -(NSTEPS - 6) * RUN]} />
-      <pointLight color="#ffd27a" intensity={4} distance={12} decay={2} position={[0, NSTEPS * RISE - 1.4, -(NSTEPS - 3) * RUN]} />
-      <pointLight color="#fff0cf" intensity={2.6} distance={8} decay={2} position={[0, NSTEPS * RISE + 1.2, -NSTEPS * RUN - 0.6]} />
+      {/* The apex: the seat of leadership. A command desk and a high-backed
+          chair on a raised dais, backlit by a warm view — the CMO seat you
+          climb toward, where WRKN GRP takes ownership of the whole function. */}
+      <group position={[0, NSTEPS * RISE, -NSTEPS * RUN]}>
+        {/* Warm dusk skyline behind the seat — backlights the silhouette */}
+        <mesh geometry={apexGeo} material={apexMat} position={[0, 2.35, -3.62]} />
+        {/* Window mullions: two verticals + one horizontal transom so the glow
+            reads as a floor-to-ceiling corner-office window */}
+        <mesh material={mullionMat} position={[-1.6, 2.35, -3.55]}>
+          <boxGeometry args={[0.08, 4.7, 0.06]} />
+        </mesh>
+        <mesh material={mullionMat} position={[1.6, 2.35, -3.55]}>
+          <boxGeometry args={[0.08, 4.7, 0.06]} />
+        </mesh>
+        <mesh material={mullionMat} position={[0, 3.15, -3.55]}>
+          <boxGeometry args={[6.6, 0.08, 0.06]} />
+        </mesh>
+        <mesh material={mullionMat} position={[0, 1.4, -3.55]}>
+          <boxGeometry args={[6.6, 0.07, 0.06]} />
+        </mesh>
+
+        {/* Raised dais with a gold leading edge */}
+        <mesh material={apexDarkMat} position={[0, 0.1, -1.9]} receiveShadow castShadow>
+          <boxGeometry args={[3.6, 0.3, 3.0]} />
+        </mesh>
+        <mesh material={handleMat} position={[0, 0.26, -0.42]}>
+          <boxGeometry args={[3.6, 0.05, 0.07]} />
+        </mesh>
+
+        {/* Command desk: front panel + top slab with a gold inlay */}
+        <mesh material={apexDarkMat} position={[0, 0.64, -1.2]} castShadow>
+          <boxGeometry args={[2.4, 0.74, 0.16]} />
+        </mesh>
+        <mesh material={apexDarkMat} position={[0, 1.02, -1.48]} castShadow>
+          <boxGeometry args={[2.55, 0.12, 1.0]} />
+        </mesh>
+        <mesh material={handleMat} position={[0, 1.09, -1.02]}>
+          <boxGeometry args={[2.55, 0.02, 0.07]} />
+        </mesh>
+
+        {/* High-backed leadership chair, facing the climber */}
+        <mesh material={chairMat} position={[0, 0.9, -2.25]} castShadow>
+          <boxGeometry args={[0.94, 0.18, 0.8]} />
+        </mesh>
+        <mesh material={chairMat} position={[0, 1.9, -2.6]} castShadow>
+          <boxGeometry args={[0.98, 2.05, 0.16]} />
+        </mesh>
+        <mesh material={handleMat} position={[0, 2.93, -2.6]}>
+          <boxGeometry args={[0.98, 0.06, 0.19]} />
+        </mesh>
+        {/* Armrests read the silhouette as a chair, not a slab */}
+        <mesh material={chairMat} position={[-0.53, 1.14, -2.3]} castShadow>
+          <boxGeometry args={[0.12, 0.5, 0.66]} />
+        </mesh>
+        <mesh material={chairMat} position={[0.53, 1.14, -2.3]} castShadow>
+          <boxGeometry args={[0.12, 0.5, 0.66]} />
+        </mesh>
+
+        {/* Warm command lighting: backlight, camera-side fill, and a soft
+            overhead so the room glows rather than reads gloomy */}
+        <pointLight color="#ffe6b0" intensity={7} distance={11} decay={2} position={[0, 2.6, -3.1]} />
+        <pointLight color="#ffdf9a" intensity={9} distance={9} decay={2} position={[0, 1.55, -0.4]} />
+        <pointLight color="#ffdca0" intensity={4} distance={13} decay={2} position={[0, 3.3, -1.2]} />
+      </group>
+      <pointLight color="#ffd27a" intensity={4} distance={13} decay={2} position={[0, NSTEPS * RISE + 0.4, -(NSTEPS - 5) * RUN]} />
     </group>
   );
 }
 
-// Warm luminous panel for the apex room: a glow that reads as light pouring
-// into a corner-office / summit space at the top of the climb.
+// The view from the summit: a warm dusk skyline seen through a corner-office
+// window. A graded sky drops to a bright horizon, a low city silhouette sits
+// on it, and warm haze lifts off the skyline — a destination, not a dead end.
 function makeApexTexture() {
-  const size = 256;
+  const w = 512;
+  const h = 400;
   const c = document.createElement("canvas");
-  c.width = c.height = size;
+  c.width = w;
+  c.height = h;
   const g = c.getContext("2d");
-  g.fillStyle = "#392c11";
-  g.fillRect(0, 0, size, size);
-  const grad = g.createRadialGradient(size / 2, size * 0.56, 12, size / 2, size * 0.56, size * 0.78);
-  grad.addColorStop(0, "#ffeec2");
-  grad.addColorStop(0.4, "#f0d488");
-  grad.addColorStop(0.72, "#c99b42");
-  grad.addColorStop(1, "#5a4518");
-  g.fillStyle = grad;
-  g.fillRect(0, 0, size, size);
+
+  // Sky: deep warm amber up top easing to a hot horizon glow
+  const sky = g.createLinearGradient(0, 0, 0, h);
+  sky.addColorStop(0, "#3a2c10");
+  sky.addColorStop(0.34, "#7a541a");
+  sky.addColorStop(0.6, "#c68f34");
+  sky.addColorStop(0.78, "#ffd97e");
+  sky.addColorStop(0.9, "#ffe9ad");
+  sky.addColorStop(1, "#fff2cf");
+  g.fillStyle = sky;
+  g.fillRect(0, 0, w, h);
+
+  // Sun bloom low on the horizon
+  const horizon = h * 0.82;
+  const bloom = g.createRadialGradient(w * 0.5, horizon, 6, w * 0.5, horizon, w * 0.5);
+  bloom.addColorStop(0, "rgba(255,247,224,0.95)");
+  bloom.addColorStop(0.5, "rgba(255,224,150,0.35)");
+  bloom.addColorStop(1, "rgba(255,224,150,0)");
+  g.fillStyle = bloom;
+  g.fillRect(0, 0, w, h);
+
+  // City silhouette: staggered towers rising to the horizon
+  g.fillStyle = "rgba(24,17,7,0.92)";
+  let x = -10;
+  while (x < w + 10) {
+    const bw = 12 + Math.random() * 30;
+    const bh = 20 + Math.random() * 120;
+    g.fillRect(x, horizon - bh, bw, bh + (h - horizon));
+    // occasional lit window rows
+    if (Math.random() > 0.55) {
+      g.fillStyle = "rgba(255,214,140,0.5)";
+      for (let wy = horizon - bh + 8; wy < horizon - 6; wy += 12) {
+        if (Math.random() > 0.5) g.fillRect(x + 4, wy, bw - 8, 3);
+      }
+      g.fillStyle = "rgba(24,17,7,0.92)";
+    }
+    x += bw + 3 + Math.random() * 6;
+  }
   return new THREE.CanvasTexture(c);
 }
 
