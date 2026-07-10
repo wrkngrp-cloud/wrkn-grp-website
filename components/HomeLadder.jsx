@@ -77,9 +77,13 @@ export default function HomeLadder() {
 
   useMotionValueEvent(scrollYProgress, "change", (v) => {
     progressRef.current = v;
-    // Camera walks linearly from the first checkpoint to the last, so the
-    // active product is the nearest checkpoint — round, not floor.
-    setActive(Math.min(PRODUCTS.length - 1, Math.max(0, Math.round(v * (PRODUCTS.length - 1)))));
+    // Each product reads while you approach its door and enter its room. The
+    // rooms sit at even sixths of the climb, so advance the copy as scroll
+    // crosses each doorway (just before its room).
+    const THRESHOLDS = [0.19, 0.39, 0.58, 0.77];
+    let idx = 0;
+    for (const t of THRESHOLDS) if (v >= t) idx += 1;
+    setActive(idx);
   });
 
   const progressScale = useTransform(scrollYProgress, [0, 1], [0, 1]);

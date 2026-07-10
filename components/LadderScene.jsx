@@ -177,6 +177,12 @@ function Corridor({ progressRef, mobile }) {
     () => new THREE.MeshBasicMaterial({ color: "#f4c65e", toneMapped: false, side: THREE.DoubleSide }),
     []
   );
+  // Unlit paper for the candidate notes on the positioning wall — plain stock
+  // so the one chosen position (emissive) reads as the thing that's lit up.
+  const cardMat = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: "#c8bca1", roughness: 0.92, metalness: 0, side: THREE.DoubleSide }),
+    []
+  );
 
   const tubeMid = -(NSTEPS * LSTEP) / 2 + 1;
   const jambX = (DOOR_W + (STAIR_W + 0.3 - DOOR_W) / 2) / 2; // centre of each jamb
@@ -335,31 +341,41 @@ function Corridor({ progressRef, mobile }) {
           world space (upright) along the climb, timed to the copy that reads
           alongside them, and each leads the eye up to the next threshold. */}
 
-      {/* Room 01 — Brand Positioning Workshop: the one thing you stand for,
-          pinned down. A dark board on each wall with a gold crosshair and a
-          single lit point. */}
-      <group position={[0, 3.5 * RISE, -3.5 * RUN]}>
+      {/* Room 01 — Brand Positioning Workshop: a wall of candidate notes with
+          one position pinned, lit, and underlined in gold. The workshop that
+          narrows everything down to the one thing you stand for. */}
+      <group position={[0, 6 * RISE, -6 * RUN]}>
         {[-1, 1].map((side) => (
-          <group key={side} position={[side * 1.5, 1.15, 0]} rotation={[0, -side * Math.PI / 2, 0]}>
-            <mesh material={boardMat} castShadow>
-              <boxGeometry args={[1.5, 1.5, 0.06]} />
+          <group key={side} position={[side * 1.52, 1.2, 0]} rotation={[0, -side * Math.PI / 2, 0]}>
+            <mesh material={boardMat} castShadow receiveShadow>
+              <boxGeometry args={[1.7, 1.4, 0.06]} />
             </mesh>
-            <mesh material={emGold} position={[0, 0, 0.04]}>
-              <boxGeometry args={[1.15, 0.018, 0.02]} />
+            {/* candidate notes, plain paper */}
+            {[[-0.55, 0.4, 0.16], [-0.13, 0.46, -0.1], [0.5, 0.42, 0.09], [-0.52, -0.34, -0.12], [0.54, -0.32, 0.11], [0.14, -0.4, 0.05]].map((cp, i) => (
+              <mesh key={i} material={cardMat} position={[cp[0], cp[1], 0.05]} rotation={[0, 0, cp[2]]}>
+                <planeGeometry args={[0.3, 0.22]} />
+              </mesh>
+            ))}
+            {/* the one position: lit, pinned, underlined */}
+            <mesh material={emCream} position={[0.02, 0.03, 0.06]}>
+              <planeGeometry args={[0.48, 0.34]} />
             </mesh>
-            <mesh material={emGold} position={[0, 0, 0.04]}>
-              <boxGeometry args={[0.018, 1.15, 0.02]} />
+            <mesh material={emGold} position={[0.02, 0.22, 0.08]}>
+              <boxGeometry args={[0.07, 0.07, 0.04]} />
             </mesh>
-            <mesh material={emGold} position={[0.26, 0.2, 0.05]}>
-              <boxGeometry args={[0.1, 0.1, 0.03]} />
+            <mesh material={emGold} position={[0.02, -0.16, 0.07]}>
+              <boxGeometry args={[0.52, 0.016, 0.02]} />
             </mesh>
           </group>
         ))}
+        {!mobile && (
+          <pointLight color="#fff1d8" intensity={2.4} distance={5} decay={2} position={[0, 1.4, 0.5]} />
+        )}
       </group>
 
       {/* Room 02 — Brand Strategy Sprint: the position built into a plan. A wall
           of pinned strategy pages on each side, threaded by a gold line. */}
-      <group position={[0, 8 * RISE, -8 * RUN]}>
+      <group position={[0, 12 * RISE, -12 * RUN]}>
         {[-1, 1].map((side) => (
           <group key={side} position={[side * 1.5, 1.28, 0]} rotation={[0, -side * Math.PI / 2, 0]}>
             {[-0.52, 0, 0.52].map((x) =>
@@ -378,7 +394,7 @@ function Corridor({ progressRef, mobile }) {
 
       {/* Room 03 — Creative Advisory Retainer: a thinking partner in the room.
           Two chairs facing each other under a single warm pendant. */}
-      <group position={[0, 14.5 * RISE, -14.5 * RUN]}>
+      <group position={[0, 18 * RISE, -18 * RUN]}>
         {[-1, 1].map((side) => (
           <group key={side} position={[side * 1.0, 0, 0]} rotation={[0, -side * Math.PI / 2, 0]}>
             <mesh material={chairMat} position={[0, 0.45, 0]} castShadow>
@@ -395,6 +411,27 @@ function Corridor({ progressRef, mobile }) {
             </mesh>
           </group>
         ))}
+        {/* Low table between the seats, with work that compounds month over
+            month: three layers rising, the top one turned gold. */}
+        <mesh material={apexDarkMat} position={[0, 0.5, 0]} castShadow>
+          <boxGeometry args={[0.72, 0.08, 0.72]} />
+        </mesh>
+        <mesh material={apexDarkMat} position={[0, 0.28, 0]}>
+          <boxGeometry args={[0.12, 0.44, 0.12]} />
+        </mesh>
+        <mesh material={apexDarkMat} position={[0, 0.6, 0]}>
+          <boxGeometry args={[0.36, 0.045, 0.36]} />
+        </mesh>
+        <mesh material={apexDarkMat} position={[0.03, 0.655, 0.02]}>
+          <boxGeometry args={[0.3, 0.045, 0.3]} />
+        </mesh>
+        <mesh material={emGold} position={[0.06, 0.705, 0.035]}>
+          <boxGeometry args={[0.24, 0.03, 0.24]} />
+        </mesh>
+        {/* Pendant lamp on a cord */}
+        <mesh material={apexDarkMat} position={[0, 2.34, 0]}>
+          <boxGeometry args={[0.02, 1.1, 0.02]} />
+        </mesh>
         <mesh material={emAmber} position={[0, 1.78, 0]}>
           <boxGeometry args={[0.16, 0.16, 0.16]} />
         </mesh>
@@ -405,7 +442,7 @@ function Corridor({ progressRef, mobile }) {
 
       {/* Room 04 — Campaign Strategy & Brand Initiatives: take it to market.
           Banners hang overhead on both sides, gold-hemmed, catching the light. */}
-      <group position={[0, 20.5 * RISE, -20.5 * RUN]}>
+      <group position={[0, 24 * RISE, -24 * RUN]}>
         {[-1.4, -0.8, 0.8, 1.4].map((x, i) => (
           <group key={i} position={[x, 2.05, i < 2 ? -0.3 : 0.3]}>
             <mesh material={emCream}>
