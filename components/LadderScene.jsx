@@ -158,6 +158,25 @@ function Corridor({ progressRef, mobile }) {
     () => new THREE.MeshStandardMaterial({ color: "#33261a", roughness: 0.62, metalness: 0.12 }),
     []
   );
+  // Set-dressing so each room speaks to its offering: a dark board backing plus
+  // three self-lit accents (gold, warm cream, amber) that glow without adding
+  // dynamic lights.
+  const boardMat = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: "#171009", roughness: 0.85, metalness: 0.05 }),
+    []
+  );
+  const emGold = useMemo(
+    () => new THREE.MeshBasicMaterial({ color: "#ffdf8f", toneMapped: false, side: THREE.DoubleSide }),
+    []
+  );
+  const emCream = useMemo(
+    () => new THREE.MeshBasicMaterial({ color: "#e7dabd", toneMapped: false, side: THREE.DoubleSide }),
+    []
+  );
+  const emAmber = useMemo(
+    () => new THREE.MeshBasicMaterial({ color: "#f4c65e", toneMapped: false, side: THREE.DoubleSide }),
+    []
+  );
 
   const tubeMid = -(NSTEPS * LSTEP) / 2 + 1;
   const jambX = (DOOR_W + (STAIR_W + 0.3 - DOOR_W) / 2) / 2; // centre of each jamb
@@ -311,6 +330,99 @@ function Corridor({ progressRef, mobile }) {
           receiveShadow
         />
       ))}
+
+      {/* Each door opens on a room dressed for its offering. The rooms sit in
+          world space (upright) along the climb, timed to the copy that reads
+          alongside them, and each leads the eye up to the next threshold. */}
+
+      {/* Room 01 — Brand Positioning Workshop: the one thing you stand for,
+          pinned down. A dark board on each wall with a gold crosshair and a
+          single lit point. */}
+      <group position={[0, 3.5 * RISE, -3.5 * RUN]}>
+        {[-1, 1].map((side) => (
+          <group key={side} position={[side * 1.5, 1.15, 0]} rotation={[0, -side * Math.PI / 2, 0]}>
+            <mesh material={boardMat} castShadow>
+              <boxGeometry args={[1.5, 1.5, 0.06]} />
+            </mesh>
+            <mesh material={emGold} position={[0, 0, 0.04]}>
+              <boxGeometry args={[1.15, 0.018, 0.02]} />
+            </mesh>
+            <mesh material={emGold} position={[0, 0, 0.04]}>
+              <boxGeometry args={[0.018, 1.15, 0.02]} />
+            </mesh>
+            <mesh material={emGold} position={[0.26, 0.2, 0.05]}>
+              <boxGeometry args={[0.1, 0.1, 0.03]} />
+            </mesh>
+          </group>
+        ))}
+      </group>
+
+      {/* Room 02 — Brand Strategy Sprint: the position built into a plan. A wall
+          of pinned strategy pages on each side, threaded by a gold line. */}
+      <group position={[0, 8 * RISE, -8 * RUN]}>
+        {[-1, 1].map((side) => (
+          <group key={side} position={[side * 1.5, 1.28, 0]} rotation={[0, -side * Math.PI / 2, 0]}>
+            {[-0.52, 0, 0.52].map((x) =>
+              [0.42, -0.24].map((y) => (
+                <mesh key={`${x}-${y}`} material={emCream} position={[x, y, 0.03]}>
+                  <planeGeometry args={[0.4, 0.54]} />
+                </mesh>
+              ))
+            )}
+            <mesh material={emGold} position={[0, 0.09, 0.04]}>
+              <boxGeometry args={[1.45, 0.014, 0.02]} />
+            </mesh>
+          </group>
+        ))}
+      </group>
+
+      {/* Room 03 — Creative Advisory Retainer: a thinking partner in the room.
+          Two chairs facing each other under a single warm pendant. */}
+      <group position={[0, 14.5 * RISE, -14.5 * RUN]}>
+        {[-1, 1].map((side) => (
+          <group key={side} position={[side * 1.0, 0, 0]} rotation={[0, -side * Math.PI / 2, 0]}>
+            <mesh material={chairMat} position={[0, 0.45, 0]} castShadow>
+              <boxGeometry args={[0.66, 0.12, 0.62]} />
+            </mesh>
+            <mesh material={chairMat} position={[0, 0.85, -0.28]} castShadow>
+              <boxGeometry args={[0.7, 0.9, 0.12]} />
+            </mesh>
+            <mesh material={chairMat} position={[-0.3, 0.62, 0]} castShadow>
+              <boxGeometry args={[0.1, 0.34, 0.56]} />
+            </mesh>
+            <mesh material={chairMat} position={[0.3, 0.62, 0]} castShadow>
+              <boxGeometry args={[0.1, 0.34, 0.56]} />
+            </mesh>
+          </group>
+        ))}
+        <mesh material={emAmber} position={[0, 1.78, 0]}>
+          <boxGeometry args={[0.16, 0.16, 0.16]} />
+        </mesh>
+        {!mobile && (
+          <pointLight color="#ffca6e" intensity={4.5} distance={6} decay={2} position={[0, 1.62, 0]} />
+        )}
+      </group>
+
+      {/* Room 04 — Campaign Strategy & Brand Initiatives: take it to market.
+          Banners hang overhead on both sides, gold-hemmed, catching the light. */}
+      <group position={[0, 20.5 * RISE, -20.5 * RUN]}>
+        {[-1.4, -0.8, 0.8, 1.4].map((x, i) => (
+          <group key={i} position={[x, 2.05, i < 2 ? -0.3 : 0.3]}>
+            <mesh material={emCream}>
+              <planeGeometry args={[0.46, 1.5]} />
+            </mesh>
+            <mesh material={emGold} position={[0, -0.78, 0.01]}>
+              <boxGeometry args={[0.48, 0.06, 0.02]} />
+            </mesh>
+            <mesh material={emGold} position={[0, 0.78, 0.01]}>
+              <boxGeometry args={[0.48, 0.06, 0.02]} />
+            </mesh>
+          </group>
+        ))}
+        {!mobile && (
+          <pointLight color="#ffe6b0" intensity={5} distance={9} decay={2} position={[0, 2.4, 0]} />
+        )}
+      </group>
 
       {/* The apex: the seat of leadership. A command desk and a high-backed
           chair on a raised dais, backlit by a warm view — the CMO seat you
