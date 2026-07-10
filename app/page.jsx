@@ -17,7 +17,7 @@ import HomeLadder from "../components/HomeLadder";
 export const metadata = {
   title: "WRKN GRP — Led by Strategy. Built in Culture.",
   description:
-    "The strategic creative partner for challenger brands building in Africa. We help founders and CMOs move from having a product to having a point of view, from being seen, to being remembered.",
+    "A strategy-led creative partner for brands with global ambition. We move founders and CMOs from having a product to having a point of view, and from being seen to being remembered.",
 };
 
 export default function HomePage() {
@@ -33,9 +33,10 @@ export default function HomePage() {
         <div className="container" style={{ display: "flex", flexWrap: "wrap", gap: "3rem", justifyContent: "space-between" }}>
           <Reveal>
             <p className="lede" style={{ maxWidth: "42rem" }}>
-              Most African challenger brands win on product and lose on brand. They build something
-              genuinely useful, then never build the identity or cultural resonance that would make
-              them irreplaceable. WRKN GRP exists in that gap.
+              The best brands are rarely the ones with the best product. They are the ones people
+              believe in. Most companies build something genuinely useful, then stop short of the
+              meaning and cultural weight that would make them impossible to replace. WRKN GRP lives
+              in that gap, and closes it.
             </p>
           </Reveal>
           <Reveal delay={0.15}>
@@ -169,7 +170,7 @@ export default function HomePage() {
             <WorkCard
               href="/work/nyla"
               client="Nyla"
-              title="Creative Advisory for a Digital Bank's Most Important Year"
+              title="Keeping a digital bank's brand disciplined through its most important year."
               tags={["Creative Direction", "Motion", "Social", "Events"]}
               stat="40% uptake"
               statNote="in brand association and positioning within the ethical finance space."
@@ -180,7 +181,7 @@ export default function HomePage() {
             <WorkCard
               href="/work/aliko-dangote-foundation"
               client="Aliko Dangote Foundation"
-              title="A 25th Anniversary Campaign for a Landmark Institution"
+              title="A 25th-anniversary campaign built to win a room in New York."
               tags={["Print", "Editorial", "Institutional"]}
               stat="100+ investors"
               statNote="reached at a single institutional fundraising event in New York."

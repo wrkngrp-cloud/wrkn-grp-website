@@ -51,7 +51,7 @@ export default function Hero() {
         }}
       >
         <p className="eyebrow" style={{ marginBottom: "1.6rem" }}>
-          Strategic Creative Partner — Lagos. Nairobi. London. Toronto. Dubai.
+          Strategy-Led Creative Partner — Lagos. Nairobi. London. Toronto. Dubai.
         </p>
 
         <h1 style={{ margin: 0 }}>
@@ -80,9 +80,9 @@ export default function Hero() {
             transition={{ delay: 0.7, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
             style={{ maxWidth: "38rem", opacity: 0.85 }}
           >
-            The strategic creative partner for challenger brands building in Africa. We help founders
-            and CMOs move from having a product to having a point of view, from being seen, to being
-            remembered.
+            A strategy-led creative partner for brands that intend to matter. We move founders and
+            CMOs from having a product to having a point of view, and from being seen to being
+            remembered. Built with the cultural fluency of Lagos, held to a global standard.
           </motion.p>
 
           <motion.div

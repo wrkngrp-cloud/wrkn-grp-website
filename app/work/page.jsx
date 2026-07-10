@@ -6,7 +6,7 @@ import Marquee from "../../components/Marquee";
 export const metadata = {
   title: "The Work",
   description:
-    "A small, deliberate body of work. Case studies for Nyla and the Aliko Dangote Foundation — every project here is real.",
+    "A deliberately small, high-stakes body of work. Case studies for Nyla and the Aliko Dangote Foundation, where every result is measured, not claimed.",
 };
 
 export default function WorkPage() {
@@ -15,8 +15,9 @@ export default function WorkPage() {
       <section className="theme-dark" style={{ paddingTop: "7rem", paddingBottom: "3rem" }}>
         <SectionDivider numeral="W" title="The Work." label="Index" right="Two Case Studies" />
         <div className="container">
-          <p className="lede" style={{ maxWidth: "38rem", opacity: 0.8 }}>
-            A small, deliberate body of work. Every project here is real.
+          <p className="lede" style={{ maxWidth: "42rem", opacity: 0.8 }}>
+            A deliberately small, high-stakes body of work. Every project here is real, and every
+            result is measured, not claimed.
           </p>
         </div>
       </section>

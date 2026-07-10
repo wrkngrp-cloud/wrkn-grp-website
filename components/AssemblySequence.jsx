@@ -138,9 +138,9 @@ export default function AssemblySequence() {
 
           {/* Caption B — sequencing */}
           <motion.div style={{ opacity: capB, ...captionStyle, top: "6%" }}>
-            <h2 className="display display-md">Strategy writes the brief.</h2>
+            <h2 className="display display-md">Strategy sets the order.</h2>
             <p style={{ opacity: 0.7, marginTop: "0.8rem", maxWidth: "44ch" }}>
-              Every piece takes its position from the same argument. Execution never runs ahead of it.
+              Every piece takes its place from one argument. Execution never runs ahead of the thinking.
             </p>
           </motion.div>
 

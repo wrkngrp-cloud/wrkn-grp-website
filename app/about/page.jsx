@@ -9,7 +9,7 @@ import GlowBlob from "../../components/GlowBlob";
 export const metadata = {
   title: "Why We Exist",
   description:
-    "African challenger brands win on product and lose on brand. WRKN GRP exists in that gap: a working group built on the conviction that strategy leads and execution follows.",
+    "WRKN GRP is a working group, not a full-service agency: strategy leads, execution follows, without exception. Built with the cultural fluency of Lagos and the rigour a global brand demands.",
 };
 
 const CLIENT_FIT = [
@@ -58,10 +58,11 @@ export default function AboutPage() {
         <div className="container" style={{ paddingBottom: "5rem", position: "relative", zIndex: 1 }}>
           <Reveal>
             <p className="lede" style={{ maxWidth: "44rem" }}>
-              African challenger brands consistently win on product and lose on brand. They build
-              genuinely useful things and never build the identity, trust, and cultural resonance that
-              would make them irreplaceable. Most brand agencies in Lagos are execution shops. Most
-              global consultancies lack the cultural fluency to make strategy land here.
+              Ambitious brands consistently win on product and lose on meaning. They build genuinely
+              useful things, then never build the identity, trust, and cultural weight that would make
+              them irreplaceable. Most agencies are execution shops with no argument underneath. Most
+              global consultancies have the argument but no feel for how belief is actually earned on
+              the ground.
             </p>
           </Reveal>
           <Reveal delay={0.12}>
@@ -143,10 +144,10 @@ export default function AboutPage() {
         </SplitText>
         <Reveal delay={0.15}>
           <p className="lede" style={{ maxWidth: "48rem", marginTop: "2rem", opacity: 0.8 }}>
-            WRKN GRP&rsquo;s strategic edge comes from direct experience inside one of Africa&rsquo;s
-            most significant fintech brands, leading campaigns, managing brand equity under real
-            growth pressure, and understanding what it actually takes to keep a brand resonant in a
-            market as culturally dynamic as Lagos.
+            WRKN GRP&rsquo;s strategic edge is earned inside one of Africa&rsquo;s most significant
+            fintech brands: leading campaigns, managing brand equity under real growth pressure, and
+            learning what it takes to keep a brand resonant in a market as demanding as Lagos, and
+            credible in the international rooms where capital gets decided.
           </p>
         </Reveal>
       </section>
@@ -160,11 +161,11 @@ export default function AboutPage() {
           </div>
           <div className="stats-grid">
             <Stat value={16} suffix="+" label="Projects Delivered" />
-            <Stat value={2} label="Years as WRKN GRP" />
-            <Stat value={4} label="Disciplines" />
+            <Stat value={10} suffix="+" label="Years in the Craft" />
+            <Stat value={6} label="Disciplines" />
           </div>
-          <p style={{ marginTop: "2.5rem", opacity: 0.65, maxWidth: "40ch" }}>
-            Two years as WRKN GRP. Four years of the practice that built it.
+          <p style={{ marginTop: "2.5rem", opacity: 0.65, maxWidth: "44ch" }}>
+            WRKN GRP is two years old, built on more than a decade in the craft.
           </p>
         </div>
       </CreamSection>

@@ -30,7 +30,8 @@ export default function ContactPage() {
         <div style={{ maxWidth: "26rem", display: "flex", flexDirection: "column", gap: "2.4rem" }}>
           <Reveal>
             <p className="lede" style={{ opacity: 0.85 }}>
-              Ready to move from being seen to being remembered? Tell us what you&rsquo;re building.
+              Ready to move from being seen to being remembered? Tell us what you&rsquo;re building,
+              and where you want it to matter.
             </p>
           </Reveal>
           <Reveal delay={0.1}>

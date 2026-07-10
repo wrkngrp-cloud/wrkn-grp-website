@@ -10,7 +10,7 @@ import Magnetic from "../../components/Magnetic";
 export const metadata = {
   title: "What We Do",
   description:
-    "The WRKN GRP service ladder: Brand Positioning Workshop, Brand Strategy Sprint, Creative Advisory Retainer, Campaign Strategy and Fractional CMO. Strategy first, always.",
+    "The WRKN GRP service ladder, from a positioning workshop to Fractional CMO. Every service is a product, and each one leads to the next. Strategy first, always.",
 };
 
 const LADDER = [
@@ -105,15 +105,15 @@ export default function ServicesPage() {
         <SectionDivider numeral="S" title="What We Do." label="Services" right="Strategy First, Always" />
         <div className="container" style={{ paddingBottom: "4rem" }}>
           <p className="lede" style={{ maxWidth: "40rem", opacity: 0.8 }}>
-            Every product leads to the next. Strategy first, always.
+            Our services, offered as products. Each one leads to the next. Strategy first, always.
           </p>
           <Reveal delay={0.15}>
             <p style={{ maxWidth: "56ch", marginTop: "2rem", opacity: 0.7 }}>
-              WRKN GRP operates through two arms. The Strategy Arm writes the brief: positioning,
+              WRKN GRP operates through two arms. The Strategy Arm decides how you win: positioning,
               narrative architecture, campaign strategy, cultural intelligence, Fractional CMO work.
-              The Creative Execution Arm brings it to life: brand identity, visual direction, campaign
-              creative, motion, digital design. Execution never runs ahead of strategy. That sequence
-              is the whole point.
+              The Creative Execution Arm makes it undeniable: brand identity, visual direction,
+              campaign creative, motion, digital design. Execution never runs ahead of the thinking.
+              That sequence is the whole point.
             </p>
           </Reveal>
         </div>
