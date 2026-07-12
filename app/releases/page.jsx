@@ -53,7 +53,7 @@ export default function Releases() {
         </div>
       </section>
 
-      <section className="section bg-shafts section-lift" data-scene="rings-center">
+      <section className="section bg-shafts section-lift" data-scene="spots-center">
         <div className="container">
           <Reveal>
             <article className="card" style={{ padding: "clamp(2rem, 5vw, 4rem)" }}>

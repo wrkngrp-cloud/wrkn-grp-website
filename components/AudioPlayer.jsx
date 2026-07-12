@@ -3,9 +3,11 @@
 import { useRef, useState } from "react";
 
 /*
- * Inline audio player. Fully built and styled; wire `src` to real audio
- * when files/embeds are handed over. With no src it renders the same UI
- * in a disabled "audio coming" state (open decision #3 in the brief).
+ * Inline audio player. Three states:
+ * - `src`: plays the file inline, full transport.
+ * - `spotify`: no file yet, so the play button opens the track on
+ *   Spotify in a new tab and the badge says so.
+ * - neither: fully styled, disabled "Audio coming" state.
  */
 function fmt(s) {
   if (!isFinite(s)) return "0:00";
@@ -14,7 +16,7 @@ function fmt(s) {
   return `${m}:${sec.toString().padStart(2, "0")}`;
 }
 
-export default function AudioPlayer({ title, sub, src = null }) {
+export default function AudioPlayer({ title, sub, src = null, spotify = null }) {
   const audioRef = useRef(null);
   const trackRef = useRef(null);
   const [playing, setPlaying] = useState(false);
@@ -40,6 +42,30 @@ export default function AudioPlayer({ title, sub, src = null }) {
     const f = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
     a.currentTime = f * a.duration;
   };
+
+  if (!src && spotify) {
+    return (
+      <div className="player" data-cursor="Listen">
+        <a
+          className="player-btn"
+          href={spotify}
+          target="_blank"
+          rel="noreferrer"
+          aria-label={`Listen to ${title} on Spotify`}
+          style={{ display: "grid", placeItems: "center" }}
+        >
+          <svg viewBox="0 0 16 16" aria-hidden>
+            <path d="M3 1l12 7-12 7z" />
+          </svg>
+        </a>
+        <div className="player-meta">
+          <div className="player-title">{title}</div>
+          {sub && <div className="player-sub">{sub}</div>}
+        </div>
+        <span className="player-badge">Listen on Spotify ↗</span>
+      </div>
+    );
+  }
 
   return (
     <div className="player" data-cursor={src ? "Play" : undefined}>

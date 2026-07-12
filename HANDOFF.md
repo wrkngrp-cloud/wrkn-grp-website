@@ -19,12 +19,21 @@
 
 ## Content notes
 
-- **Selected Work picks (Home).** Emmanuel asked for each artist's
-  highest-streamed song. Public per-song stream counts were not
-  verifiable by search, so the current picks are editorial: Ngozi (Ric
-  Hassani, single + official video), Safe and Ready (Kotrell, the two
-  sync placements). Confirm against the real dashboards and swap titles
-  in `app/page.jsx` if the data says otherwise.
+- **Selected Work (Home), per Emmanuel:** Ngozi, Safe, For You,
+  Love Me Slow. Spotify links are wired on every player: Ngozi and
+  Safe have exact track URLs; For You, Love Me Slow, and Ready use
+  Spotify search deep-links until Emmanuel pastes the exact track URLs
+  from his playlist (swap the `spotify` props in `app/page.jsx`,
+  `app/work/page.jsx`, `app/what-we-do/page.jsx`).
+- **Kuda is removed site-wide** (per Emmanuel): no Kuda mention or
+  sonic-logo players anywhere. Sonic Branding on What We Do describes
+  the craft without naming the client.
+- **Scenes v2:** the world now stages real environments per section:
+  control room (console + pulsing monitors) on the hero, a DAW
+  arrangement view for the principles (DOM, `components/DawSession.jsx`),
+  spinning vinyl for story sections, three doorframes of light for
+  door moments, stage spotlight cones for live sections. Presets live
+  in `components/SceneRoot.jsx`; sections pick them via data-scene.
 - **The first release is under wraps** per Emmanuel: no "Sweetness
   Vol 1" name anywhere on the site. The Releases page teases it as
   "Still under wraps" with the Life/Love/God throughline only.

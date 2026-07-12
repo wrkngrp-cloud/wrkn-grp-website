@@ -14,10 +14,15 @@ import { createSwirlTexture, createBlindsTexture } from "../lib/lollipopTexture"
  * sections scroll past, and scroll turns it on its axis. Smaller now:
  * an inhabitant of the scene, not the scene itself.
  *
- * SCENERY, per section weights: warm blind-light slats far behind, a
- * soft ember glow pooled behind the lollipop, drifting dust motes,
- * sound rings breathing outward, and a circular spectrum of bars that
- * pulses like a room hearing a record. All of it graded to the palette.
+ * SCENERY, per section weights, all graded to the palette:
+ * - desk + speakers: an abstract control room. A mixing console rises
+ *   into the bottom of the frame with glowing faders, studio monitors
+ *   flank the lollipop and their cones pulse on a slow kick.
+ * - vinyl: a record spinning in the dark for the story sections.
+ * - doors: three tall doorframes of light for the three-doors moments.
+ * - spots: stage light cones sweeping slowly for the live sections.
+ * - blinds, glow, dust, rings, eq: light slats, ember glow, drifting
+ *   motes, breathing sound rings, circular spectrum.
  */
 
 const HEAD_R = 1.35;
@@ -90,6 +95,54 @@ function makeGlowTexture() {
   return tex;
 }
 
+function makeVinylTexture() {
+  const size = 512;
+  const canvas = document.createElement("canvas");
+  canvas.width = canvas.height = size;
+  const ctx = canvas.getContext("2d");
+  const cx = size / 2;
+  ctx.fillStyle = "#0a0500";
+  ctx.beginPath();
+  ctx.arc(cx, cx, cx, 0, Math.PI * 2);
+  ctx.fill();
+  // grooves
+  for (let r = 60; r < 250; r += 4) {
+    ctx.strokeStyle = `rgba(201,126,91,${0.05 + (r % 24 === 0 ? 0.1 : 0)})`;
+    ctx.lineWidth = 1.1;
+    ctx.beginPath();
+    ctx.arc(cx, cx, r, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  // label
+  ctx.fillStyle = "#8c380e";
+  ctx.beginPath();
+  ctx.arc(cx, cx, 52, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = "#fca818";
+  ctx.beginPath();
+  ctx.arc(cx, cx, 6, 0, Math.PI * 2);
+  ctx.fill();
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+// Console fader/knob layout, memo-stable
+const DESK_KNOBS = (() => {
+  const out = [];
+  const cols = 14;
+  for (let r = 0; r < 2; r++) {
+    for (let i = 0; i < cols; i++) {
+      out.push({
+        x: -3.1 + i * (6.2 / (cols - 1)),
+        z: 0.25 - r * 0.55,
+        c: [0xfca818, 0xc97e5b, 0xa8460e, 0xfc7818][(i + r) % 4],
+      });
+    }
+  }
+  return out;
+})();
+
 export default function WorldScene({ sceneRef }) {
   const lolli = useRef(null);
   const headRef = useRef(null);
@@ -99,17 +152,30 @@ export default function WorldScene({ sceneRef }) {
   const eqRefs = useRef([]);
   const dustRef = useRef(null);
   const blindsGroup = useRef(null);
+  const deskGroup = useRef(null);
+  const deskKnobRefs = useRef([]);
+  const speakerRefs = useRef([]);
+  const vinylGroup = useRef(null);
+  const doorsGroup = useRef(null);
+  const spotRefs = useRef([]);
   const pointer = useRef({ x: 0, y: 0 });
   const size = useThree((s) => s.size);
 
-  // Eased scene state
-  const cur = useRef({ x: 1.5, y: -0.05, s: 0.82, blinds: 1, rings: 0.15, eq: 0, glow: 1 });
+  // Eased scene state; snapped to the page's first scene on mount so
+  // inner pages don't fade out of the hero's control room.
+  const cur = useRef({
+    x: 1.5, y: -0.05, s: 0.82,
+    blinds: 1, rings: 0.15, eq: 0, glow: 1,
+    desk: 0, speakers: 0, vinyl: 0, doors: 0, spots: 0,
+  });
+  const snapped = useRef(false);
 
   useWarmEnvironment();
 
   const swirlTex = useMemo(() => createSwirlTexture(), []);
   const blindsTex = useMemo(() => createBlindsTexture(), []);
   const glowTex = useMemo(() => makeGlowTexture(), []);
+  const vinylTex = useMemo(() => makeVinylTexture(), []);
 
   const candyMat = useMemo(
     () =>
@@ -251,6 +317,24 @@ export default function WorldScene({ sceneRef }) {
     const narrow = state.size.width < 640;
     const c = cur.current;
 
+    if (!snapped.current) {
+      snapped.current = true;
+      Object.assign(c, {
+        x: target.x * (narrow ? 0.3 : 1),
+        y: target.y,
+        s: target.s * (narrow ? 0.85 : 1),
+        blinds: target.blinds || 0,
+        rings: target.rings || 0,
+        eq: target.eq || 0,
+        glow: target.glow || 0,
+        desk: target.desk || 0,
+        speakers: target.speakers || 0,
+        vinyl: target.vinyl || 0,
+        doors: target.doors || 0,
+        spots: target.spots || 0,
+      });
+    }
+
     // Ease the world toward the active section's scene
     const k = 0.05;
     const tx = target.x * (narrow ? 0.3 : 1);
@@ -262,6 +346,11 @@ export default function WorldScene({ sceneRef }) {
     c.rings += (target.rings - c.rings) * k;
     c.eq += (target.eq - c.eq) * k;
     c.glow += (target.glow - c.glow) * k;
+    c.desk += ((target.desk || 0) - c.desk) * k;
+    c.speakers += ((target.speakers || 0) - c.speakers) * k;
+    c.vinyl += ((target.vinyl || 0) - c.vinyl) * k;
+    c.doors += ((target.doors || 0) - c.doors) * k;
+    c.spots += ((target.spots || 0) - c.spots) * k;
 
     // ---- lollipop ----
     if (lolli.current) {
@@ -383,6 +472,68 @@ export default function WorldScene({ sceneRef }) {
       });
       blindsGroup.current.position.x = c.x * 0.4;
     }
+
+    // Console: rises into frame when its scene is on
+    if (deskGroup.current) {
+      deskGroup.current.position.y = -3.9 + c.desk * 1.55;
+      deskGroup.current.visible = c.desk > 0.02;
+    }
+    deskKnobRefs.current.forEach((m, i) => {
+      if (!m) return;
+      const flicker = 0.45 + 0.55 * Math.abs(Math.sin(t * 2.1 + i * 1.37));
+      m.material.opacity = c.desk * 0.75 * flicker;
+    });
+
+    // Monitors slide in from the sides, cones pulsing on a slow kick
+    const kick = Math.pow(Math.max(0, Math.sin(t * 4.4)), 6);
+    speakerRefs.current.forEach((sp, i) => {
+      if (!sp) return;
+      const side = i === 0 ? -1 : 1;
+      sp.position.x = side * (3.35 + (1 - c.speakers) * 2.2);
+      sp.visible = c.speakers > 0.02;
+      const cone = sp.children[1];
+      if (cone) cone.scale.setScalar(1 + 0.14 * kick);
+      sp.children.forEach((m2) => {
+        if (m2.material && m2.material.transparent) {
+          m2.material.opacity = c.speakers * (m2.userData.op ?? 0.6);
+        }
+      });
+    });
+
+    // Vinyl spins opposite the lollipop
+    if (vinylGroup.current) {
+      vinylGroup.current.position.set(-Math.sign(c.x || 1) * 2.1, 0.35, -2.6);
+      vinylGroup.current.rotation.z = -t * 1.1;
+      vinylGroup.current.visible = c.vinyl > 0.02;
+      vinylGroup.current.children.forEach((m2) => {
+        if (m2.material) m2.material.opacity = c.vinyl * 0.95;
+      });
+    }
+
+    // Three doorframes of light, opposite side, receding
+    if (doorsGroup.current) {
+      doorsGroup.current.position.x = -Math.sign(c.x || 1) * 2.3;
+      doorsGroup.current.visible = c.doors > 0.02;
+      doorsGroup.current.children.forEach((frame, fi) => {
+        const breathe = 0.75 + 0.25 * Math.sin(t * 0.9 + fi * 1.4);
+        frame.children.forEach((m2) => {
+          if (m2.material) {
+            m2.material.opacity =
+              c.doors * (m2.userData.spill ? 0.08 : 0.5 - fi * 0.12) * breathe;
+          }
+        });
+      });
+    }
+
+    // Stage spotlights sway over the live moments
+    spotRefs.current.forEach((cone, i) => {
+      if (!cone) return;
+      const side = i === 0 ? -1 : 1;
+      cone.position.set(c.x + side * 1.7, 3.1, -1.9);
+      cone.rotation.z = side * (0.16 + 0.1 * Math.sin(t * 0.45 + i * 2));
+      cone.visible = c.spots > 0.02;
+      if (cone.material) cone.material.opacity = c.spots * 0.09;
+    });
   });
 
   return (
@@ -451,6 +602,133 @@ export default function WorldScene({ sceneRef }) {
           />
         ))}
       </group>
+
+      {/* The console the lollipop stands at */}
+      <group ref={deskGroup} position={[0, -3.9, 0]}>
+        <mesh position={[0, -0.3, 1.1]}>
+          <boxGeometry args={[9.5, 0.55, 1.7]} />
+          <meshStandardMaterial color={0x0a0500} roughness={0.55} metalness={0.2} />
+        </mesh>
+        <mesh position={[0, -0.02, 1.95]}>
+          <boxGeometry args={[9.5, 0.015, 0.015]} />
+          <meshBasicMaterial
+            color={0xfca818}
+            transparent
+            opacity={0.5}
+            blending={THREE.AdditiveBlending}
+            depthWrite={false}
+          />
+        </mesh>
+        {DESK_KNOBS.map((kn, i) => (
+          <mesh
+            key={i}
+            ref={(el) => (deskKnobRefs.current[i] = el)}
+            position={[kn.x, 0, 1.1 + kn.z]}
+          >
+            <boxGeometry args={[0.055, 0.12, 0.055]} />
+            <meshBasicMaterial
+              color={kn.c}
+              transparent
+              opacity={0}
+              blending={THREE.AdditiveBlending}
+              depthWrite={false}
+            />
+          </mesh>
+        ))}
+      </group>
+
+      {/* Studio monitors flanking the scene */}
+      {[0, 1].map((i) => (
+        <group key={i} ref={(el) => (speakerRefs.current[i] = el)} position={[i === 0 ? -3.35 : 3.35, -1.05, -1.4]}>
+          <mesh>
+            <boxGeometry args={[0.95, 1.4, 0.7]} />
+            <meshStandardMaterial color={0x140a04} roughness={0.6} />
+          </mesh>
+          <mesh position={[0, -0.18, 0.36]} userData={{ op: 0.55 }}>
+            <torusGeometry args={[0.3, 0.02, 8, 48]} />
+            <meshBasicMaterial
+              color={0xa8460e}
+              transparent
+              opacity={0}
+              blending={THREE.AdditiveBlending}
+              depthWrite={false}
+            />
+          </mesh>
+          <mesh position={[0, 0.42, 0.36]} userData={{ op: 0.45 }}>
+            <torusGeometry args={[0.11, 0.015, 8, 32]} />
+            <meshBasicMaterial
+              color={0xfca818}
+              transparent
+              opacity={0}
+              blending={THREE.AdditiveBlending}
+              depthWrite={false}
+            />
+          </mesh>
+        </group>
+      ))}
+
+      {/* A record spinning in the dark */}
+      <group ref={vinylGroup} position={[-2.1, 0.35, -2.6]} rotation={[-0.12, 0.18, 0]}>
+        <mesh>
+          <circleGeometry args={[1.15, 64]} />
+          <meshBasicMaterial map={vinylTex} transparent opacity={0} depthWrite={false} />
+        </mesh>
+      </group>
+
+      {/* Three doorframes of light */}
+      <group ref={doorsGroup} position={[-2.3, -0.2, -3.8]} rotation={[0, 0.32, 0]}>
+        {[0, 1, 2].map((fi) => {
+          const w = 1.05;
+          const h = 2.5;
+          const x = fi * -1.35;
+          const z = fi * -0.9;
+          const col = [0xfca818, 0xa8460e, 0xc97e5b][fi];
+          const bar = (
+            <meshBasicMaterial
+              color={col}
+              transparent
+              opacity={0}
+              blending={THREE.AdditiveBlending}
+              depthWrite={false}
+            />
+          );
+          return (
+            <group key={fi} position={[x, 0, z]}>
+              <mesh position={[-w / 2, 0, 0]}>
+                <boxGeometry args={[0.035, h, 0.035]} />
+                {bar}
+              </mesh>
+              <mesh position={[w / 2, 0, 0]}>
+                <boxGeometry args={[0.035, h, 0.035]} />
+                {bar}
+              </mesh>
+              <mesh position={[0, h / 2, 0]}>
+                <boxGeometry args={[w + 0.035, 0.035, 0.035]} />
+                {bar}
+              </mesh>
+              <mesh userData={{ spill: true }}>
+                <planeGeometry args={[w, h]} />
+                {bar}
+              </mesh>
+            </group>
+          );
+        })}
+      </group>
+
+      {/* Stage spotlights */}
+      {[0, 1].map((i) => (
+        <mesh key={i} ref={(el) => (spotRefs.current[i] = el)} position={[0, 3.1, -1.9]}>
+          <coneGeometry args={[1.5, 5.2, 32, 1, true]} />
+          <meshBasicMaterial
+            color={0xffb060}
+            transparent
+            opacity={0}
+            blending={THREE.AdditiveBlending}
+            depthWrite={false}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
+      ))}
 
       {/* Dust drifting through the light */}
       <points ref={dustRef} geometry={dust}>

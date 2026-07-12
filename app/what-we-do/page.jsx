@@ -17,11 +17,7 @@ const CAPABILITIES = [
   {
     num: "02",
     title: "Sonic Branding",
-    copy: "A brand has a voice whether it plans one or not. This studio makes sure it's on purpose. For Kuda, that meant two sonic logos built on traditional Nigerian instrumentation (Kalimba, Agidigbo, Agogo, shekere), each one tied to what the brand actually stands for, not to whatever loop sounded current that week. Done right, three seconds of sound says exactly who it is before a single word does.",
-    audio: [
-      { title: "The Awakening", sub: "Kuda · sonic logo" },
-      { title: "The Welcome", sub: "Kuda · sonic logo" },
-    ],
+    copy: "A brand has a voice whether it plans one or not. This studio makes sure it's on purpose. Sonic identities built on traditional Nigerian instrumentation (Kalimba, Agidigbo, Agogo, shekere), each note tied to what a brand actually stands for, not to whatever loop sounded current that week. Done right, three seconds of sound says exactly who it is before a single word does.",
   },
   {
     num: "03",
@@ -33,8 +29,16 @@ const CAPABILITIES = [
     title: "Film & Sync",
     copy: "Records with real feeling in them find the screen on their own. “Ready” landed in Ololade on Netflix. “Safe” landed in My Body, God's Temple on Zikoko's channel. Neither was chased. Both were recognised. For work built for the screen, the studio scores it and designs the sound around it. For a song that's ready for its moment, the studio helps it find one.",
     audio: [
-      { title: "Ready", sub: "Featured in Ololade (Netflix)" },
-      { title: "Safe", sub: "Featured in My Body, God's Temple (Zikoko)" },
+      {
+        title: "Ready",
+        sub: "Featured in Ololade (Netflix)",
+        spotify: "https://open.spotify.com/search/Kotrell%20Ready",
+      },
+      {
+        title: "Safe",
+        sub: "Featured in My Body, God's Temple (Zikoko)",
+        spotify: "https://open.spotify.com/track/6tPzBJptprIjA8hk4ir3rz",
+      },
     ],
   },
   {
@@ -47,7 +51,7 @@ const CAPABILITIES = [
 export default function WhatWeDo() {
   return (
     <main>
-      <section className="section bg-glow" data-scene="eq-right" style={{ paddingTop: "clamp(8rem, 18vh, 12rem)" }}>
+      <section className="section bg-glow" data-scene="rack-right" style={{ paddingTop: "clamp(8rem, 18vh, 12rem)" }}>
         <div className="container">
           <Reveal>
             <p className="kicker mb-1">What We Do</p>
@@ -78,7 +82,7 @@ export default function WhatWeDo() {
                   {c.audio && (
                     <div className="mt-2" style={{ display: "grid", gap: "0.8rem", maxWidth: "38rem" }}>
                       {c.audio.map((a) => (
-                        <AudioPlayer key={a.title} title={a.title} sub={a.sub} />
+                        <AudioPlayer key={a.title} title={a.title} sub={a.sub} spotify={a.spotify} />
                       ))}
                     </div>
                   )}

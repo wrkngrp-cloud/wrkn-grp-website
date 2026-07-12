@@ -890,6 +890,136 @@ main {
   margin-bottom: 3rem;
 }
 
+/* ---------- the session (DAW arrangement view) ---------- */
+
+.daw {
+  border: 1px solid var(--hairline);
+  border-radius: 3px;
+  background: rgba(10, 5, 0, 0.78);
+  overflow: hidden;
+}
+
+.daw-ruler {
+  display: flex;
+  border-bottom: 1px solid var(--hairline);
+  padding-block: 0.45rem;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+}
+
+.daw-ruler span {
+  flex: 1;
+  padding-left: 0.75rem;
+  border-left: 1px solid rgba(201, 126, 91, 0.1);
+}
+
+.daw-track {
+  display: grid;
+  grid-template-columns: minmax(200px, 300px) 1fr;
+  border-bottom: 1px solid rgba(201, 126, 91, 0.12);
+}
+
+.daw-head {
+  padding: 1.1rem 1.2rem;
+  border-right: 1px solid var(--hairline);
+}
+
+.daw-lane-label {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
+
+.daw-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  letter-spacing: -0.01em;
+  margin-top: 0.35rem;
+}
+
+.daw-copy {
+  font-size: 0.82rem;
+  color: var(--ink-dim);
+  margin-top: 0.4rem;
+  max-width: 34ch;
+}
+
+.daw-lane {
+  position: relative;
+  padding: 1rem 0.9rem;
+  display: flex;
+  align-items: center;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(201, 126, 91, 0.05) 0 1px,
+    transparent 1px 12.5%
+  );
+}
+
+.daw-clip {
+  position: relative;
+  height: 64px;
+  border-radius: 3px;
+  overflow: hidden;
+  min-width: 3%;
+}
+
+.daw-clip-name {
+  position: absolute;
+  top: 4px;
+  left: 10px;
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  white-space: nowrap;
+}
+
+.daw-foot {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.2rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.daw-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--hot);
+  animation: rec-blink 1.6s ease-in-out infinite;
+}
+
+@keyframes rec-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
+@media (max-width: 760px) {
+  .daw-track {
+    grid-template-columns: 1fr;
+  }
+
+  .daw-head {
+    border-right: 0;
+    border-bottom: 1px dashed rgba(201, 126, 91, 0.14);
+  }
+}
+
 /* ---------- atmosphere ---------- */
 
 /* Film grain over everything — the analog hiss on the master */

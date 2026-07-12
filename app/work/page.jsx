@@ -7,13 +7,13 @@ import { TRACKS } from "../../lib/credits";
 export const metadata = {
   title: "Work · Sweetness Studios",
   description:
-    "Six years, one catalogue. Ric Hassani, Kotrell, Kuda, Ruger, Netflix, Zikoko. The real run of it.",
+    "Six years, one catalogue. Ric Hassani, Kotrell, Ruger, Netflix, Zikoko. The real run of it.",
 };
 
 export default function Work() {
   return (
     <main>
-      <section className="section bg-glow" data-scene="rings-right" style={{ paddingTop: "clamp(8rem, 18vh, 12rem)" }}>
+      <section className="section bg-glow" data-scene="vinyl-right" style={{ paddingTop: "clamp(8rem, 18vh, 12rem)" }}>
         <div className="container">
           <Reveal>
             <p className="kicker mb-1">Work</p>
@@ -22,7 +22,7 @@ export default function Work() {
             </h1>
             <p className="body-lg dim mt-2">
               The real run of it: the records, the screens they found, the
-              brands they voiced, the rooms they moved.
+              rooms they moved.
             </p>
           </Reveal>
         </div>
@@ -105,7 +105,7 @@ export default function Work() {
                 <p className="dim mb-2" style={{ fontSize: "0.95rem" }}>
                   Kotrell. Featured in <em>Ololade</em>, a series on Netflix.
                 </p>
-                <AudioPlayer title="Ready" sub="Kotrell · Ololade (Netflix)" />
+                <AudioPlayer title="Ready" sub="Kotrell · Ololade (Netflix)" spotify="https://open.spotify.com/search/Kotrell%20Ready" />
               </article>
             </Reveal>
             <Reveal delay={0.1}>
@@ -120,41 +120,17 @@ export default function Work() {
                   toward. Alignment like that can&rsquo;t be forced. It can
                   only be recognised when it arrives.
                 </p>
-                <AudioPlayer title="Safe" sub="Kotrell · My Body, God's Temple (Zikoko)" />
+                <AudioPlayer title="Safe" sub="Kotrell · My Body, God's Temple (Zikoko)" spotify="https://open.spotify.com/track/6tPzBJptprIjA8hk4ir3rz" />
               </article>
             </Reveal>
           </div>
         </div>
       </section>
 
-      {/* Sonic branding */}
-      <section className="section" data-scene="glow-left">
-        <div className="container grid-2">
-          <Reveal>
-            <p className="kicker mb-1">Sonic branding</p>
-            <h2 className="display-3">Kuda</h2>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <p className="dim measure">
-              Two sonic logos, &ldquo;The Awakening&rdquo; and &ldquo;The
-              Welcome,&rdquo; built on the More Life ethos and the
-              brand&rsquo;s three principles: Pulse, Real, Strong Spirit.
-              Every instrument, from the Kalimba to the shekere, was chosen
-              for a reason the studio wrote down and can defend. Plus launch
-              audio for a Snapchat Lens and jingle work for a Spotify ad.
-            </p>
-            <div className="mt-2" style={{ display: "grid", gap: "0.8rem" }}>
-              <AudioPlayer title="The Awakening" sub="Kuda · sonic logo" />
-              <AudioPlayer title="The Welcome" sub="Kuda · sonic logo" />
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
       <DripDivider hotIndex={7} />
 
       {/* Live */}
-      <section className="section" id="live" data-scene="rings-center" style={{ paddingTop: 0 }}>
+      <section className="section" id="live" data-scene="spots-center" style={{ paddingTop: 0 }}>
         <div className="container">
           <Reveal>
             <p className="kicker mb-2" style={{ marginTop: "3rem" }}>Live direction</p>

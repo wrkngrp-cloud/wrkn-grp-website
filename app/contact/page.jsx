@@ -26,7 +26,7 @@ const DOORS = [
 export default function Contact() {
   return (
     <main>
-      <section className="section bg-glow" data-scene="blinds-right" style={{ paddingTop: "clamp(8rem, 18vh, 12rem)" }}>
+      <section className="section bg-glow" data-scene="doors-left" style={{ paddingTop: "clamp(8rem, 18vh, 12rem)" }}>
         <div className="container">
           <Reveal>
             <p className="kicker mb-1">Contact</p>

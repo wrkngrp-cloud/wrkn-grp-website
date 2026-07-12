@@ -5,22 +5,27 @@ import Reveal from "../components/Reveal";
 import Parallax from "../components/Parallax";
 import AudioPlayer from "../components/AudioPlayer";
 import SoundWave from "../components/SoundWave";
+import DawSession from "../components/DawSession";
 import { PROOF } from "../lib/credits";
 
 const PRINCIPLES = [
   {
+    lane: "01 · Foundation",
     title: "Feel first. Arrange after.",
     copy: "Every record starts as a feeling before it becomes a file. The chords go looking for that feeling; the arrangement follows it home.",
   },
   {
+    lane: "02 · Listening",
     title: "The demo already knows.",
     copy: "A song arrives knowing what it wants to be. The craft is listening closely enough to let it, instead of forcing it to be something else.",
   },
   {
+    lane: "03 · Intention",
     title: "A reason behind every note.",
     copy: "From a full record to a three-second sonic logo, every instrument earns its place, chosen for a reason the studio can write down and defend.",
   },
   {
+    lane: "04 · The take",
     title: "Chase the moment.",
     copy: "The tear that lands before the mind can explain it. When that happens in the room, the record is finished being arranged, whatever the session clock says.",
   },
@@ -112,30 +117,25 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Principles */}
+      {/* Principles as a session: tracks land one by one, like an
+          arrangement coming together in the studio */}
       <section className="section" data-scene="peek" style={{ paddingTop: 0 }}>
         <div className="container">
           <Reveal>
             <hr className="hairline mb-3" />
-            <p className="kicker mb-2">How the work gets made</p>
+            <p className="kicker mb-1">How the work gets made</p>
+            <h2 className="display-3 mb-2" style={{ maxWidth: "22ch" }}>
+              Four tracks in every session.
+            </h2>
           </Reveal>
-          <div className="principles-grid">
-            {PRINCIPLES.map((pr, i) => (
-              <Reveal key={pr.title} delay={i * 0.08}>
-                <article className="card" style={{ height: "100%" }}>
-                  <h3 className="display-4 mb-1" style={{ fontSize: "1.35rem" }}>
-                    {pr.title}
-                  </h3>
-                  <p className="dim" style={{ fontSize: "0.92rem" }}>{pr.copy}</p>
-                </article>
-              </Reveal>
-            ))}
-          </div>
+          <Reveal>
+            <DawSession tracks={PRINCIPLES} />
+          </Reveal>
         </div>
       </section>
 
       {/* Three doors */}
-      <section className="section" data-scene="rings-right" style={{ paddingTop: 0 }}>
+      <section className="section" data-scene="doors-left" style={{ paddingTop: 0 }}>
         <div className="container">
           <Reveal>
             <p className="kicker mb-1">Three doors in</p>
@@ -175,7 +175,7 @@ export default function Home() {
             </h2>
           </Reveal>
 
-          <div className="doors-grid">
+          <div className="principles-grid">
             <Reveal>
               <article className="card" style={{ height: "100%" }}>
                 <p className="kicker mb-1" style={{ fontSize: "0.62rem" }}>Ric Hassani</p>
@@ -184,30 +184,56 @@ export default function Home() {
                   Co-produced for the Lagos Lover Boy world. A record that
                   sounds exactly like being chosen.
                 </p>
-                <AudioPlayer title="Ngozi" sub="Ric Hassani" />
+                <AudioPlayer
+                  title="Ngozi"
+                  sub="Ric Hassani"
+                  spotify="https://open.spotify.com/track/6YHRw6MptcrYWv7JYROGTk"
+                />
               </article>
             </Reveal>
-            <Reveal delay={0.1}>
+            <Reveal delay={0.08}>
               <article className="card" style={{ height: "100%" }}>
                 <p className="kicker mb-1" style={{ fontSize: "0.62rem" }}>Kotrell</p>
                 <h3 className="display-4 mb-1">Safe</h3>
                 <p className="dim mb-2" style={{ fontSize: "0.92rem" }}>
                   Made to sound like an exhale, like finally being held. It
-                  found its film in <em>My Body, God&rsquo;s Temple</em> on
-                  Zikoko.
+                  found its film in <em>My Body, God&rsquo;s Temple</em>.
                 </p>
-                <AudioPlayer title="Safe" sub="Kotrell · My Body, God's Temple (Zikoko)" />
+                <AudioPlayer
+                  title="Safe"
+                  sub="Kotrell · Zikoko"
+                  spotify="https://open.spotify.com/track/6tPzBJptprIjA8hk4ir3rz"
+                />
               </article>
             </Reveal>
-            <Reveal delay={0.2}>
+            <Reveal delay={0.16}>
               <article className="card" style={{ height: "100%" }}>
-                <p className="kicker mb-1" style={{ fontSize: "0.62rem" }}>Kotrell · On Netflix</p>
-                <h3 className="display-4 mb-1">Ready</h3>
+                <p className="kicker mb-1" style={{ fontSize: "0.62rem" }}>Ric Hassani</p>
+                <h3 className="display-4 mb-1">For You</h3>
                 <p className="dim mb-2" style={{ fontSize: "0.92rem" }}>
-                  Written as a feeling first. The screen came looking for it,
-                  and it landed in <em>Ololade</em>.
+                  The soft one. Built for the exact moment somebody realises
+                  they mean it.
                 </p>
-                <AudioPlayer title="Ready" sub="Kotrell · Ololade (Netflix)" />
+                <AudioPlayer
+                  title="For You"
+                  sub="Ric Hassani"
+                  spotify="https://open.spotify.com/search/Ric%20Hassani%20For%20You"
+                />
+              </article>
+            </Reveal>
+            <Reveal delay={0.24}>
+              <article className="card" style={{ height: "100%" }}>
+                <p className="kicker mb-1" style={{ fontSize: "0.62rem" }}>Kotrell</p>
+                <h3 className="display-4 mb-1">Love Me Slow</h3>
+                <p className="dim mb-2" style={{ fontSize: "0.92rem" }}>
+                  Still healing, still willing. Tenderness at the tempo it
+                  actually happens.
+                </p>
+                <AudioPlayer
+                  title="Love Me Slow"
+                  sub="Kotrell · Trelly Music"
+                  spotify="https://open.spotify.com/search/Kotrell%20Love%20Me%20Slow"
+                />
               </article>
             </Reveal>
           </div>
@@ -242,7 +268,7 @@ export default function Home() {
       </section>
 
       {/* Closing */}
-      <section className="section" data-scene="rings-center" style={{ paddingTop: 0 }}>
+      <section className="section" data-scene="spots-center" style={{ paddingTop: 0 }}>
         <div className="container">
           <Reveal>
             <p
