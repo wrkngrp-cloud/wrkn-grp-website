@@ -5,15 +5,15 @@ import AudioPlayer from "../../components/AudioPlayer";
 import { TRACKS } from "../../lib/credits";
 
 export const metadata = {
-  title: "Work — Sweetness Studios",
+  title: "Work · Sweetness Studios",
   description:
-    "Six years, one catalogue. Ric Hassani, Kotrell, Kuda, Ruger, Netflix, Zikoko — the real run of it.",
+    "Six years, one catalogue. Ric Hassani, Kotrell, Kuda, Ruger, Netflix, Zikoko. The real run of it.",
 };
 
 export default function Work() {
   return (
     <main>
-      <section className="section bg-glow" style={{ paddingTop: "clamp(8rem, 18vh, 12rem)" }}>
+      <section className="section bg-glow" data-scene="rings-right" style={{ paddingTop: "clamp(8rem, 18vh, 12rem)" }}>
         <div className="container">
           <Reveal>
             <p className="kicker mb-1">Work</p>
@@ -21,7 +21,7 @@ export default function Work() {
               Six years. One catalogue. Nothing rounded up.
             </h1>
             <p className="body-lg dim mt-2">
-              The real run of it — the records, the screens they found, the
+              The real run of it: the records, the screens they found, the
               brands they voiced, the rooms they moved.
             </p>
           </Reveal>
@@ -31,7 +31,7 @@ export default function Work() {
       <DripDivider hotIndex={4} />
 
       {/* Artists */}
-      <section className="section" style={{ paddingTop: 0 }}>
+      <section className="section" data-scene="peek" style={{ paddingTop: 0 }}>
         <div className="container">
           <Reveal>
             <p className="kicker mb-2">Artists we&rsquo;ve produced</p>
@@ -64,7 +64,7 @@ export default function Work() {
                     Primary producer across <em>Ready</em>, <em>Safe</em>,{" "}
                     <em>Heavy</em>, <em>Home</em>, <em>Whole World</em>,{" "}
                     <em>Only You</em>, <em>Proud of You</em>, <em>Watch Me</em>,
-                    and more. Six years of friendship as much as work — and
+                    and more. Six years of friendship as much as work, and
                     you can hear it in the records.
                   </p>
                 </div>
@@ -89,7 +89,7 @@ export default function Work() {
       <DripDivider flip />
 
       {/* On screen */}
-      <section className="section" style={{ background: "var(--lift)" }}>
+      <section className="section section-lift" data-scene="eq-left">
         <div className="container">
           <Reveal>
             <p className="kicker mb-1">On screen</p>
@@ -103,7 +103,7 @@ export default function Work() {
               <article className="card">
                 <h3 className="display-4 mb-1">Ready</h3>
                 <p className="dim mb-2" style={{ fontSize: "0.95rem" }}>
-                  Kotrell — featured in <em>Ololade</em>, a series on Netflix.
+                  Kotrell. Featured in <em>Ololade</em>, a series on Netflix.
                 </p>
                 <AudioPlayer title="Ready" sub="Kotrell · Ololade (Netflix)" />
               </article>
@@ -112,9 +112,9 @@ export default function Work() {
               <article className="card">
                 <h3 className="display-4 mb-1">Safe</h3>
                 <p className="dim mb-2" style={{ fontSize: "0.95rem" }}>
-                  Kotrell — featured in <em>My Body, God&rsquo;s Temple</em>,
+                  Kotrell. Featured in <em>My Body, God&rsquo;s Temple</em>,
                   on Zikoko&rsquo;s YouTube channel. Produced to feel like
-                  security — like somebody finally exhaling. When Kotrell sent
+                  security, like somebody finally exhaling. When Kotrell sent
                   back his first line, &ldquo;I feel safe here,&rdquo; it was
                   almost word for word what the production had been playing
                   toward. Alignment like that can&rsquo;t be forced. It can
@@ -128,7 +128,7 @@ export default function Work() {
       </section>
 
       {/* Sonic branding */}
-      <section className="section">
+      <section className="section" data-scene="glow-left">
         <div className="container grid-2">
           <Reveal>
             <p className="kicker mb-1">Sonic branding</p>
@@ -154,7 +154,7 @@ export default function Work() {
       <DripDivider hotIndex={7} />
 
       {/* Live */}
-      <section className="section" id="live" style={{ paddingTop: 0 }}>
+      <section className="section" id="live" data-scene="rings-center" style={{ paddingTop: 0 }}>
         <div className="container">
           <Reveal>
             <p className="kicker mb-2" style={{ marginTop: "3rem" }}>Live direction</p>
@@ -182,7 +182,7 @@ export default function Work() {
       </section>
 
       {/* Full credits */}
-      <section className="section" style={{ background: "var(--lift)" }}>
+      <section className="section section-lift" data-scene="peek">
         <div className="container">
           <Reveal>
             <p className="kicker mb-1">The catalogue</p>

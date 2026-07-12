@@ -2,7 +2,7 @@ import DripDivider from "../../components/DripDivider";
 import Reveal from "../../components/Reveal";
 
 export const metadata = {
-  title: "Studio — Sweetness Studios",
+  title: "Studio · Sweetness Studios",
   description:
     "Where Sweetness Studios came from, what it believes, and why strategy and sound sit at the same table.",
 };
@@ -10,7 +10,7 @@ export const metadata = {
 export default function Studio() {
   return (
     <main>
-      <section className="section bg-glow" style={{ paddingTop: "clamp(8rem, 18vh, 12rem)" }}>
+      <section className="section bg-glow" data-scene="blinds-right" style={{ paddingTop: "clamp(8rem, 18vh, 12rem)" }}>
         <div className="container">
           <Reveal>
             <p className="kicker mb-1">Studio</p>
@@ -24,7 +24,7 @@ export default function Studio() {
 
       <DripDivider hotIndex={6} />
 
-      <section className="section">
+      <section className="section" data-scene="glow-left">
         <div className="container grid-2">
           <Reveal>
             <span className="section-num">02</span>
@@ -33,7 +33,7 @@ export default function Studio() {
             <Reveal>
               <p className="body-lg">
                 Sweetness Studios began with beats finished at four in the
-                morning — sound made because it was the only language
+                morning. Sound made because it was the only language
                 available for a feeling that had no name yet. A snippet
                 posted, slept on, and understood by sunrise: if it already
                 meant something to the person who made it, it would mean
@@ -44,7 +44,7 @@ export default function Studio() {
             </Reveal>
             <Reveal>
               <p className="dim">
-                Over six years that principle became a catalogue — records
+                Over six years that principle became a catalogue: records
                 for names you&rsquo;d recognise and voices you&rsquo;ll meet
                 soon, and none of them sound alike. Each one was built to
                 feel like the person singing it, and the person who would
@@ -56,7 +56,7 @@ export default function Studio() {
                 Somewhere in that run, the beats became a method. Play to feel
                 first, arrange after. Let the demo say what it already wants
                 to be. Chase the moment where a tear lands before the mind can
-                explain it — it happens more often than anyone admits, and
+                explain it. It happens more often than anyone admits, and
                 this studio has never once been embarrassed by it.
               </p>
             </Reveal>
@@ -64,35 +64,35 @@ export default function Studio() {
         </div>
       </section>
 
-      <section className="section bg-shafts" style={{ background: "var(--lift)" }}>
+      <section className="section bg-shafts section-lift" data-scene="rings-center">
         <div className="container">
           <Reveal>
             <blockquote className="pull-quote" style={{ maxWidth: "30ch" }}>
               We don&rsquo;t make sound that&rsquo;s nice. We make sound that
-              means something — and we can always tell you why it does.
+              means something, and we can always tell you why it does.
             </blockquote>
           </Reveal>
         </div>
       </section>
 
-      <section className="section">
+      <section className="section" data-scene="peek">
         <div className="container grid-2">
           <div />
           <div className="stack-lg">
             <Reveal>
               <p className="dim">
-                Sweetness Studios is the music and creative arm of WRKN GRP,
-                and that matters more than it sounds like it should. Most
+                Sweetness Studios grew up inside a strategy house, and that
+                matters more than it sounds like it should. Most
                 studios can hand you a beautiful sound. Far fewer can tell you
                 why it&rsquo;s the right sound for the person you&rsquo;re
                 trying to reach. Here, strategy and sound sit at the same
-                table — not in two buildings that occasionally call each
+                table, not in two buildings that occasionally call each
                 other.
               </p>
             </Reveal>
             <Reveal>
               <p className="dim">
-                Two rooms, one house. In one, records — and in time, a label
+                Two rooms, one house. In one, records, and in time a label
                 people trust with their story. In the other, a voice for
                 brands, scores for the screen, and direction for the room when
                 the lights come up. Different doors, different clients. The

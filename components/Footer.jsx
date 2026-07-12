@@ -12,9 +12,9 @@ export default function Footer() {
               <span>Sweetness Studios</span>
             </div>
             <p className="dim measure" style={{ fontSize: "0.95rem" }}>
-              The sound arm of WRKN GRP — building the songs that end up on
-              the soundtrack of somebody&rsquo;s life. Records for artists. A
-              voice for brands. The room nobody forgets.
+              Building the songs that end up on the soundtrack of
+              somebody&rsquo;s life. Records for artists. A voice for brands.
+              The room nobody forgets.
             </p>
           </div>
 
@@ -49,7 +49,7 @@ export default function Footer() {
         </div>
 
         <div className="footer-bottom">
-          <span>© {new Date().getFullYear()} Sweetness Studios · WRKN GRP</span>
+          <span>© {new Date().getFullYear()} Sweetness Studios · A WRKN GRP subsidiary</span>
           <span>Music with soul at its core.</span>
         </div>
       </div>

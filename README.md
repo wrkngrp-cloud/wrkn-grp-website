@@ -29,9 +29,9 @@ npm run build    # static export of all 6 routes → out/
 - Every drip/divider/trail runs the same material grade:
   gold → burnt orange → ember → amber shadow (`--melt` in `globals.css`).
 
-**Type:** Balkist (display, licensed — Zodiak is the live Fontshare
-fallback) + Heuvel Grotesk (body, licensed — General Sans fallback).
-Stacks in `globals.css`; swap in the licensed files when self-hosted.
+**Type:** Heuvel Grotesk everywhere (licensed; General Sans is the live
+Fontshare fallback). Stack in `globals.css`; swap in the licensed files
+when self-hosted. No second face.
 
 ## Architecture
 
@@ -41,16 +41,15 @@ as the WRKN GRP build — don't bump three alone).
 
 Signature pieces:
 
-- `components/LollipopScene.jsx` — the melting lollipop. A FLAT disc
-  head (the logo's shape) with the face-on spiral, glossy candy
-  `MeshPhysicalMaterial`; the melt is a marching-cubes metaball liquid
-  (`three/examples` MarchingCubes): streams sheath the head's underside,
-  stretch into viscous neck-and-bead drips, and droplets detach and
-  fall on independent cycles. One warm off-axis key light carries a
-  striped "blinds" gobo (`SpotLight.map`), hot-red rim from behind,
-  PMREM environment of warm slats. Scroll advances the melt; the drip
-  cycle never fully sleeps.
-- `components/LollipopHero.jsx` — the 260vh pinned hero runway.
+- `components/SceneRoot.jsx` + `components/WorldScene.jsx` — the one
+  continuous world behind every page: a fixed canvas holding the
+  melting lollipop (flat-disc logo replica, marching-cubes metaball
+  liquid that never stops dripping) plus per-section scenery: warm
+  blind-light slats, an ember glow, drifting dust, breathing sound
+  rings, and a circular spectrum of bars. Sections opt in with
+  data-scene="<preset>" (presets in SceneRoot); the lollipop travels,
+  scales, and the scenery crossfades as sections pass. Scroll turns
+  the lollipop continuously across the whole site.
 - `components/CursorTrail.jsx` — viscous melt trail, Home + Releases only.
 - `components/DripDivider.jsx` — graded SVG melt dividers.
 - `components/AudioPlayer.jsx` — inline player, fully styled; currently

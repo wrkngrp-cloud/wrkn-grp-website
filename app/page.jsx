@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Hero3D from "../components/Hero3D";
 import CursorTrail from "../components/CursorTrail";
 import DripDivider from "../components/DripDivider";
 import Reveal from "../components/Reveal";
@@ -15,15 +14,15 @@ const PRINCIPLES = [
   },
   {
     title: "The demo already knows.",
-    copy: "A song arrives knowing what it wants to be. The craft is listening closely enough to let it — instead of forcing it to be something else.",
+    copy: "A song arrives knowing what it wants to be. The craft is listening closely enough to let it, instead of forcing it to be something else.",
   },
   {
     title: "A reason behind every note.",
-    copy: "From a full record to a three-second sonic logo, every instrument earns its place — chosen for a reason the studio can write down and defend.",
+    copy: "From a full record to a three-second sonic logo, every instrument earns its place, chosen for a reason the studio can write down and defend.",
   },
   {
     title: "Chase the moment.",
-    copy: "The tear that lands before the mind can explain it. When that happens in the room, the record is finished being arranged — whatever the session clock says.",
+    copy: "The tear that lands before the mind can explain it. When that happens in the room, the record is finished being arranged, whatever the session clock says.",
   },
 ];
 
@@ -31,21 +30,21 @@ const DOORS = [
   {
     num: "01",
     title: "Records.",
-    copy: "Full projects, single records, and now records of the studio's own. Built slow and built true — each one made to become somebody's favourite song.",
+    copy: "Full projects, single records, and now records of the studio's own. Built slow and built true. Each one made to become somebody's favourite song.",
     href: "/work/",
     link: "The work",
   },
   {
     num: "02",
     title: "A voice for brands.",
-    copy: "Sound is the feeling that stays when the screen goes dark. The studio composes that feeling on purpose — a voice your audience knows in three seconds flat.",
+    copy: "Sound is the feeling that stays when the screen goes dark. The studio composes that feeling on purpose. A voice your audience knows in three seconds flat.",
     href: "/what-we-do/",
     link: "What we do",
   },
   {
     num: "03",
     title: "The room.",
-    copy: "Arrangement and direction for live nights — the kind a crowd carries home and keeps.",
+    copy: "Arrangement and direction for live nights. The kind a crowd carries home and keeps.",
     href: "/work/#live",
     link: "Live direction",
   },
@@ -56,12 +55,33 @@ export default function Home() {
     <main>
       <CursorTrail />
 
-      <Hero3D />
+      <section data-scene="hero" style={{ position: "relative", minHeight: "165vh" }}>
+        <div className="container hero-lead">
+          <p className="kicker mb-1">Sweetness Studios</p>
+          <h1 className="display-2" style={{ maxWidth: "22ch" }}>
+            Some sounds are heard and forgotten. We make the ones that are
+            felt, and remembered.
+          </h1>
+          <p className="body-lg dim measure mt-2">
+            Music with soul at its core, written to become the soundtrack of
+            somebody&rsquo;s life.
+          </p>
+          <div className="mt-2" style={{ display: "flex", gap: "1rem" }}>
+            <Link href="/work/" className="btn">
+              Hear the work
+            </Link>
+            <Link href="/contact/" className="text-link" style={{ alignSelf: "center" }}>
+              Start something →
+            </Link>
+          </div>
+          <div className="scroll-cue">Scroll · it melts</div>
+        </div>
+      </section>
 
       <DripDivider hotIndex={3} />
 
       {/* Manifesto */}
-      <section className="section bg-glow">
+      <section className="section bg-glow" data-scene="glow-left">
         <div className="container">
           <Reveal>
             <p className="kicker mb-1">Why Sweetness exists</p>
@@ -77,7 +97,7 @@ export default function Home() {
                 about. The chorus a whole room sings like one voice. The
                 three seconds of sound that feel like home before a word is
                 said. None of it is an accident. Someone sat with a feeling
-                until it became sound — patient, deliberate, soul first.
+                until it became sound. Patient, deliberate, soul first.
                 That is the work. That is the whole point of Sweetness.
               </p>
             </Reveal>
@@ -93,7 +113,7 @@ export default function Home() {
       </section>
 
       {/* Principles */}
-      <section className="section" style={{ paddingTop: 0 }}>
+      <section className="section" data-scene="peek" style={{ paddingTop: 0 }}>
         <div className="container">
           <Reveal>
             <hr className="hairline mb-3" />
@@ -115,7 +135,7 @@ export default function Home() {
       </section>
 
       {/* Three doors */}
-      <section className="section" style={{ paddingTop: 0 }}>
+      <section className="section" data-scene="rings-right" style={{ paddingTop: 0 }}>
         <div className="container">
           <Reveal>
             <p className="kicker mb-1">Three doors in</p>
@@ -146,7 +166,7 @@ export default function Home() {
       <DripDivider flip />
 
       {/* Selected work */}
-      <section className="section bg-shafts" style={{ background: "var(--lift)" }}>
+      <section className="section bg-shafts section-lift" data-scene="eq-left">
         <div className="container">
           <Reveal>
             <p className="kicker mb-1">Selected work</p>
@@ -158,35 +178,36 @@ export default function Home() {
           <div className="doors-grid">
             <Reveal>
               <article className="card" style={{ height: "100%" }}>
-                <p className="kicker mb-1" style={{ fontSize: "0.62rem" }}>On Netflix</p>
-                <h3 className="display-4 mb-1">Ready</h3>
+                <p className="kicker mb-1" style={{ fontSize: "0.62rem" }}>Ric Hassani</p>
+                <h3 className="display-4 mb-1">Ngozi</h3>
                 <p className="dim mb-2" style={{ fontSize: "0.92rem" }}>
-                  Written as a feeling first. The screen came looking for it —
-                  it landed in <em>Ololade</em>.
+                  Co-produced for the Lagos Lover Boy world. A record that
+                  sounds exactly like being chosen.
                 </p>
-                <AudioPlayer title="Ready" sub="Featured in Ololade (Netflix)" />
+                <AudioPlayer title="Ngozi" sub="Ric Hassani" />
               </article>
             </Reveal>
             <Reveal delay={0.1}>
               <article className="card" style={{ height: "100%" }}>
-                <p className="kicker mb-1" style={{ fontSize: "0.62rem" }}>On Zikoko</p>
+                <p className="kicker mb-1" style={{ fontSize: "0.62rem" }}>Kotrell</p>
                 <h3 className="display-4 mb-1">Safe</h3>
                 <p className="dim mb-2" style={{ fontSize: "0.92rem" }}>
-                  Made to sound like an exhale — like finally being held. It
-                  found its film in <em>My Body, God&rsquo;s Temple</em>.
+                  Made to sound like an exhale, like finally being held. It
+                  found its film in <em>My Body, God&rsquo;s Temple</em> on
+                  Zikoko.
                 </p>
-                <AudioPlayer title="Safe" sub="Featured in My Body, God's Temple (Zikoko)" />
+                <AudioPlayer title="Safe" sub="Kotrell · My Body, God's Temple (Zikoko)" />
               </article>
             </Reveal>
             <Reveal delay={0.2}>
               <article className="card" style={{ height: "100%" }}>
-                <p className="kicker mb-1" style={{ fontSize: "0.62rem" }}>The studio&rsquo;s own</p>
-                <h3 className="display-4 mb-1">Sweetness Vol 1</h3>
+                <p className="kicker mb-1" style={{ fontSize: "0.62rem" }}>Kotrell · On Netflix</p>
+                <h3 className="display-4 mb-1">Ready</h3>
                 <p className="dim mb-2" style={{ fontSize: "0.92rem" }}>
-                  An EP around the three things every Sweetness record returns
-                  to — Life, Love, God.
+                  Written as a feeling first. The screen came looking for it,
+                  and it landed in <em>Ololade</em>.
                 </p>
-                <AudioPlayer title="Sweetness Vol 1" sub="EP · Life, Love, God" />
+                <AudioPlayer title="Ready" sub="Kotrell · Ololade (Netflix)" />
               </article>
             </Reveal>
           </div>
@@ -202,7 +223,7 @@ export default function Home() {
       </section>
 
       {/* Proof strip */}
-      <section className="section">
+      <section className="section" data-scene="rings-center">
         <div className="container">
           <Reveal>
             <p className="kicker mb-2">The company the sound keeps</p>
@@ -221,7 +242,7 @@ export default function Home() {
       </section>
 
       {/* Closing */}
-      <section className="section" style={{ paddingTop: 0 }}>
+      <section className="section" data-scene="rings-center" style={{ paddingTop: 0 }}>
         <div className="container">
           <Reveal>
             <p

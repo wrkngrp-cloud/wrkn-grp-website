@@ -9,10 +9,10 @@ import { useEffect, useRef } from "react";
  * viewport, so scrolling "plays" it.
  */
 const RIBBONS = [
-  { color: "252,168,24", amp: 1.0, speed: 0.55, freq: 1.6, width: 2.2, alpha: 0.85 },
-  { color: "252,120,24", amp: 0.75, speed: 0.4, freq: 2.3, width: 1.8, alpha: 0.6 },
-  { color: "168,70,14", amp: 1.25, speed: 0.3, freq: 1.1, width: 1.6, alpha: 0.5 },
-  { color: "252,84,132", amp: 0.5, speed: 0.7, freq: 3.1, width: 1.2, alpha: 0.35 },
+  { color: "252,168,24", amp: 1.0, speed: 1.4, freq: 1.6, width: 2.2, alpha: 0.85 },
+  { color: "252,120,24", amp: 0.75, speed: 1.05, freq: 2.3, width: 1.8, alpha: 0.6 },
+  { color: "168,70,14", amp: 1.25, speed: 0.8, freq: 1.1, width: 1.6, alpha: 0.5 },
+  { color: "252,84,132", amp: 0.5, speed: 1.8, freq: 3.1, width: 1.2, alpha: 0.35 },
 ];
 
 export default function SoundWave({ height = 180 }) {

@@ -3,7 +3,7 @@ import Reveal from "../../components/Reveal";
 import ContactForm from "../../components/ContactForm";
 
 export const metadata = {
-  title: "Contact — Sweetness Studios",
+  title: "Contact · Sweetness Studios",
   description:
     "Three doors. Come through the one that's yours. Brands, artists, everything else.",
 };
@@ -26,7 +26,7 @@ const DOORS = [
 export default function Contact() {
   return (
     <main>
-      <section className="section bg-glow" style={{ paddingTop: "clamp(8rem, 18vh, 12rem)" }}>
+      <section className="section bg-glow" data-scene="blinds-right" style={{ paddingTop: "clamp(8rem, 18vh, 12rem)" }}>
         <div className="container">
           <Reveal>
             <p className="kicker mb-1">Contact</p>
@@ -39,7 +39,7 @@ export default function Contact() {
 
       <DripDivider hotIndex={5} />
 
-      <section className="section" style={{ paddingTop: 0 }}>
+      <section className="section" data-scene="glow-left" style={{ paddingTop: 0 }}>
         <div className="container grid-2">
           <div className="stack-lg">
             {DOORS.map((d, i) => (

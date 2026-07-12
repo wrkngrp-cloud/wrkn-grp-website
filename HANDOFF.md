@@ -12,12 +12,28 @@
    every player renders the fully styled UI in its "Audio coming" state.
    Wiring is one prop per player (`src`) once files or embed URLs land:
    Ready, Safe, The Awakening, The Welcome, Sweetness Vol 1.
-3. **Typography.** Balkist + Heuvel Grotesk are set as instructed, but
-   neither license is self-hosted yet. Live fallbacks are Zodiak
-   (display) and General Sans (body) from Fontshare. Drop the licensed
-   woff2 files into `public/fonts/`, add `@font-face` rules, done.
+3. **Typography.** Heuvel Grotesk only, per Emmanuel (July 2026); Balkist
+   is dropped. The license still isn't self-hosted, so General Sans
+   (Fontshare) renders live. Drop the licensed woff2 files into
+   `public/fonts/`, add `@font-face` rules, done.
 
 ## Content notes
+
+- **Selected Work picks (Home).** Emmanuel asked for each artist's
+  highest-streamed song. Public per-song stream counts were not
+  verifiable by search, so the current picks are editorial: Ngozi (Ric
+  Hassani, single + official video), Safe and Ready (Kotrell, the two
+  sync placements). Confirm against the real dashboards and swap titles
+  in `app/page.jsx` if the data says otherwise.
+- **The first release is under wraps** per Emmanuel: no "Sweetness
+  Vol 1" name anywhere on the site. The Releases page teases it as
+  "Still under wraps" with the Life/Love/God throughline only.
+- **Trelly Music** added to the proof strip as Kotrell's label (per
+  Emmanuel).
+- **WRKN GRP** appears only in the footer, as "A WRKN GRP subsidiary".
+- **Writing standards:** no em dashes anywhere in site copy; keep the
+  banned-word list from the WRKN GRP build in mind (delve, robust,
+  landscape, pivotal, "In conclusion").
 
 - **Proof strip ("The company the sound keeps")** now shows record
   labels/platforms as styled wordmarks: Riverland Records (Ric
