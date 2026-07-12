@@ -7,7 +7,7 @@ import Cursor from "../components/Cursor";
 export const metadata = {
   title: "Sweetness Studios — Music with soul at its core",
   description:
-    "Sweetness Studios is the sound arm of WRKN GRP. Records for artists. A voice for brands. The room that arranges the night you won't forget.",
+    "Sweetness Studios is the sound arm of WRKN GRP — music built from the soul, to become the soundtrack of people's lives. Records for artists, a voice for brands, direction for the nights nobody forgets.",
 };
 
 export default function RootLayout({ children }) {

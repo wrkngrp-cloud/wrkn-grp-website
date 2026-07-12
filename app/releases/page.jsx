@@ -35,13 +35,13 @@ export default function Releases() {
           </Reveal>
           <Reveal delay={0.1}>
             <p className="body-lg measure">
-              The producers I look up to most didn&rsquo;t stop at making
-              other people&rsquo;s records. Sarz. DJ Neptune. Spinall. Jae5.
-              Juls. Each of them eventually built a house and started calling
-              artists home to it. That&rsquo;s the model I&rsquo;m building
-              here, not because it&rsquo;s a smart business move (though it
-              is), but because I&rsquo;ve always believed a producer&rsquo;s
-              ear is its own kind of artist statement.
+              The producers this studio measures itself against — Sarz, DJ
+              Neptune, Spinall, Jae5, Juls — didn&rsquo;t stop at making other
+              people&rsquo;s records. Each of them eventually built a house
+              and started calling artists home to it. That&rsquo;s the model
+              being built here. Not because it&rsquo;s a smart business move
+              (though it is), but because a producer&rsquo;s ear is its own
+              kind of artist statement.
             </p>
           </Reveal>
         </div>
@@ -54,9 +54,9 @@ export default function Releases() {
               <p className="kicker mb-1">First out the door</p>
               <h2 className="display-3 mb-1">Sweetness Vol 1</h2>
               <p className="dim measure">
-                An EP built around three things I keep coming back to in
-                everything I make: Life, Love, God. Produced under Sweetness,
-                featuring a rotating cast of artists I trust. The &ldquo;Vol
+                An EP built around the three things every Sweetness record
+                keeps returning to: Life, Love, God. Produced under Sweetness,
+                carried by a rotating cast of trusted artists. &ldquo;Vol
                 1&rdquo; is not just a number. It&rsquo;s a promise that
                 there&rsquo;s more coming behind it.
               </p>
@@ -74,21 +74,20 @@ export default function Releases() {
           <div className="stack-lg">
             <Reveal>
               <p className="dim">
-                Here&rsquo;s where I&rsquo;m honest about the road ahead,
-                because I&rsquo;d rather tell you the truth than sell you a
-                headline. Right now, this page is releases. The next step is a
-                real home, artists on development deals, the room and the
-                production and the belief to help someone become fully
-                themselves. After that, actual record deals. I&rsquo;m not
-                rushing the order. Prove the sound first. Sign the artist
-                second. I&rsquo;d rather build three artists properly than
-                sign fifteen and let the whole thing feel hollow.
+                And honestly — because this studio would rather tell the
+                truth than sell a headline: today, this page is releases. The
+                next step is a real home. Artists on development deals, the
+                room, the production, and the belief it takes to help someone
+                become fully themselves. After that, actual record deals. The
+                order is deliberate. Prove the sound first; sign the artist
+                second. Three artists built properly beat fifteen signed
+                hollow.
               </p>
             </Reveal>
             <Reveal>
               <p className="body-lg">
-                If you&rsquo;re an artist and this reads like a room
-                you&rsquo;d want to be in, the door is open.
+                If this reads like a room you&rsquo;d want your music to live
+                in, the door is open.
               </p>
               <Link href="/contact/" className="btn mt-2">
                 Send the music

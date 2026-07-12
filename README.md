@@ -41,13 +41,15 @@ as the WRKN GRP build — don't bump three alone).
 
 Signature pieces:
 
-- `components/LollipopScene.jsx` — the melting lollipop.
-  `MeshPhysicalMaterial` glass (transmission 0.9, clearcoat 1.0,
-  ior 1.45, roughness 0.14), swirl texture graded per the palette,
-  one warm off-axis key light carrying a striped "blinds" gobo
-  (`SpotLight.map`), hot-red rim from behind, PMREM environment of warm
-  slats so reflections read as ember streaks. Scroll drives rotation and
-  the drip streams' melt.
+- `components/LollipopScene.jsx` — the melting lollipop. A FLAT disc
+  head (the logo's shape) with the face-on spiral, glossy candy
+  `MeshPhysicalMaterial`; the melt is a marching-cubes metaball liquid
+  (`three/examples` MarchingCubes): streams sheath the head's underside,
+  stretch into viscous neck-and-bead drips, and droplets detach and
+  fall on independent cycles. One warm off-axis key light carries a
+  striped "blinds" gobo (`SpotLight.map`), hot-red rim from behind,
+  PMREM environment of warm slats. Scroll advances the melt; the drip
+  cycle never fully sleeps.
 - `components/LollipopHero.jsx` — the 260vh pinned hero runway.
 - `components/CursorTrail.jsx` — viscous melt trail, Home + Releases only.
 - `components/DripDivider.jsx` — graded SVG melt dividers.
@@ -57,7 +59,10 @@ Signature pieces:
 
 ## Content rules
 
-All copy comes verbatim from `sweetness-studios-website-content-v0.2.md`.
+The copy is written in the studio's voice (third person, soul-first),
+built from the principles and history in
+`sweetness-studios-website-content-v0.2.md` — facts, credits, names and
+placements are used exactly as supplied there, never invented.
 No invented credits, artists, or stats. Credits data lives in
 `lib/credits.js`. Contact details (beatsbynuel@gmail.com, IG @nuelbeatz)
 are from the deck's closing slide. The deck's investor content

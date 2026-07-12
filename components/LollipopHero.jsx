@@ -46,19 +46,20 @@ export default function LollipopHero() {
 
         <div className="container hero-copy">
           <p className="kicker mb-1">Sweetness Studios · The sound arm of WRKN GRP</p>
-          <h1 className="display-1" style={{ maxWidth: "12ch" }}>
-            Music with soul at its core.
+          <h1 className="display-1" style={{ maxWidth: "13ch" }}>
+            Some songs play. Some songs stay.
           </h1>
           <p className="body-lg dim measure mt-2">
-            Records for artists. A voice for brands. The room that arranges
-            the night you won&rsquo;t forget. Same craft, three doors.
+            Sweetness Studios makes the kind that stay — records for artists,
+            a voice for brands, direction for the nights nobody forgets.
+            Music built from the soul, to live in somebody&rsquo;s life.
           </p>
           <div className="mt-2" style={{ display: "flex", gap: "1rem" }}>
-            <Link href="/contact/" className="btn">
-              Come through a door
+            <Link href="/work/" className="btn">
+              Hear the work
             </Link>
-            <Link href="/work/" className="text-link" style={{ alignSelf: "center" }}>
-              Hear the proof →
+            <Link href="/contact/" className="text-link" style={{ alignSelf: "center" }}>
+              Start something →
             </Link>
           </div>
         </div>

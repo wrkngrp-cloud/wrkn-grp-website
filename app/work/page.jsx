@@ -18,9 +18,12 @@ export default function Work() {
           <Reveal>
             <p className="kicker mb-1">Work</p>
             <h1 className="display-2" style={{ maxWidth: "20ch" }}>
-              Six years, one catalogue, and I&rsquo;m not rounding anything up.
+              Six years. One catalogue. Nothing rounded up.
             </h1>
-            <p className="body-lg dim mt-2">Here&rsquo;s the real run of it.</p>
+            <p className="body-lg dim mt-2">
+              The real run of it — the records, the screens they found, the
+              brands they voiced, the rooms they moved.
+            </p>
           </Reveal>
         </div>
       </section>
@@ -61,9 +64,8 @@ export default function Work() {
                     Primary producer across <em>Ready</em>, <em>Safe</em>,{" "}
                     <em>Heavy</em>, <em>Home</em>, <em>Whole World</em>,{" "}
                     <em>Only You</em>, <em>Proud of You</em>, <em>Watch Me</em>,
-                    and more. This one&rsquo;s been a six-year friendship as
-                    much as a working relationship, and you can hear it in the
-                    records.
+                    and more. Six years of friendship as much as work — and
+                    you can hear it in the records.
                   </p>
                 </div>
               </article>
@@ -111,12 +113,12 @@ export default function Work() {
                 <h3 className="display-4 mb-1">Safe</h3>
                 <p className="dim mb-2" style={{ fontSize: "0.95rem" }}>
                   Kotrell — featured in <em>My Body, God&rsquo;s Temple</em>,
-                  on Zikoko&rsquo;s YouTube channel. This is the one I built to
-                  feel like security, like somebody finally exhaling. When
-                  Kotrell sent back the first line, &ldquo;I feel safe
-                  here,&rdquo; it was almost word for word what I&rsquo;d been
-                  playing toward. That&rsquo;s the kind of alignment you
-                  can&rsquo;t force. You can only recognise it when it happens.
+                  on Zikoko&rsquo;s YouTube channel. Produced to feel like
+                  security — like somebody finally exhaling. When Kotrell sent
+                  back his first line, &ldquo;I feel safe here,&rdquo; it was
+                  almost word for word what the production had been playing
+                  toward. Alignment like that can&rsquo;t be forced. It can
+                  only be recognised when it arrives.
                 </p>
                 <AudioPlayer title="Safe" sub="Kotrell · My Body, God's Temple (Zikoko)" />
               </article>
@@ -138,8 +140,8 @@ export default function Work() {
               Welcome,&rdquo; built on the More Life ethos and the
               brand&rsquo;s three principles: Pulse, Real, Strong Spirit.
               Every instrument, from the Kalimba to the shekere, was chosen
-              for a reason we wrote down and can defend. Plus launch audio for
-              a Snapchat Lens and jingle work for a Spotify ad.
+              for a reason the studio wrote down and can defend. Plus launch
+              audio for a Snapchat Lens and jingle work for a Spotify ad.
             </p>
             <div className="mt-2" style={{ display: "grid", gap: "0.8rem" }}>
               <AudioPlayer title="The Awakening" sub="Kuda · sonic logo" />

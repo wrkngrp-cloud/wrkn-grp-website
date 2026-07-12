@@ -4,22 +4,47 @@ import { useId } from "react";
 import { motion } from "framer-motion";
 
 /*
- * Section divider: a run of melt streams pouring off a hairline,
- * graded gold → burnt orange → ember → amber shadow so it matches
- * the 3D hero's material. `flip` points the pour upward.
- * One drip per divider may carry the rare hot-red catch (`hotIndex`).
+ * Section divider: a liquid edge pouring off a hairline. Each drip is a
+ * curved hanging blob — soft shoulders, a fat rounded belly — not a bar,
+ * and a few droplets detach and fall on a loop so the melt never reads
+ * static. Graded gold → burnt orange → ember → amber shadow to match
+ * the 3D hero's material. One drip per divider may carry the rare
+ * hot-red catch (`hotIndex`).
  */
 const DRIPS = [
-  { x: 6, w: 2.2, len: 46 },
-  { x: 15, w: 3.4, len: 78 },
-  { x: 24, w: 2.6, len: 34 },
-  { x: 35, w: 4.2, len: 92 },
-  { x: 46, w: 2.4, len: 52 },
-  { x: 55, w: 3.8, len: 70 },
-  { x: 66, w: 2.8, len: 100 },
-  { x: 76, w: 3.2, len: 44 },
-  { x: 86, w: 2.2, len: 64 },
-  { x: 94, w: 3, len: 38 },
+  { x: 55, w: 16, d: 46 },
+  { x: 145, w: 26, d: 84 },
+  { x: 240, w: 18, d: 34 },
+  { x: 350, w: 30, d: 96 },
+  { x: 462, w: 18, d: 52 },
+  { x: 552, w: 26, d: 72 },
+  { x: 660, w: 22, d: 104 },
+  { x: 762, w: 24, d: 44 },
+  { x: 862, w: 16, d: 64 },
+  { x: 944, w: 22, d: 38 },
+];
+
+// A hanging blob: down the left shoulder, around the belly, back up.
+function blobPath({ x, w, d }) {
+  const half = w / 2;
+  return [
+    `M ${x - half - w * 0.4} 0`,
+    // left shoulder easing off the ceiling into the neck
+    `C ${x - half} 0 ${x - half * 0.9} ${d * 0.28} ${x - half * 0.82} ${d * 0.55}`,
+    // left side of the belly down to the rounded tip
+    `C ${x - half * 0.78} ${d * 0.85} ${x - half * 0.5} ${d} ${x} ${d}`,
+    // right side back up
+    `C ${x + half * 0.5} ${d} ${x + half * 0.78} ${d * 0.85} ${x + half * 0.82} ${d * 0.55}`,
+    `C ${x + half * 0.9} ${d * 0.28} ${x + half} 0 ${x + half + w * 0.4} 0`,
+    "Z",
+  ].join(" ");
+}
+
+// Which drips shed a falling droplet, and on what rhythm.
+const DROPLETS = [
+  { drip: 1, dur: 4.2, delay: 0.6 },
+  { drip: 3, dur: 5.1, delay: 2.1 },
+  { drip: 6, dur: 4.7, delay: 3.4 },
 ];
 
 export default function DripDivider({ flip = false, hotIndex = -1 }) {
@@ -35,9 +60,9 @@ export default function DripDivider({ flip = false, hotIndex = -1 }) {
       }}
     >
       <svg
-        viewBox="0 0 1000 120"
+        viewBox="0 0 1000 190"
         preserveAspectRatio="none"
-        style={{ width: "100%", height: "clamp(48px, 8vw, 110px)" }}
+        style={{ width: "100%", height: "clamp(64px, 10vw, 150px)" }}
       >
         <defs>
           <linearGradient id={`melt-${id}`} x1="0" y1="0" x2="0" y2="1">
@@ -57,23 +82,47 @@ export default function DripDivider({ flip = false, hotIndex = -1 }) {
         <rect x="0" y="0" width="1000" height="3" fill={`url(#melt-${id})`} />
 
         {DRIPS.map((d, i) => (
-          <motion.rect
+          <motion.path
             key={i}
-            x={d.x * 10 - d.w * 5}
-            y="0"
-            width={d.w * 10}
-            rx={d.w * 5}
+            d={blobPath(d)}
             fill={i === hotIndex ? `url(#melt-hot-${id})` : `url(#melt-${id})`}
-            initial={{ height: 6 }}
-            whileInView={{ height: d.len }}
+            initial={{ scaleY: 0.12 }}
+            whileInView={{ scaleY: 1 }}
             viewport={{ once: true, margin: "-40px" }}
             transition={{
-              duration: 1.3,
-              delay: i * 0.06,
+              duration: 1.5,
+              delay: i * 0.07,
               ease: [0.22, 1, 0.36, 1],
             }}
+            style={{ transformOrigin: "50% 0%" }}
           />
         ))}
+
+        {DROPLETS.map((dp, i) => {
+          const d = DRIPS[dp.drip];
+          return (
+            <motion.ellipse
+              key={`drop-${i}`}
+              cx={d.x}
+              rx={d.w * 0.22}
+              ry={d.w * 0.3}
+              fill={
+                dp.drip === hotIndex
+                  ? `url(#melt-hot-${id})`
+                  : `url(#melt-${id})`
+              }
+              initial={{ cy: d.d + 6, opacity: 0 }}
+              animate={{ cy: d.d + 80, opacity: [0, 0.9, 0.9, 0] }}
+              transition={{
+                duration: dp.dur * 0.4,
+                delay: dp.delay,
+                repeat: Infinity,
+                repeatDelay: dp.dur * 0.6,
+                ease: [0.5, 0, 0.9, 0.4],
+              }}
+            />
+          );
+        })}
       </svg>
     </div>
   );

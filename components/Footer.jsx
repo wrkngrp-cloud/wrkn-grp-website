@@ -12,8 +12,9 @@ export default function Footer() {
               <span>Sweetness Studios</span>
             </div>
             <p className="dim measure" style={{ fontSize: "0.95rem" }}>
-              The sound arm of WRKN GRP. Records for artists. A voice for
-              brands. The room that arranges the night you won&rsquo;t forget.
+              The sound arm of WRKN GRP — building the songs that end up on
+              the soundtrack of somebody&rsquo;s life. Records for artists. A
+              voice for brands. The room nobody forgets.
             </p>
           </div>
 
