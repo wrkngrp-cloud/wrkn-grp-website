@@ -315,6 +315,9 @@ export default function WorldScene({ sceneRef }) {
     const target = sceneRef.current.target;
     const scrollY = sceneRef.current.scrollY;
     const narrow = state.size.width < 640;
+    // Horizontal spread: scenery world-x compresses so the control room,
+    // doors and vinyl stay inside the frame on phones and small laptops.
+    const spread = narrow ? 0.42 : state.size.width < 1100 ? 0.72 : 1;
     const c = cur.current;
 
     if (!snapped.current) {
@@ -468,20 +471,21 @@ export default function WorldScene({ sceneRef }) {
 
     if (blindsGroup.current) {
       blindsGroup.current.children.forEach((m, i) => {
-        m.material.opacity = c.blinds * (0.14 - i * 0.015);
+        m.material.opacity = c.blinds * (0.19 - i * 0.018);
       });
       blindsGroup.current.position.x = c.x * 0.4;
     }
 
     // Console: rises into frame when its scene is on
     if (deskGroup.current) {
-      deskGroup.current.position.y = -3.9 + c.desk * 1.55;
+      deskGroup.current.position.y = -3.9 + c.desk * 1.65;
+      deskGroup.current.scale.x = spread;
       deskGroup.current.visible = c.desk > 0.02;
     }
     deskKnobRefs.current.forEach((m, i) => {
       if (!m) return;
-      const flicker = 0.45 + 0.55 * Math.abs(Math.sin(t * 2.1 + i * 1.37));
-      m.material.opacity = c.desk * 0.75 * flicker;
+      const flicker = 0.55 + 0.45 * Math.abs(Math.sin(t * 2.1 + i * 1.37));
+      m.material.opacity = c.desk * flicker;
     });
 
     // Monitors slide in from the sides, cones pulsing on a slow kick
@@ -489,7 +493,7 @@ export default function WorldScene({ sceneRef }) {
     speakerRefs.current.forEach((sp, i) => {
       if (!sp) return;
       const side = i === 0 ? -1 : 1;
-      sp.position.x = side * (3.35 + (1 - c.speakers) * 2.2);
+      sp.position.x = side * (3.35 * spread + (1 - c.speakers) * 2.2);
       sp.visible = c.speakers > 0.02;
       const cone = sp.children[1];
       if (cone) cone.scale.setScalar(1 + 0.14 * kick);
@@ -502,24 +506,28 @@ export default function WorldScene({ sceneRef }) {
 
     // Vinyl spins opposite the lollipop
     if (vinylGroup.current) {
-      vinylGroup.current.position.set(-Math.sign(c.x || 1) * 2.1, 0.35, -2.6);
+      vinylGroup.current.position.set(
+        -Math.sign(c.x || 1) * 2.1 * spread,
+        0.35,
+        -2.1
+      );
       vinylGroup.current.rotation.z = -t * 1.1;
       vinylGroup.current.visible = c.vinyl > 0.02;
       vinylGroup.current.children.forEach((m2) => {
-        if (m2.material) m2.material.opacity = c.vinyl * 0.95;
+        if (m2.material) m2.material.opacity = c.vinyl;
       });
     }
 
     // Three doorframes of light, opposite side, receding
     if (doorsGroup.current) {
-      doorsGroup.current.position.x = -Math.sign(c.x || 1) * 2.3;
+      doorsGroup.current.position.x = -Math.sign(c.x || 1) * 2.0 * spread;
       doorsGroup.current.visible = c.doors > 0.02;
       doorsGroup.current.children.forEach((frame, fi) => {
-        const breathe = 0.75 + 0.25 * Math.sin(t * 0.9 + fi * 1.4);
+        const breathe = 0.8 + 0.2 * Math.sin(t * 0.9 + fi * 1.4);
         frame.children.forEach((m2) => {
           if (m2.material) {
             m2.material.opacity =
-              c.doors * (m2.userData.spill ? 0.08 : 0.5 - fi * 0.12) * breathe;
+              c.doors * (m2.userData.spill ? 0.17 : 0.95 - fi * 0.2) * breathe;
           }
         });
       });
@@ -529,10 +537,10 @@ export default function WorldScene({ sceneRef }) {
     spotRefs.current.forEach((cone, i) => {
       if (!cone) return;
       const side = i === 0 ? -1 : 1;
-      cone.position.set(c.x + side * 1.7, 3.1, -1.9);
+      cone.position.set(c.x + side * 1.7 * spread, 3.1, -1.9);
       cone.rotation.z = side * (0.16 + 0.1 * Math.sin(t * 0.45 + i * 2));
       cone.visible = c.spots > 0.02;
-      if (cone.material) cone.material.opacity = c.spots * 0.09;
+      if (cone.material) cone.material.opacity = c.spots * 0.15;
     });
   });
 
@@ -642,9 +650,9 @@ export default function WorldScene({ sceneRef }) {
         <group key={i} ref={(el) => (speakerRefs.current[i] = el)} position={[i === 0 ? -3.35 : 3.35, -1.05, -1.4]}>
           <mesh>
             <boxGeometry args={[0.95, 1.4, 0.7]} />
-            <meshStandardMaterial color={0x140a04} roughness={0.6} />
+            <meshStandardMaterial color={0x1c0f06} roughness={0.55} />
           </mesh>
-          <mesh position={[0, -0.18, 0.36]} userData={{ op: 0.55 }}>
+          <mesh position={[0, -0.18, 0.36]} userData={{ op: 0.95 }}>
             <torusGeometry args={[0.3, 0.02, 8, 48]} />
             <meshBasicMaterial
               color={0xa8460e}
@@ -654,7 +662,7 @@ export default function WorldScene({ sceneRef }) {
               depthWrite={false}
             />
           </mesh>
-          <mesh position={[0, 0.42, 0.36]} userData={{ op: 0.45 }}>
+          <mesh position={[0, 0.42, 0.36]} userData={{ op: 0.8 }}>
             <torusGeometry args={[0.11, 0.015, 8, 32]} />
             <meshBasicMaterial
               color={0xfca818}
@@ -670,18 +678,18 @@ export default function WorldScene({ sceneRef }) {
       {/* A record spinning in the dark */}
       <group ref={vinylGroup} position={[-2.1, 0.35, -2.6]} rotation={[-0.12, 0.18, 0]}>
         <mesh>
-          <circleGeometry args={[1.15, 64]} />
+          <circleGeometry args={[1.4, 64]} />
           <meshBasicMaterial map={vinylTex} transparent opacity={0} depthWrite={false} />
         </mesh>
       </group>
 
       {/* Three doorframes of light */}
-      <group ref={doorsGroup} position={[-2.3, -0.2, -3.8]} rotation={[0, 0.32, 0]}>
+      <group ref={doorsGroup} position={[-2.3, -0.2, -3.0]} rotation={[0, 0.3, 0]}>
         {[0, 1, 2].map((fi) => {
-          const w = 1.05;
-          const h = 2.5;
-          const x = fi * -1.35;
-          const z = fi * -0.9;
+          const w = 1.2;
+          const h = 2.8;
+          const x = fi * -1.5;
+          const z = fi * -0.85;
           const col = [0xfca818, 0xa8460e, 0xc97e5b][fi];
           const bar = (
             <meshBasicMaterial
@@ -695,15 +703,15 @@ export default function WorldScene({ sceneRef }) {
           return (
             <group key={fi} position={[x, 0, z]}>
               <mesh position={[-w / 2, 0, 0]}>
-                <boxGeometry args={[0.035, h, 0.035]} />
+                <boxGeometry args={[0.05, h, 0.05]} />
                 {bar}
               </mesh>
               <mesh position={[w / 2, 0, 0]}>
-                <boxGeometry args={[0.035, h, 0.035]} />
+                <boxGeometry args={[0.05, h, 0.05]} />
                 {bar}
               </mesh>
               <mesh position={[0, h / 2, 0]}>
-                <boxGeometry args={[w + 0.035, 0.035, 0.035]} />
+                <boxGeometry args={[w + 0.05, 0.05, 0.05]} />
                 {bar}
               </mesh>
               <mesh userData={{ spill: true }}>
