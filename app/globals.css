@@ -869,6 +869,58 @@ h3 {
   margin-bottom: 3rem;
 }
 
+/* ---------- atmosphere ---------- */
+
+/* Film grain over everything — the analog hiss on the master */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  pointer-events: none;
+  opacity: 0.16;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Diagonal shafts of warm light — the blinds from the hero photography */
+.bg-shafts {
+  position: relative;
+}
+
+.bg-shafts::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    115deg,
+    rgba(252, 168, 24, 0.045) 0 70px,
+    rgba(0, 0, 0, 0) 70px 190px
+  );
+  mask-image: radial-gradient(120% 100% at 70% 0%, black 20%, transparent 75%);
+  -webkit-mask-image: radial-gradient(120% 100% at 70% 0%, black 20%, transparent 75%);
+}
+
+/* Deep ember glow pooling at a section's edge */
+.bg-glow {
+  position: relative;
+}
+
+.bg-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 55% at 82% 18%, rgba(140, 56, 14, 0.32), transparent 70%),
+    radial-gradient(45% 45% at 8% 90%, rgba(84, 28, 0, 0.4), transparent 70%);
+}
+
+.bg-glow > .container,
+.bg-shafts > .container {
+  position: relative;
+}
+
 /* Ice-blue focus ring: the one cool note, reserved for keyboard focus */
 :focus-visible {
   outline: 1.5px solid var(--ice);

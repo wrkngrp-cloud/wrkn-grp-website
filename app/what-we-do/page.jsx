@@ -33,21 +33,21 @@ const CAPABILITIES = [
     title: "Film & Sync",
     copy: "Records with real feeling in them find the screen on their own. “Ready” landed in Ololade on Netflix. “Safe” landed in My Body, God's Temple on Zikoko's channel. Neither was chased — both were recognised. For work built for the screen, the studio scores it and designs the sound around it. For a song that's ready for its moment, the studio helps it find one.",
     audio: [
-      { title: "Ready", sub: "Kotrell · featured in Ololade (Netflix)" },
-      { title: "Safe", sub: "Kotrell · featured in My Body, God's Temple (Zikoko)" },
+      { title: "Ready", sub: "Featured in Ololade (Netflix)" },
+      { title: "Safe", sub: "Featured in My Body, God's Temple (Zikoko)" },
     ],
   },
   {
     num: "05",
     title: "Music Direction",
-    copy: "A recording is a photograph. A live room is a night — and a night only lands if somebody directs it with intention. The studio arranged and directed the music for Ruger's first-ever tour of Europe and Canada, and for Kotyard. The first show it ever arranged for Kotrell was a lockdown livestream playing to about thirty people; a few years later he sold out a venue in Abuja, with the studio still building the arrangements beside him. That arc is the reason this door exists.",
+    copy: "A recording is a photograph. A live room is a night — and a night only lands if somebody directs it with intention. The studio arranged and directed the music for Ruger's first-ever tour of Europe and Canada, and for Kotyard. And the first show it ever arranged was a lockdown livestream playing to about thirty people; a few years later, that same artist sold out a venue in Abuja with the studio still building the arrangements beside him. That arc is the reason this door exists.",
   },
 ];
 
 export default function WhatWeDo() {
   return (
     <main>
-      <section className="section" style={{ paddingTop: "clamp(8rem, 18vh, 12rem)" }}>
+      <section className="section bg-glow" style={{ paddingTop: "clamp(8rem, 18vh, 12rem)" }}>
         <div className="container">
           <Reveal>
             <p className="kicker mb-1">What We Do</p>

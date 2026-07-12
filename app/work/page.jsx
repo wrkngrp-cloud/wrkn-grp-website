@@ -13,7 +13,7 @@ export const metadata = {
 export default function Work() {
   return (
     <main>
-      <section className="section" style={{ paddingTop: "clamp(8rem, 18vh, 12rem)" }}>
+      <section className="section bg-glow" style={{ paddingTop: "clamp(8rem, 18vh, 12rem)" }}>
         <div className="container">
           <Reveal>
             <p className="kicker mb-1">Work</p>

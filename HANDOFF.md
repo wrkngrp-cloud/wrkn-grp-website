@@ -19,6 +19,18 @@
 
 ## Content notes
 
+- **Proof strip ("The company the sound keeps")** now shows record
+  labels/platforms as styled wordmarks: Riverland Records (Ric
+  Hassani's label), Jonzing World (Ruger's label at the time of the
+  Europe & Canada tour), Mavin Records (Bayanni), Netflix, Zikoko.
+  Actual logo image files were NOT embedded — label logos are
+  trademarks and need clearance/assets from Emmanuel. Drop licensed
+  SVGs into `public/brand/labels/` and swap the wordmarks in
+  `components/` when ready. Kuda is intentionally left off the Home
+  page (strip + selected work) per Emmanuel's note (July 2026); Kuda
+  detail remains on What We Do and Work — remove there too if the
+  intent was site-wide.
+
 - The v0.2 content doc's credits table lists "Safe" (Kotrell) twice —
   a playlist duplication. The site shows it once (27 rows). If the
   double entry was intentional, add it back in `lib/credits.js`.

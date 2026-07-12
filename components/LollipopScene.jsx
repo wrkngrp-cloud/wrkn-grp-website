@@ -135,8 +135,8 @@ export default function LollipopScene({ progressRef }) {
   );
 
   const goo = useMemo(() => {
-    const resolution = size.width < 640 ? 44 : 64;
-    const mc = new MarchingCubes(resolution, gooMat, false, true, 30000);
+    const resolution = size.width < 640 ? 54 : 88;
+    const mc = new MarchingCubes(resolution, gooMat, false, true, 80000);
     mc.position.set(0, -0.9, 0);
     mc.scale.set(2.1, 2.6, 0.55);
     return mc;
@@ -185,9 +185,9 @@ export default function LollipopScene({ progressRef }) {
     const s = narrow ? 0.72 : 1;
     group.current.scale.set(s, s, s);
 
-    // Face-on at rest, turning gently as the page scrolls. The turn is
-    // shallow so the liquid always reads in profile.
-    group.current.rotation.y = p * 0.9 + Math.sin(t * 0.3) * 0.05;
+    // Scroll turns the lollipop — a full revolution across the hero —
+    // while the melt keeps its own continuous clock.
+    group.current.rotation.y = p * Math.PI * 2 + Math.sin(t * 0.3) * 0.05;
     group.current.rotation.x =
       -0.04 + pointer.current.y * 0.05 + Math.sin(t * 0.4) * 0.015;
     group.current.rotation.z = pointer.current.x * 0.03;
@@ -204,14 +204,14 @@ export default function LollipopScene({ progressRef }) {
         HEAD_R * 0.34,
         HEAD_R * (slump + sag)
       );
-      headRef.current.position.y = HEAD_Y - p * 0.18;
+      headRef.current.position.y = HEAD_Y - p * 0.1;
     }
 
     // ---- the liquid field ----
     const mc = goo;
     mc.reset();
 
-    const drop = p * 0.18; // whole melt follows the head down
+    const drop = p * 0.1; // whole melt follows the head down
     const sub = 12;
 
     STREAMS.forEach((st, i) => {
@@ -223,11 +223,14 @@ export default function LollipopScene({ progressRef }) {
       const [px, py] = toField(st.x * 0.92, top);
       mc.addBall(px, py, 0.5, 0.075 * st.w * (0.7 + p * 0.3), sub, col);
 
-      // Stream body: a chain of blending beads whose reach grows with
-      // scroll. A slow ooze keeps it moving even when the page is still.
-      const melt = st.rest + (1 - st.rest) * (1 - Math.pow(1 - p, 2));
-      const ooze = 1 + Math.sin(t * 0.6 + i * 1.9) * 0.06;
-      const reach = st.len * melt * ooze;
+      // Stream body: the melt never waits for the page. Each stream
+      // breathes on its own slow clock, always running, always dripping.
+      const breathe =
+        st.rest +
+        (1 - st.rest) *
+          (0.5 + 0.5 * Math.sin(t * (0.14 + i * 0.013) + i * 2.1));
+      const ooze = 1 + Math.sin(t * 0.6 + i * 1.9) * 0.05;
+      const reach = st.len * (0.55 + 0.45 * breathe) * ooze;
       const steps = Math.max(3, Math.ceil(reach / 0.16));
       for (let k = 1; k <= steps; k++) {
         const f = k / steps;
@@ -251,12 +254,28 @@ export default function LollipopScene({ progressRef }) {
         const [dx, dy] = toField(st.x, frontY - 0.07 * grow);
         mc.addBall(dx, dy, 0.5, (0.03 + 0.045 * grow) * st.w, sub, col);
       } else {
-        // free fall, accelerating, shrinking as it goes
+        // free fall: the drop elongates as gravity takes it, and pulls a
+        // thin thread of liquid behind it — the line the melt leaves.
         const fall = (cycle - 0.55) / 0.45;
-        const dyWorld = frontY - 0.12 - fall * fall * 3.2;
+        const dyWorld = frontY - 0.12 - fall * fall * 3.4;
+        const stretch = 0.1 + fall * 0.22; // teardrop lengthens as it falls
         const [dx, dy] = toField(st.x, dyWorld);
-        const sz = (0.055 - 0.025 * fall) * st.w;
-        if (dy > 0.02) mc.addBall(dx, dy, 0.5, sz, sub, col);
+        const [dx2, dy2] = toField(st.x, dyWorld + stretch);
+        const sz = (0.05 - 0.02 * fall) * st.w;
+        if (dy > 0.02) {
+          mc.addBall(dx, dy, 0.5, sz, sub, col);
+          mc.addBall(dx2, dy2, 0.5, sz * 0.7, sub, col);
+        }
+        // the thread: a whisper of liquid strung between tip and drop,
+        // thinning as the drop gets away
+        const threadSteps = 3;
+        for (let q = 1; q <= threadSteps; q++) {
+          const f = q / (threadSteps + 1);
+          const [tx, ty] = toField(st.x, frontY - (frontY - dyWorld) * f);
+          if (ty > 0.02) {
+            mc.addBall(tx, ty, 0.5, 0.014 * st.w * (1 - fall * 0.7), sub, col);
+          }
+        }
         // the tip it left behind, retracting
         const [rx, ry] = toField(st.x, frontY - 0.05);
         mc.addBall(rx, ry, 0.5, 0.025 * st.w * (1 - fall * 0.4), sub, col);

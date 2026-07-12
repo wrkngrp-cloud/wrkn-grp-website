@@ -10,7 +10,7 @@ export const metadata = {
 export default function Studio() {
   return (
     <main>
-      <section className="section" style={{ paddingTop: "clamp(8rem, 18vh, 12rem)" }}>
+      <section className="section bg-glow" style={{ paddingTop: "clamp(8rem, 18vh, 12rem)" }}>
         <div className="container">
           <Reveal>
             <p className="kicker mb-1">Studio</p>
@@ -44,11 +44,11 @@ export default function Studio() {
             </Reveal>
             <Reveal>
               <p className="dim">
-                Over six years that principle became a catalogue. Ric Hassani.
-                Kotrell. A run of records that refuse to sound alike, because
-                each one was built to feel like the person singing it — and
-                the person who would hear it back, alone, at the exact moment
-                they needed it.
+                Over six years that principle became a catalogue — records
+                for names you&rsquo;d recognise and voices you&rsquo;ll meet
+                soon, and none of them sound alike. Each one was built to
+                feel like the person singing it, and the person who would
+                hear it back, alone, at the exact moment they needed it.
               </p>
             </Reveal>
             <Reveal>
@@ -64,7 +64,7 @@ export default function Studio() {
         </div>
       </section>
 
-      <section className="section" style={{ background: "var(--lift)" }}>
+      <section className="section bg-shafts" style={{ background: "var(--lift)" }}>
         <div className="container">
           <Reveal>
             <blockquote className="pull-quote" style={{ maxWidth: "30ch" }}>

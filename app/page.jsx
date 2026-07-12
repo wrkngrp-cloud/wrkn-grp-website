@@ -5,6 +5,7 @@ import DripDivider from "../components/DripDivider";
 import Reveal from "../components/Reveal";
 import Parallax from "../components/Parallax";
 import AudioPlayer from "../components/AudioPlayer";
+import SoundWave from "../components/SoundWave";
 import { PROOF } from "../lib/credits";
 
 const PRINCIPLES = [
@@ -30,21 +31,21 @@ const DOORS = [
   {
     num: "01",
     title: "Records.",
-    copy: "Six years, 30-plus songs, artists whose stories the studio helped tell — and now, records of its own.",
+    copy: "Full projects, single records, and now records of the studio's own. Built slow and built true — each one made to become somebody's favourite song.",
     href: "/work/",
     link: "The work",
   },
   {
     num: "02",
     title: "A voice for brands.",
-    copy: "Sound isn't decoration on a brand. It's the feeling that's left when the screen goes dark. The studio builds that feeling on purpose, with a reason behind every note.",
+    copy: "Sound is the feeling that stays when the screen goes dark. The studio composes that feeling on purpose — a voice your audience knows in three seconds flat.",
     href: "/what-we-do/",
     link: "What we do",
   },
   {
     num: "03",
     title: "The room.",
-    copy: "Direction and arrangement for the night people remember — the live room, built with the same intention as the record.",
+    copy: "Arrangement and direction for live nights — the kind a crowd carries home and keeps.",
     href: "/work/#live",
     link: "Live direction",
   },
@@ -60,29 +61,34 @@ export default function Home() {
       <DripDivider hotIndex={3} />
 
       {/* Manifesto */}
-      <section className="section">
+      <section className="section bg-glow">
         <div className="container">
           <Reveal>
-            <p className="kicker mb-1">Why this studio exists</p>
-            <h2 className="display-2 mb-2" style={{ maxWidth: "20ch" }}>
-              Every life has a soundtrack. This studio builds the songs that
-              end up on it.
+            <p className="kicker mb-1">Why Sweetness exists</p>
+            <h2 className="display-2 mb-2" style={{ maxWidth: "18ch" }}>
+              Every life has a soundtrack. We&rsquo;re here to write it.
             </h2>
           </Reveal>
           <div className="grid-2">
             <div />
             <Reveal delay={0.1}>
               <p className="body-lg dim measure">
-                The record that carried you through a year you don&rsquo;t
-                talk about. The three seconds of sound that mean your bank
-                before a single word is said. The chorus a room full of
-                strangers sings like they rehearsed it together. None of that
-                happens by accident. Somebody sat with a feeling until it
-                became sound — patiently, deliberately, from the soul out.
-                That is the entire job of this studio.
+                The song that holds you together on a night nobody knows
+                about. The chorus a whole room sings like one voice. The
+                three seconds of sound that feel like home before a word is
+                said. None of it is an accident. Someone sat with a feeling
+                until it became sound — patient, deliberate, soul first.
+                That is the work. That is the whole point of Sweetness.
               </p>
             </Reveal>
           </div>
+        </div>
+      </section>
+
+      {/* The sound, visible */}
+      <section aria-hidden style={{ padding: "0 0 2rem" }}>
+        <div className="container">
+          <SoundWave height={170} />
         </div>
       </section>
 
@@ -140,7 +146,7 @@ export default function Home() {
       <DripDivider flip />
 
       {/* Selected work */}
-      <section className="section" style={{ background: "var(--lift)" }}>
+      <section className="section bg-shafts" style={{ background: "var(--lift)" }}>
         <div className="container">
           <Reveal>
             <p className="kicker mb-1">Selected work</p>
@@ -155,10 +161,10 @@ export default function Home() {
                 <p className="kicker mb-1" style={{ fontSize: "0.62rem" }}>On Netflix</p>
                 <h3 className="display-4 mb-1">Ready</h3>
                 <p className="dim mb-2" style={{ fontSize: "0.92rem" }}>
-                  Built with Kotrell as a feeling first — then it found its
-                  screen, in <em>Ololade</em>.
+                  Written as a feeling first. The screen came looking for it —
+                  it landed in <em>Ololade</em>.
                 </p>
-                <AudioPlayer title="Ready" sub="Kotrell · Ololade (Netflix)" />
+                <AudioPlayer title="Ready" sub="Featured in Ololade (Netflix)" />
               </article>
             </Reveal>
             <Reveal delay={0.1}>
@@ -166,21 +172,21 @@ export default function Home() {
                 <p className="kicker mb-1" style={{ fontSize: "0.62rem" }}>On Zikoko</p>
                 <h3 className="display-4 mb-1">Safe</h3>
                 <p className="dim mb-2" style={{ fontSize: "0.92rem" }}>
-                  Produced to feel like somebody finally exhaling — it landed
-                  in <em>My Body, God&rsquo;s Temple</em>.
+                  Made to sound like an exhale — like finally being held. It
+                  found its film in <em>My Body, God&rsquo;s Temple</em>.
                 </p>
-                <AudioPlayer title="Safe" sub="Kotrell · My Body, God's Temple (Zikoko)" />
+                <AudioPlayer title="Safe" sub="Featured in My Body, God's Temple (Zikoko)" />
               </article>
             </Reveal>
             <Reveal delay={0.2}>
               <article className="card" style={{ height: "100%" }}>
-                <p className="kicker mb-1" style={{ fontSize: "0.62rem" }}>Sonic identity</p>
-                <h3 className="display-4 mb-1">Kuda</h3>
+                <p className="kicker mb-1" style={{ fontSize: "0.62rem" }}>The studio&rsquo;s own</p>
+                <h3 className="display-4 mb-1">Sweetness Vol 1</h3>
                 <p className="dim mb-2" style={{ fontSize: "0.92rem" }}>
-                  Two sonic logos on traditional Nigerian instrumentation —
-                  three seconds that say the brand&rsquo;s name without a word.
+                  An EP around the three things every Sweetness record returns
+                  to — Life, Love, God.
                 </p>
-                <AudioPlayer title="The Awakening" sub="Kuda · sonic logo" />
+                <AudioPlayer title="Sweetness Vol 1" sub="EP · Life, Love, God" />
               </article>
             </Reveal>
           </div>
@@ -199,7 +205,7 @@ export default function Home() {
       <section className="section">
         <div className="container">
           <Reveal>
-            <p className="kicker mb-2">The company the studio keeps</p>
+            <p className="kicker mb-2">The company the sound keeps</p>
           </Reveal>
           <Parallax amount={26}>
             <div className="proof-strip">
@@ -222,9 +228,9 @@ export default function Home() {
               className="pull-quote"
               style={{ maxWidth: "34ch", marginInline: "auto" }}
             >
-              If it needs a sound, it needs someone who will ask what that
-              sound should make a person feel — before anyone touches an
-              instrument. That is where this studio starts. Every time.
+              Before anyone touches an instrument, one question gets asked:
+              what should this make a person feel? Everything Sweetness makes
+              starts there. Every time.
             </p>
           </Reveal>
         </div>

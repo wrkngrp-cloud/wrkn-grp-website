@@ -46,13 +46,14 @@ export default function LollipopHero() {
 
         <div className="container hero-copy">
           <p className="kicker mb-1">Sweetness Studios · The sound arm of WRKN GRP</p>
-          <h1 className="display-1" style={{ maxWidth: "13ch" }}>
-            Some songs play. Some songs stay.
+          <h1 className="display-2" style={{ maxWidth: "22ch" }}>
+            Some sounds are heard and forgotten. We make the ones that are
+            felt — and remembered.
           </h1>
           <p className="body-lg dim measure mt-2">
-            Sweetness Studios makes the kind that stay — records for artists,
-            a voice for brands, direction for the nights nobody forgets.
-            Music built from the soul, to live in somebody&rsquo;s life.
+            Sweetness Studios is the sound arm of WRKN GRP. Music with soul
+            at its core, written to become the soundtrack of somebody&rsquo;s
+            life.
           </p>
           <div className="mt-2" style={{ display: "flex", gap: "1rem" }}>
             <Link href="/work/" className="btn">

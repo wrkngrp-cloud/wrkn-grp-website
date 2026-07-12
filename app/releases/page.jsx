@@ -3,6 +3,7 @@ import CursorTrail from "../../components/CursorTrail";
 import DripDivider from "../../components/DripDivider";
 import Reveal from "../../components/Reveal";
 import AudioPlayer from "../../components/AudioPlayer";
+import SoundWave from "../../components/SoundWave";
 
 export const metadata = {
   title: "Releases — Sweetness Studios",
@@ -15,7 +16,7 @@ export default function Releases() {
     <main>
       <CursorTrail />
 
-      <section className="section" style={{ paddingTop: "clamp(8rem, 18vh, 12rem)" }}>
+      <section className="section bg-glow" style={{ paddingTop: "clamp(8rem, 18vh, 12rem)" }}>
         <div className="container">
           <Reveal>
             <p className="kicker mb-1">Releases</p>
@@ -47,7 +48,13 @@ export default function Releases() {
         </div>
       </section>
 
-      <section className="section" style={{ background: "var(--lift)" }}>
+      <section aria-hidden style={{ padding: "0 0 1rem" }}>
+        <div className="container">
+          <SoundWave height={140} />
+        </div>
+      </section>
+
+      <section className="section bg-shafts" style={{ background: "var(--lift)" }}>
         <div className="container">
           <Reveal>
             <article className="card" style={{ padding: "clamp(2rem, 5vw, 4rem)" }}>

@@ -30,6 +30,7 @@ export default function RootLayout({ children }) {
         <Nav />
         {children}
         <Footer />
+        <div className="grain" aria-hidden />
       </body>
     </html>
   );
