@@ -3,100 +3,52 @@
 import { useEffect, useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
+import { createSwirlTexture, createBlindsTexture } from "../lib/lollipopTexture";
 
 /*
- * The melting lollipop, built toward the Vol. 1 deck's hero photography:
- * twisted amber-red glass on true black, one warm key light raking
- * across it through blind-like shafts, a hot red rim to pull it off the
- * background. Geometry follows the logo silhouette (swirled head, drip
- * streams, ice-blue stick); the material carries the grade.
+ * The melting lollipop — a faithful 3D replica of the logo file.
+ *
+ * GEOMETRY (fixed, replicates the logo): the swirled head faces the
+ * camera at rest so the single-arm spiral reads exactly like the flat
+ * mark; the drip curtain hangs off the head's lower silhouette at the
+ * logo's own positions, colors, and rest lengths (the logo is already
+ * mid-melt — scroll advances the melt further, it doesn't start it);
+ * the ice-blue stick drops from behind the curtain.
+ *
+ * TEXTURING (provisional, swappable): every painted surface comes from
+ * lib/lollipopTexture.js — replace that module's output with future
+ * texture assets without touching this geometry.
+ *
+ * LIGHTING (per the deck's hero photography): one warm off-axis key
+ * through a blinds gobo, hot-red rim from behind, warm-slat PMREM
+ * environment, on true black.
  */
 
-// The graded swirl: logo hues at the lit end, deck shadow tones baked in
-// so no band ever reads as flat saturated candy-color.
-const BAND_STOPS = [
-  { at: 0.0, c: [0xfc, 0xa8, 0x18] }, // gold
-  { at: 0.22, c: [0xfc, 0x78, 0x18] }, // burnt orange
-  { at: 0.42, c: [0xfc, 0x24, 0x18] }, // hot red
-  { at: 0.55, c: [0x8c, 0x38, 0x0e] }, // burnt amber
-  { at: 0.68, c: [0xfc, 0x54, 0x84] }, // the single pink note
-  { at: 0.78, c: [0xb6, 0x46, 0x0e] }, // ember
-  { at: 0.9, c: [0x54, 0x1c, 0x00] }, // amber shadow
-  { at: 1.0, c: [0xfc, 0xa8, 0x18] }, // wrap back to gold
+const HEAD_R = 1.35;
+const HEAD_Y = 0.9;
+
+// The drip curtain, left → right as drawn in the logo file: logo hexes,
+// widths, and rest lengths (`len`), with tops riding the head's circle
+// edge. `x` is world units from the head's axis.
+const DRIPS = [
+  { x: -1.12, r: 0.11, len: 0.85, color: 0xfc5484 },
+  { x: -0.94, r: 0.13, len: 1.45, color: 0xfc2418 },
+  { x: -0.76, r: 0.12, len: 2.0, color: 0xfc5484 },
+  { x: -0.55, r: 0.14, len: 1.05, color: 0xfc7818 },
+  { x: -0.35, r: 0.12, len: 1.7, color: 0xfca818 },
+  { x: -0.15, r: 0.15, len: 2.35, color: 0xfc7818 },
+  { x: 0.07, r: 0.12, len: 1.15, color: 0xfc2418 },
+  { x: 0.28, r: 0.14, len: 2.1, color: 0xfca818 },
+  { x: 0.5, r: 0.13, len: 1.5, color: 0xfc7818 },
+  { x: 0.72, r: 0.11, len: 0.95, color: 0xfca818 },
+  { x: 0.94, r: 0.13, len: 1.3, color: 0xfc7818 },
+  { x: 1.12, r: 0.1, len: 0.65, color: 0xfc2418 },
 ];
 
-function bandColor(t) {
-  t = ((t % 1) + 1) % 1;
-  for (let i = 0; i < BAND_STOPS.length - 1; i++) {
-    const a = BAND_STOPS[i];
-    const b = BAND_STOPS[i + 1];
-    if (t >= a.at && t <= b.at) {
-      const f = (t - a.at) / (b.at - a.at || 1);
-      return [
-        a.c[0] + (b.c[0] - a.c[0]) * f,
-        a.c[1] + (b.c[1] - a.c[1]) * f,
-        a.c[2] + (b.c[2] - a.c[2]) * f,
-      ];
-    }
-  }
-  return BAND_STOPS[0].c;
-}
-
-// Swirl texture in UV space: bands spiral pole-to-pole, so with the
-// sphere's pole aimed at the camera the face reads as the logo's spiral.
-function makeSwirlTexture() {
-  const size = 1024;
-  const canvas = document.createElement("canvas");
-  canvas.width = canvas.height = size;
-  const ctx = canvas.getContext("2d");
-  const img = ctx.createImageData(size, size);
-  const turns = 3;
-
-  for (let y = 0; y < size; y++) {
-    const v = y / size;
-    for (let x = 0; x < size; x++) {
-      const u = x / size;
-      const t = u * turns + v * 1.35;
-      const [r, g, b] = bandColor(t);
-      // Fall toward the deck's amber shadow at the melting (south) pole
-      const sink = 0.82 + 0.18 * (1 - v);
-      const i = (y * size + x) * 4;
-      img.data[i] = r * sink;
-      img.data[i + 1] = g * sink;
-      img.data[i + 2] = b * sink;
-      img.data[i + 3] = 255;
-    }
-  }
-  ctx.putImageData(img, 0, 0);
-
-  const tex = new THREE.CanvasTexture(canvas);
-  tex.colorSpace = THREE.SRGBColorSpace;
-  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-  tex.anisotropy = 8;
-  return tex;
-}
-
-// Striped gobo for the key light — the "window blinds" from the deck photo.
-function makeBlindsTexture() {
-  const size = 512;
-  const canvas = document.createElement("canvas");
-  canvas.width = canvas.height = size;
-  const ctx = canvas.getContext("2d");
-  ctx.fillStyle = "#000";
-  ctx.fillRect(0, 0, size, size);
-  ctx.save();
-  ctx.translate(size / 2, size / 2);
-  ctx.rotate(-0.42); // diagonal shafts, off-axis like the reference
-  const stripe = 46;
-  ctx.fillStyle = "#fff";
-  for (let y = -size; y < size; y += stripe * 2) {
-    ctx.fillRect(-size, y, size * 2, stripe * 1.15);
-  }
-  ctx.restore();
-  const tex = new THREE.CanvasTexture(canvas);
-  tex.colorSpace = THREE.SRGBColorSpace;
-  return tex;
-}
+// Tops sit on the circle silhouette, tucked slightly into the glass so
+// each stream grows out of the head, exactly as the flat mark overlaps.
+const dripTopY = (x) =>
+  HEAD_Y - Math.sqrt(Math.max(0, HEAD_R * HEAD_R - x * x)) + 0.18;
 
 // Environment the glass reflects: a black room with warm striped panels,
 // so every highlight it catches is an ember-toned streak.
@@ -138,19 +90,6 @@ function useWarmEnvironment() {
   }, [gl, scene]);
 }
 
-// Drip streams around the lower rim, echoing the logo's melt silhouette.
-// Each carries one hue from the swirl; lengths are animated by scroll.
-const DRIPS = [
-  { x: -1.06, z: 0.28, r: 0.09, len: 1.0, color: 0xfc5484, lag: 0.0 },
-  { x: -0.78, z: 0.5, r: 0.12, len: 1.6, color: 0xfc7818, lag: 0.12 },
-  { x: -0.45, z: 0.66, r: 0.1, len: 1.25, color: 0xfca818, lag: 0.05 },
-  { x: -0.14, z: 0.74, r: 0.13, len: 1.9, color: 0xfc2418, lag: 0.2 },
-  { x: 0.18, z: 0.72, r: 0.11, len: 1.45, color: 0xfca818, lag: 0.08 },
-  { x: 0.5, z: 0.62, r: 0.13, len: 1.75, color: 0xfc7818, lag: 0.16 },
-  { x: 0.82, z: 0.44, r: 0.1, len: 1.15, color: 0xb6460e, lag: 0.03 },
-  { x: 1.08, z: 0.2, r: 0.08, len: 0.9, color: 0xfc5484, lag: 0.1 },
-];
-
 export default function LollipopScene({ progressRef }) {
   const group = useRef(null);
   const headRef = useRef(null);
@@ -159,12 +98,13 @@ export default function LollipopScene({ progressRef }) {
 
   useWarmEnvironment();
 
-  const swirlTex = useMemo(() => makeSwirlTexture(), []);
-  const blindsTex = useMemo(() => makeBlindsTexture(), []);
+  const swirlTex = useMemo(() => createSwirlTexture(), []);
+  const blindsTex = useMemo(() => createBlindsTexture(), []);
 
-  // The hero material: glass/hard-candy, per the brief — transmission,
-  // low roughness, full clearcoat, resin-range IOR. Grade comes from the
-  // swirl map; attenuation pulls depth toward the deck's amber shadow.
+  // The hero material: glass/hard-candy per the brief — transmission,
+  // low roughness, full clearcoat, resin-range IOR. The swirl map also
+  // glows faintly through the glass so the bands stay readable in
+  // shadow instead of sinking into flat dark red.
   const candyMat = useMemo(
     () =>
       new THREE.MeshPhysicalMaterial({
@@ -178,8 +118,6 @@ export default function LollipopScene({ progressRef }) {
         attenuationColor: new THREE.Color(0x8c380e),
         attenuationDistance: 2.2,
         envMapIntensity: 1.35,
-        // The swirl glows faintly through the glass so the bands stay
-        // readable in shadow instead of sinking into flat dark red.
         emissiveMap: swirlTex,
         emissive: new THREE.Color(0x8a8a8a),
         emissiveIntensity: 0.4,
@@ -221,9 +159,10 @@ export default function LollipopScene({ progressRef }) {
   );
 
   // Drip geometry with its origin at the top so scale.y pours downward.
+  // Unit capsule: radius 1, total height 4, spanning y ∈ [0, -4].
   const dripGeo = useMemo(() => {
     const g = new THREE.CapsuleGeometry(1, 2, 6, 14);
-    g.translate(0, -2, 0); // top of capsule at local origin
+    g.translate(0, -2, 0);
     return g;
   }, []);
 
@@ -249,31 +188,31 @@ export default function LollipopScene({ progressRef }) {
     const s = narrow ? 0.72 : 1;
     group.current.scale.set(s, s, s);
 
-    // Slow idle turn plus the scroll-driven rotation
-    group.current.rotation.y = t * 0.12 + p * Math.PI * 1.5;
+    // At rest the mark is face-on, exactly as the logo file reads.
+    // Scroll turns it under the light; a breath of sway keeps it alive.
+    group.current.rotation.y = p * Math.PI * 1.5 + Math.sin(t * 0.3) * 0.04;
     group.current.rotation.x =
-      -0.12 + pointer.current.y * 0.06 + Math.sin(t * 0.4) * 0.02;
-    group.current.rotation.z = pointer.current.x * 0.04;
+      -0.04 + pointer.current.y * 0.05 + Math.sin(t * 0.4) * 0.015;
+    group.current.rotation.z = pointer.current.x * 0.03;
 
     // The head slumps slightly as the melt advances
     if (headRef.current) {
-      const slump = 1 - p * 0.1;
-      headRef.current.scale.set(1.35, 1.35 * slump, 1.05);
-      headRef.current.position.y = 0.9 - p * 0.22;
+      const slump = 1 - p * 0.07;
+      headRef.current.scale.set(HEAD_R, HEAD_R * slump, HEAD_R * 0.92);
+      headRef.current.position.y = HEAD_Y - p * 0.16;
     }
 
-    // Drips lengthen with scroll, each on its own lag, with a slow ooze
+    // The logo is already mid-melt: drips hold their drawn rest lengths
+    // at the top and stretch up to ~1.9× as scroll advances, each on a
+    // slow ooze of its own.
     dripRefs.current.forEach((mesh, i) => {
       if (!mesh) return;
       const d = DRIPS[i];
-      const local = THREE.MathUtils.clamp((p - d.lag) / (1 - d.lag), 0, 1);
-      const eased = 1 - Math.pow(1 - local, 3);
-      const ooze = 1 + Math.sin(t * 0.9 + i * 1.7) * 0.035;
-      const len = (0.16 + eased * d.len) * ooze;
-      mesh.scale.set(d.r, len * 0.5, d.r);
-      // Tops tucked into the head's lower half so streams grow out of
-      // the glass instead of hanging detached beside it
-      mesh.position.y = 0.9 - (headRef.current ? p * 0.22 : 0) - 0.72;
+      const eased = 1 - Math.pow(1 - p, 2);
+      const ooze = 1 + Math.sin(t * 0.9 + i * 1.7) * 0.03;
+      const len = d.len * (1 + eased * 0.9) * ooze;
+      mesh.scale.set(d.r, len / 4, d.r);
+      mesh.position.y = dripTopY(d.x) - p * 0.16;
     });
   });
 
@@ -295,30 +234,32 @@ export default function LollipopScene({ progressRef }) {
       <ambientLight intensity={0.06} color={0xb6460e} />
 
       <group ref={group} position={[0, -0.1, 0]}>
-        {/* Swirled head — pole faced to camera so the spiral reads */}
+        {/* Swirled head — pole faced to the camera so the single-arm
+            spiral reads face-on, curl at the centre, like the mark */}
         <mesh
           ref={headRef}
-          position={[0, 0.9, 0]}
-          rotation={[Math.PI / 2, 0, 0.35]}
+          position={[0, HEAD_Y, 0]}
+          rotation={[Math.PI / 2, 0, 0]}
           material={candyMat}
         >
           <sphereGeometry args={[1, 96, 96]} />
         </mesh>
 
-        {/* Melt streams */}
+        {/* The drip curtain, tops riding the head's silhouette */}
         {DRIPS.map((d, i) => (
           <mesh
             key={i}
             ref={(el) => (dripRefs.current[i] = el)}
-            position={[d.x, -0.2, d.z]}
+            position={[d.x, dripTopY(d.x), 0.42]}
             geometry={dripGeo}
             material={dripMats[i]}
           />
         ))}
 
-        {/* Ice-blue stick — the logo's one cool note */}
-        <mesh position={[0, -1.55, 0]} material={stickMat}>
-          <cylinderGeometry args={[0.075, 0.075, 3.1, 24]} />
+        {/* Ice-blue stick — the logo's one cool note, dropping from
+            behind the curtain and running out of frame like the mark */}
+        <mesh position={[0, -1.4, 0]} material={stickMat}>
+          <cylinderGeometry args={[0.085, 0.085, 4.4, 24]} />
         </mesh>
       </group>
     </>
