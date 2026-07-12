@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <radialGradient id="lp-head" cx="42%" cy="36%" r="72%">
+      <stop offset="0%" stop-color="#FCA818"/>
+      <stop offset="45%" stop-color="#FC7818"/>
+      <stop offset="100%" stop-color="#FC2418"/>
+    </radialGradient>
+    <linearGradient id="lp-stick" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#C0D8E4"/>
+      <stop offset="100%" stop-color="#8FB4C6"/>
+    </linearGradient>
+  </defs>
+  <rect width="100" height="100" fill="#000000"/>
+  <rect x="47" y="52" width="6" height="46" rx="3" fill="url(#lp-stick)"/>
+  <rect x="26" y="42" width="7" height="26" rx="3.5" fill="#FC5484"/>
+  <rect x="37" y="46" width="7" height="36" rx="3.5" fill="#FC7818"/>
+  <rect x="56" y="46" width="7" height="32" rx="3.5" fill="#FCA818"/>
+  <rect x="67" y="42" width="7" height="22" rx="3.5" fill="#FC2418"/>
+  <circle cx="50" cy="32" r="27" fill="url(#lp-head)"/>
+  <path d="M50 32c0-4 4-7 8-6 6 1 9 7 7 13-2 8-11 12-19 10-10-3-15-13-12-23 3-11 15-17 26-13" stroke="#FC5484" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.9"/>
+  <path d="M50 32c0-2.5 2.5-4.5 5-4 3.5 0.7 5.5 4.5 4.5 8" stroke="#FCA818" stroke-width="4" stroke-linecap="round" fill="none"/>
+</svg>
