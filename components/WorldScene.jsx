@@ -28,6 +28,11 @@ import { createSwirlTexture, createBlindsTexture } from "../lib/lollipopTexture"
 const HEAD_R = 1.35;
 const HEAD_Y = 0.9;
 
+// The lollipop is a resident of the scene, not the scene. This global
+// multiplier shrinks it on top of every preset's own scale so the
+// rooms around it read as the main event.
+const LOLLI_SCALE = 0.6;
+
 const STREAMS = [
   { x: -1.02, w: 0.8, len: 1.5, rest: 0.42, T: 7.3, color: 0xfc5484 },
   { x: -0.68, w: 1.0, len: 2.2, rest: 0.34, T: 5.9, color: 0xfc7818 },
@@ -262,7 +267,10 @@ export default function WorldScene({ sceneRef }) {
   }, []);
 
   const ringGeos = useMemo(
-    () => [1.15, 1.75, 2.4].map((r) => new THREE.TorusGeometry(r, 0.014, 8, 120)),
+    () =>
+      [1.35, 2.1, 2.85, 3.6].map(
+        (r) => new THREE.TorusGeometry(r, 0.03, 8, 140)
+      ),
     []
   );
 
@@ -283,7 +291,7 @@ export default function WorldScene({ sceneRef }) {
 
   const ringMats = useMemo(
     () =>
-      [0xfca818, 0xfc7818, 0xa8460e].map(
+      [0xfca818, 0xfc7818, 0xa8460e, 0xc97e5b].map(
         (c) =>
           new THREE.MeshBasicMaterial({
             color: c,
@@ -358,7 +366,7 @@ export default function WorldScene({ sceneRef }) {
     // ---- lollipop ----
     if (lolli.current) {
       lolli.current.position.set(c.x, c.y - 0.1, 0);
-      lolli.current.scale.setScalar(c.s);
+      lolli.current.scale.setScalar(c.s * LOLLI_SCALE);
       // Scroll turns it, continuously, across the whole site
       lolli.current.rotation.y = scrollY * 0.0021 + Math.sin(t * 0.3) * 0.05;
       lolli.current.rotation.x =
@@ -433,21 +441,22 @@ export default function WorldScene({ sceneRef }) {
     // ---- scenery ----
     if (glowRef.current) {
       glowRef.current.position.set(c.x, c.y + 0.1, -2.2);
-      glowRef.current.scale.setScalar(6.5 * (0.6 + c.s * 0.5));
-      glowRef.current.material.opacity = 0.85 * c.glow;
+      glowRef.current.scale.setScalar(8.5 * (0.7 + c.s * 0.5));
+      glowRef.current.material.opacity = 1.1 * c.glow;
     }
 
     ringRefs.current.forEach((m, i) => {
       if (!m) return;
       m.position.set(c.x, c.y + 0.15, -1.4 - i * 0.35);
-      const pulse = 1 + 0.14 * Math.sin(t * 1.6 - i * 1.1);
+      const pulse = 1.35 + 0.2 * Math.sin(t * 1.6 - i * 1.1);
       m.scale.setScalar(pulse);
-      m.material.opacity = c.rings * (0.4 - i * 0.1);
+      m.material.opacity = c.rings * (0.85 - i * 0.18);
     });
 
     if (eqGroup.current) {
       eqGroup.current.position.set(c.x, c.y + 0.1, -1.2);
       eqGroup.current.rotation.z = t * 0.06;
+      eqGroup.current.scale.setScalar(1.15);
     }
     eqRefs.current.forEach((m, i) => {
       if (!m) return;
@@ -459,19 +468,19 @@ export default function WorldScene({ sceneRef }) {
       const r = 2.35;
       m.position.set(Math.cos(a) * r, Math.sin(a) * r, 0);
       m.rotation.z = a + Math.PI / 2;
-      m.scale.y = 0.25 + level * 0.75;
-      m.material.opacity = c.eq * 0.55;
+      m.scale.set(2.2, 0.35 + level * 1.05, 2.2);
+      m.material.opacity = c.eq * 0.95;
     });
 
     if (dustRef.current) {
       dustRef.current.rotation.y = t * 0.014;
       dustRef.current.position.y = Math.sin(t * 0.1) * 0.3;
-      dustRef.current.material.opacity = 0.5 + c.glow * 0.3;
+      dustRef.current.material.opacity = 0.7 + c.glow * 0.3;
     }
 
     if (blindsGroup.current) {
       blindsGroup.current.children.forEach((m, i) => {
-        m.material.opacity = c.blinds * (0.19 - i * 0.018);
+        m.material.opacity = c.blinds * (0.34 - i * 0.03);
       });
       blindsGroup.current.position.x = c.x * 0.4;
     }
@@ -540,7 +549,7 @@ export default function WorldScene({ sceneRef }) {
       cone.position.set(c.x + side * 1.7 * spread, 3.1, -1.9);
       cone.rotation.z = side * (0.16 + 0.1 * Math.sin(t * 0.45 + i * 2));
       cone.visible = c.spots > 0.02;
-      if (cone.material) cone.material.opacity = c.spots * 0.15;
+      if (cone.material) cone.material.opacity = c.spots * 0.24;
     });
   });
 
