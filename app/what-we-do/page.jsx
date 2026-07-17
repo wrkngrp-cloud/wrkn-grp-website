@@ -2,6 +2,7 @@ import DripDivider from "../../components/DripDivider";
 import Reveal from "../../components/Reveal";
 import Intro from "../../components/Intro";
 import AudioPlayer from "../../components/AudioPlayer";
+import CapabilityMotif from "../../components/CapabilityMotif";
 
 export const metadata = {
   title: "What We Do · Sweetness Studios",
@@ -75,11 +76,12 @@ export default function WhatWeDo() {
 
       <section className="section" style={{ paddingTop: 0 }}>
         <div className="container">
-          {CAPABILITIES.map((c) => (
+          {CAPABILITIES.map((c, i) => (
             <Reveal key={c.num}>
               <article className="work-block">
                 <span className="glyph">{c.num}</span>
                 <div>
+                  <CapabilityMotif index={i} />
                   <h2 className="display-3 mb-1">{c.title}</h2>
                   <p className="dim measure">{c.copy}</p>
                   {c.audio && (

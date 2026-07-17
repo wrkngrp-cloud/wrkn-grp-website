@@ -6,6 +6,7 @@ import Parallax from "../components/Parallax";
 import AudioPlayer from "../components/AudioPlayer";
 import DawSession from "../components/DawSession";
 import Signal from "../components/Signal";
+import Lollipop from "../components/Lollipop";
 import { PROOF } from "../lib/credits";
 
 const PRINCIPLES = [
@@ -58,37 +59,42 @@ const DOORS = [
 export default function Home() {
   return (
     <main>
-      {/* The Signal: the site's one 3D moment, held under the headline */}
+      {/* Hero: headline left, the lollipop in its own panel right */}
       <section className="hero">
-        <div className="hero-field" aria-hidden>
-          <Signal />
-        </div>
         <div className="container hero-copy">
-          <Intro delay={0.15}>
-            <p className="kicker mb-2">Sweetness Studios</p>
-          </Intro>
-          <Intro delay={0.3} blur={8}>
-            <h1 className="display-1 hero-title">
-              Some sounds are heard and forgotten. We make the ones that are{" "}
-              <em>felt, and remembered.</em>
-            </h1>
-          </Intro>
-          <Intro delay={0.75}>
-            <p className="body-lg dim measure mt-2">
-              Music with soul at its core, written to become the soundtrack of
-              somebody&rsquo;s life.
-            </p>
-          </Intro>
-          <Intro delay={0.95}>
-            <div className="hero-actions mt-3">
-              <Link href="/work/" className="btn">
-                Hear the work
-              </Link>
-              <Link href="/contact/" className="text-link">
-                Start something →
-              </Link>
+          <div className="hero-grid">
+            <div>
+              <Intro delay={0.15}>
+                <p className="kicker mb-2">Sweetness Studios</p>
+              </Intro>
+              <Intro delay={0.3} blur={8}>
+                <h1 className="display-1 hero-title">
+                  Some sounds are heard and forgotten. We make the ones that
+                  are <em>felt, and remembered.</em>
+                </h1>
+              </Intro>
+              <Intro delay={0.75}>
+                <p className="body-lg dim measure mt-2">
+                  Music with soul at its core, written to become the soundtrack
+                  of somebody&rsquo;s life.
+                </p>
+              </Intro>
+              <Intro delay={0.95}>
+                <div className="hero-actions mt-3">
+                  <Link href="/work/" className="btn">
+                    Hear the work
+                  </Link>
+                  <Link href="/contact/" className="text-link">
+                    Start something →
+                  </Link>
+                </div>
+              </Intro>
             </div>
-          </Intro>
+            {/* the mark, made physical: small, glossy, slowly melting */}
+            <div className="hero-pop" aria-hidden>
+              <Lollipop />
+            </div>
+          </div>
         </div>
         <div className="scroll-cue" aria-hidden />
       </section>
@@ -120,9 +126,15 @@ export default function Home() {
         </div>
       </section>
 
+      {/* The Signal, in a band of its own between the manifesto and
+          the session: the waveform sea, quiet, receding into black */}
+      <section className="signal-band" aria-hidden>
+        <Signal lines={32} points={150} amp={1.0} speed={0.9} camY={2.0} camZ={7.4} />
+      </section>
+
       {/* Principles as a session: tracks land one by one, like an
           arrangement coming together in the studio */}
-      <section className="section" style={{ paddingTop: 0 }}>
+      <section className="section">
         <div className="container">
           <Reveal>
             <hr className="hairline mb-3" />

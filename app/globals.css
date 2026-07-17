@@ -235,38 +235,57 @@ main {
   min-height: 100svh;
   overflow: hidden;
   display: flex;
-  align-items: stretch;
-}
-
-.hero-field {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -6vh;
-  height: 56%;
-  pointer-events: none;
-}
-
-/* scrim: the field always dies out before it reaches the copy */
-.hero-field::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0) 42%);
-  pointer-events: none;
+  align-items: center;
 }
 
 .hero-copy {
   position: relative;
   z-index: 2;
   width: 100%;
-  padding-top: clamp(7.5rem, 16vh, 11rem);
+  padding-top: clamp(7.5rem, 15vh, 10.5rem);
   padding-bottom: clamp(3rem, 8vh, 5rem);
 }
 
+/* headline left, the lollipop in its own contained panel right */
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  align-items: center;
+  gap: clamp(2rem, 5vw, 5rem);
+}
+
+.hero-pop {
+  position: relative;
+  height: min(66vh, 600px);
+}
+
+/* faint ember pool behind the candy, so it reads staged, not pasted */
+.hero-pop::before {
+  content: "";
+  position: absolute;
+  inset: -8%;
+  background: radial-gradient(
+    46% 40% at 50% 40%,
+    rgba(84, 28, 0, 0.42),
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
 .hero-title {
-  max-width: 21ch;
+  max-width: 19ch;
+  font-size: clamp(2.7rem, 5.2vw, 5.2rem);
+}
+
+@media (max-width: 960px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .hero-pop {
+    height: clamp(300px, 78vw, 440px);
+  }
 }
 
 .hero-actions {
@@ -305,16 +324,23 @@ main {
   }
 }
 
-/* ---------- signal band (Releases) ---------- */
+/* ---------- scene bands (Signal on Home/Releases, room on Studio) ---------- */
 
-.signal-band {
+.signal-band,
+.room-band {
   position: relative;
   height: clamp(300px, 46vh, 480px);
   overflow: hidden;
 }
 
+.room-band {
+  height: clamp(360px, 56vh, 580px);
+}
+
 .signal-band::before,
-.signal-band::after {
+.signal-band::after,
+.room-band::before,
+.room-band::after {
   content: "";
   position: absolute;
   left: 0;
@@ -324,12 +350,14 @@ main {
   pointer-events: none;
 }
 
-.signal-band::before {
+.signal-band::before,
+.room-band::before {
   top: 0;
   background: linear-gradient(180deg, #000, rgba(0, 0, 0, 0));
 }
 
-.signal-band::after {
+.signal-band::after,
+.room-band::after {
   bottom: 0;
   background: linear-gradient(0deg, #000, rgba(0, 0, 0, 0));
 }
@@ -1095,6 +1123,43 @@ main {
   }
 }
 
+/* ---------- capability motifs (What We Do) ---------- */
+
+/* eighteen meter bars in the melt grade; each capability gets its own
+   pattern. Grow in on reveal, then idle with a faint meter shimmer. */
+.motif {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 26px;
+  width: min(200px, 64%);
+  margin-bottom: 1.3rem;
+}
+
+.motif span {
+  flex: 1;
+  min-height: 2px;
+  border-radius: 1px;
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  animation: motif-shimmer 3.4s ease-in-out infinite;
+}
+
+.motif.on span {
+  transform: scaleY(1);
+}
+
+@keyframes motif-shimmer {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
 /* ---------- atmosphere ---------- */
 
 /* Film grain over everything — the analog hiss on the master */
@@ -1139,5 +1204,12 @@ main {
   .scroll-cue::after,
   .daw-dot {
     animation: none;
+  }
+
+  .motif span {
+    transform: scaleY(1);
+    transition: none;
+    animation: none;
+    opacity: 0.85;
   }
 }

@@ -1,6 +1,7 @@
 import DripDivider from "../../components/DripDivider";
 import Reveal from "../../components/Reveal";
 import Intro from "../../components/Intro";
+import ControlRoom from "../../components/ControlRoom";
 
 export const metadata = {
   title: "Studio · Sweetness Studios",
@@ -63,6 +64,12 @@ export default function Studio() {
             </Reveal>
           </div>
         </div>
+      </section>
+
+      {/* The control room at 4am: faders riding automation, meters
+          dancing to an unheard playback. Wordless, in its own band. */}
+      <section className="room-band" aria-hidden>
+        <ControlRoom />
       </section>
 
       <section className="section section-lift">
