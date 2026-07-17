@@ -112,30 +112,54 @@ function makeDiscGeometry(R, T) {
   return geo;
 }
 
-// unit drip hanging from y=0 down to y=-1, tapering to a near-point
-function makeDripGeometry() {
-  const pts = [];
-  const N = 16;
-  for (let i = 0; i <= N; i++) {
-    const t = i / N;
-    const r = 0.13 * Math.pow(1 - t, 0.72) + 0.012;
-    pts.push(new THREE.Vector2(Math.max(r, 0.004), -t));
-  }
-  return new THREE.LatheGeometry(pts, 24);
-}
-
 const smooth = (a, b, x) => {
   const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
   return t * t * (3 - 2 * t);
 };
 
+// A viscous hanging drip, not an icicle: it attaches wide at the rim,
+// necks in, swells into a heavy bead, and closes with a ROUNDED cap so
+// the bottom reads as a hanging droplet of liquid, never a point. Unit
+// height (~1); scale.y stretches it into a longer teardrop on the melt.
+function makeDripGeometry() {
+  const pts = [];
+  const topR = 0.115; // flush attach to the head's rim
+  const neckR = 0.062; // the pinch just below the rim
+  const bellyR = 0.135; // the heavy bead near the bottom
+  const bodyEnd = 0.8; // where the rounded cap begins (in -y)
+
+  const bodyN = 30;
+  for (let i = 0; i <= bodyN; i++) {
+    const t = i / bodyN;
+    const y = -bodyEnd * t;
+    // top -> neck (settles by t~0.3), then neck -> belly (by t~0.9)
+    const r =
+      t < 0.32
+        ? topR + (neckR - topR) * smooth(0, 0.32, t)
+        : neckR + (bellyR - neckR) * smooth(0.32, 0.92, t);
+    pts.push(new THREE.Vector2(Math.max(r, 0.006), y));
+  }
+  // rounded hemispherical cap: the droplet belly, no point
+  const capN = 12;
+  for (let i = 1; i <= capN; i++) {
+    const a = (i / capN) * (Math.PI / 2);
+    pts.push(
+      new THREE.Vector2(
+        Math.max(bellyR * Math.cos(a), 0.001),
+        -bodyEnd - bellyR * Math.sin(a)
+      )
+    );
+  }
+  return new THREE.LatheGeometry(pts, 32);
+}
+
 /* ---------- the melt: drip layout ---------- */
 
 const DRIPS = [
-  { x: -0.64, color: PINK, rest: 0.42, extend: 0.5, phase: 0.05, girth: 0.85 },
-  { x: -0.27, color: BURNT, rest: 0.68, extend: 0.85, phase: 0.0, girth: 1.1, droplet: true },
-  { x: 0.33, color: GOLD, rest: 0.56, extend: 0.62, phase: 0.03, girth: 1.0 },
-  { x: 0.68, color: HOT, rest: 0.34, extend: 0.4, phase: 0.07, girth: 0.78 },
+  { x: -0.64, color: PINK, rest: 0.34, extend: 0.42, phase: 0.05, girth: 0.9 },
+  { x: -0.27, color: BURNT, rest: 0.5, extend: 0.7, phase: 0.0, girth: 1.15, droplet: true },
+  { x: 0.33, color: GOLD, rest: 0.44, extend: 0.54, phase: 0.03, girth: 1.05 },
+  { x: 0.68, color: HOT, rest: 0.3, extend: 0.36, phase: 0.07, girth: 0.82 },
 ];
 
 const CYCLE = 13; // seconds per melt loop
@@ -216,7 +240,7 @@ function Lolli({ reduced }) {
       const rise = smooth(0.24 + d.phase, 0.56 + d.phase, tc);
       const fall = 1 - smooth(0.66 + d.phase, 0.94 + d.phase, tc);
       const len = d.rest * (1 + (d.extend / d.rest) * rise * fall);
-      const tipY = rootY - len;
+      const tipY = rootY - len * 0.92;
       const swell = smooth(0.4, 0.64, tc);
       const released = tc > 0.66;
       if (!released) {
