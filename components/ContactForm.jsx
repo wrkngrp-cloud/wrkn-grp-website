@@ -19,9 +19,9 @@ export default function ContactForm() {
 
   const submit = (e) => {
     e.preventDefault();
-    const subject = encodeURIComponent(`${form.door} — ${form.name}`);
+    const subject = encodeURIComponent(`${form.door} · ${form.name}`);
     const body = encodeURIComponent(
-      `${form.message}\n\n${form.link ? `Link: ${form.link}\n` : ""}— ${form.name}`
+      `${form.message}\n\n${form.link ? `Link: ${form.link}\n` : ""}· ${form.name}`
     );
     window.location.href = `mailto:beatsbynuel@gmail.com?subject=${subject}&body=${body}`;
   };

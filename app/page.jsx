@@ -1,11 +1,11 @@
 import Link from "next/link";
-import CursorTrail from "../components/CursorTrail";
 import DripDivider from "../components/DripDivider";
 import Reveal from "../components/Reveal";
+import Intro from "../components/Intro";
 import Parallax from "../components/Parallax";
 import AudioPlayer from "../components/AudioPlayer";
-import SoundWave from "../components/SoundWave";
 import DawSession from "../components/DawSession";
+import Signal from "../components/Signal";
 import { PROOF } from "../lib/credits";
 
 const PRINCIPLES = [
@@ -58,35 +58,45 @@ const DOORS = [
 export default function Home() {
   return (
     <main>
-      <CursorTrail />
-
-      <section data-scene="hero" style={{ position: "relative", minHeight: "165vh" }}>
-        <div className="container hero-lead">
-          <p className="kicker mb-1">Sweetness Studios</p>
-          <h1 className="display-2" style={{ maxWidth: "22ch" }}>
-            Some sounds are heard and forgotten. We make the ones that are
-            felt, and remembered.
-          </h1>
-          <p className="body-lg dim measure mt-2">
-            Music with soul at its core, written to become the soundtrack of
-            somebody&rsquo;s life.
-          </p>
-          <div className="mt-2" style={{ display: "flex", gap: "1rem" }}>
-            <Link href="/work/" className="btn">
-              Hear the work
-            </Link>
-            <Link href="/contact/" className="text-link" style={{ alignSelf: "center" }}>
-              Start something →
-            </Link>
-          </div>
-          <div className="scroll-cue">Scroll · it melts</div>
+      {/* The Signal: the site's one 3D moment, held under the headline */}
+      <section className="hero">
+        <div className="hero-field" aria-hidden>
+          <Signal />
         </div>
+        <div className="container hero-copy">
+          <Intro delay={0.15}>
+            <p className="kicker mb-2">Sweetness Studios</p>
+          </Intro>
+          <Intro delay={0.3} blur={8}>
+            <h1 className="display-1 hero-title">
+              Some sounds are heard and forgotten. We make the ones that are{" "}
+              <em>felt, and remembered.</em>
+            </h1>
+          </Intro>
+          <Intro delay={0.75}>
+            <p className="body-lg dim measure mt-2">
+              Music with soul at its core, written to become the soundtrack of
+              somebody&rsquo;s life.
+            </p>
+          </Intro>
+          <Intro delay={0.95}>
+            <div className="hero-actions mt-3">
+              <Link href="/work/" className="btn">
+                Hear the work
+              </Link>
+              <Link href="/contact/" className="text-link">
+                Start something →
+              </Link>
+            </div>
+          </Intro>
+        </div>
+        <div className="scroll-cue" aria-hidden />
       </section>
 
       <DripDivider hotIndex={3} />
 
       {/* Manifesto */}
-      <section className="section bg-glow" data-scene="glow-left">
+      <section className="section bg-glow">
         <div className="container">
           <Reveal>
             <p className="kicker mb-1">Why Sweetness exists</p>
@@ -110,16 +120,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* The sound, visible */}
-      <section aria-hidden style={{ padding: "0 0 2rem" }}>
-        <div className="container">
-          <SoundWave height={170} />
-        </div>
-      </section>
-
       {/* Principles as a session: tracks land one by one, like an
           arrangement coming together in the studio */}
-      <section className="section" data-scene="peek" style={{ paddingTop: 0 }}>
+      <section className="section" style={{ paddingTop: 0 }}>
         <div className="container">
           <Reveal>
             <hr className="hairline mb-3" />
@@ -135,7 +138,7 @@ export default function Home() {
       </section>
 
       {/* Three doors */}
-      <section className="section" data-scene="doors-left" style={{ paddingTop: 0 }}>
+      <section className="section" style={{ paddingTop: 0 }}>
         <div className="container">
           <Reveal>
             <p className="kicker mb-1">Three doors in</p>
@@ -166,7 +169,7 @@ export default function Home() {
       <DripDivider flip />
 
       {/* Selected work */}
-      <section className="section bg-shafts section-lift" data-scene="eq-left">
+      <section className="section section-lift">
         <div className="container">
           <Reveal>
             <p className="kicker mb-1">Selected work</p>
@@ -178,7 +181,7 @@ export default function Home() {
           <div className="principles-grid">
             <Reveal>
               <article className="card" style={{ height: "100%" }}>
-                <p className="kicker mb-1" style={{ fontSize: "0.62rem" }}>Ric Hassani</p>
+                <p className="kicker mb-1" style={{ fontSize: "0.6rem" }}>Ric Hassani</p>
                 <h3 className="display-4 mb-1">Ngozi</h3>
                 <p className="dim mb-2" style={{ fontSize: "0.92rem" }}>
                   Co-produced for the Lagos Lover Boy world. A record that
@@ -193,7 +196,7 @@ export default function Home() {
             </Reveal>
             <Reveal delay={0.08}>
               <article className="card" style={{ height: "100%" }}>
-                <p className="kicker mb-1" style={{ fontSize: "0.62rem" }}>Kotrell</p>
+                <p className="kicker mb-1" style={{ fontSize: "0.6rem" }}>Kotrell</p>
                 <h3 className="display-4 mb-1">Safe</h3>
                 <p className="dim mb-2" style={{ fontSize: "0.92rem" }}>
                   Made to sound like an exhale, like finally being held. It
@@ -208,7 +211,7 @@ export default function Home() {
             </Reveal>
             <Reveal delay={0.16}>
               <article className="card" style={{ height: "100%" }}>
-                <p className="kicker mb-1" style={{ fontSize: "0.62rem" }}>Ric Hassani</p>
+                <p className="kicker mb-1" style={{ fontSize: "0.6rem" }}>Ric Hassani</p>
                 <h3 className="display-4 mb-1">For You</h3>
                 <p className="dim mb-2" style={{ fontSize: "0.92rem" }}>
                   The soft one. Built for the exact moment somebody realises
@@ -223,7 +226,7 @@ export default function Home() {
             </Reveal>
             <Reveal delay={0.24}>
               <article className="card" style={{ height: "100%" }}>
-                <p className="kicker mb-1" style={{ fontSize: "0.62rem" }}>Kotrell</p>
+                <p className="kicker mb-1" style={{ fontSize: "0.6rem" }}>Kotrell</p>
                 <h3 className="display-4 mb-1">Love Me Slow</h3>
                 <p className="dim mb-2" style={{ fontSize: "0.92rem" }}>
                   Still healing, still willing. Tenderness at the tempo it
@@ -249,12 +252,12 @@ export default function Home() {
       </section>
 
       {/* Proof strip */}
-      <section className="section" data-scene="rings-center">
+      <section className="section">
         <div className="container">
           <Reveal>
             <p className="kicker mb-2">The company the sound keeps</p>
           </Reveal>
-          <Parallax amount={26}>
+          <Parallax amount={22}>
             <div className="proof-strip">
               {PROOF.map((p) => (
                 <span className="proof-item" key={p.name}>
@@ -268,13 +271,10 @@ export default function Home() {
       </section>
 
       {/* Closing */}
-      <section className="section" data-scene="spots-center" style={{ paddingTop: 0 }}>
+      <section className="section" style={{ paddingTop: 0 }}>
         <div className="container">
           <Reveal>
-            <p
-              className="pull-quote"
-              style={{ maxWidth: "34ch", marginInline: "auto" }}
-            >
+            <p className="pull-quote" style={{ maxWidth: "36ch" }}>
               Before anyone touches an instrument, one question gets asked:
               what should this make a person feel? Everything Sweetness makes
               starts there. Every time.

@@ -1,5 +1,6 @@
 import DripDivider from "../../components/DripDivider";
 import Reveal from "../../components/Reveal";
+import Intro from "../../components/Intro";
 import ContactForm from "../../components/ContactForm";
 
 export const metadata = {
@@ -26,20 +27,22 @@ const DOORS = [
 export default function Contact() {
   return (
     <main>
-      <section className="section bg-glow" data-scene="doors-left" style={{ paddingTop: "clamp(8rem, 18vh, 12rem)" }}>
+      <section className="section bg-glow" style={{ paddingTop: "clamp(8.5rem, 20vh, 13rem)" }}>
         <div className="container">
-          <Reveal>
-            <p className="kicker mb-1">Contact</p>
-            <h1 className="display-2" style={{ maxWidth: "16ch" }}>
-              Three doors. Come through the one that&rsquo;s yours.
+          <Intro delay={0.1}>
+            <p className="kicker mb-2">Contact</p>
+          </Intro>
+          <Intro delay={0.25} blur={8}>
+            <h1 className="display-2" style={{ maxWidth: "18ch" }}>
+              Three doors. Come through the one that&rsquo;s <em>yours.</em>
             </h1>
-          </Reveal>
+          </Intro>
         </div>
       </section>
 
       <DripDivider hotIndex={5} />
 
-      <section className="section" data-scene="glow-left" style={{ paddingTop: 0 }}>
+      <section className="section" style={{ paddingTop: 0 }}>
         <div className="container grid-2">
           <div className="stack-lg">
             {DOORS.map((d, i) => (

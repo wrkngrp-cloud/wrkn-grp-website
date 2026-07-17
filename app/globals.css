@@ -1,7 +1,9 @@
 /* ============================================================
-   Sweetness Studios — black & ember system
-   Palette sourced exactly: logo hues (hot end) graded against
-   the Vol. 1 deck photography (shadow end). See README.
+   Sweetness Studios — the listening room
+   Black & ember system. Palette sourced exactly: logo hues (hot
+   end) graded against the Vol. 1 deck photography (shadow end).
+   Type: Fraunces Variable (display voice, self-hosted) over
+   Schibsted Grotesk (body and UI). See README.
    ============================================================ */
 
 :root {
@@ -25,15 +27,15 @@
   --burnt: #fc7818;
   --hot: #fc2418; /* rare accent only */
   --pink: #fc5484; /* rare accent only */
-  --ice: #c0d8e4; /* one functional use per page */
+  --ice: #c0d8e4; /* one functional use: the focus ring */
 
   /* Text */
   --ink: #f3ede6;
-  --ink-dim: rgba(243, 237, 230, 0.6);
-  --ink-faint: rgba(243, 237, 230, 0.34);
-  --hairline: rgba(201, 126, 91, 0.22);
+  --ink-dim: rgba(243, 237, 230, 0.62);
+  --ink-faint: rgba(243, 237, 230, 0.36);
+  --hairline: rgba(201, 126, 91, 0.2);
 
-  /* The material gradient, used by drips, dividers, trails */
+  /* The material gradient: drips, dividers, active states */
   --melt: linear-gradient(
     160deg,
     var(--gold) 0%,
@@ -43,11 +45,11 @@
     var(--shadow-2) 100%
   );
 
-  --font-display: "Heuvel Grotesk", "General Sans", "Helvetica Neue", sans-serif;
-  --font-body: "Heuvel Grotesk", "General Sans", "Helvetica Neue", sans-serif;
+  --font-display: "Fraunces Variable", Georgia, "Times New Roman", serif;
+  --font-body: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
 
-  --gutter: clamp(1.25rem, 4vw, 4rem);
-  --measure: 62ch;
+  --gutter: clamp(1.25rem, 4vw, 4.5rem);
+  --measure: 60ch;
 }
 
 * {
@@ -68,8 +70,8 @@ body {
 
 body {
   font-family: var(--font-body);
-  font-size: 1.0625rem;
-  line-height: 1.65;
+  font-size: 1.04rem;
+  line-height: 1.7;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
@@ -120,43 +122,55 @@ h1,
 h2,
 h3 {
   font-family: var(--font-display);
-  font-weight: 600;
-  line-height: 1.04;
-  letter-spacing: -0.03em;
+  font-weight: 480;
+  line-height: 1.02;
+  letter-spacing: -0.012em;
   color: var(--ink);
+  text-wrap: balance;
+}
+
+.display-1 em,
+.display-2 em,
+.display-3 em,
+.display-4 em,
+.pull-quote em {
+  font-style: italic;
+  font-weight: 430;
 }
 
 .display-1 {
-  font-size: clamp(3rem, 10.5vw, 8.75rem);
+  font-size: clamp(2.9rem, 8vw, 7rem);
 }
 
 .display-2 {
-  font-size: clamp(2.3rem, 6.8vw, 5.5rem);
+  font-size: clamp(2.35rem, 5.8vw, 4.8rem);
 }
 
 .display-3 {
-  font-size: clamp(1.8rem, 4.6vw, 3.5rem);
+  font-size: clamp(1.85rem, 4vw, 3.1rem);
+  line-height: 1.06;
 }
 
 .display-4 {
   font-family: var(--font-display);
-  font-weight: 600;
-  line-height: 1.12;
-  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  font-weight: 500;
+  line-height: 1.14;
+  letter-spacing: -0.005em;
+  font-size: clamp(1.4rem, 2.6vw, 2rem);
 }
 
 .kicker {
   font-family: var(--font-body);
-  font-size: 0.72rem;
-  font-weight: 600;
+  font-size: 0.7rem;
+  font-weight: 700;
   letter-spacing: 0.32em;
   text-transform: uppercase;
   color: var(--terracotta);
 }
 
 .body-lg {
-  font-size: clamp(1.1rem, 1.7vw, 1.35rem);
-  line-height: 1.6;
+  font-size: clamp(1.08rem, 1.6vw, 1.3rem);
+  line-height: 1.62;
 }
 
 .dim {
@@ -179,7 +193,7 @@ h3 {
 
 .container {
   width: 100%;
-  max-width: 90rem;
+  max-width: 86rem;
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
@@ -190,7 +204,7 @@ h3 {
 }
 
 .section-lift {
-  background: rgba(10, 5, 0, 0.66);
+  background: var(--lift);
 }
 
 main {
@@ -198,30 +212,126 @@ main {
   z-index: 1;
 }
 
-/* Hero over the global scene */
-.hero-lead {
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding-bottom: clamp(3rem, 9vh, 6rem);
-  position: relative;
-}
-
 .hairline {
   border: 0;
   border-top: 1px solid var(--hairline);
 }
 
-/* Oversized numerals on section breaks */
-.section-num {
+/* Giant editorial glyphs (page letters, capability numerals) */
+.glyph {
   font-family: var(--font-display);
-  font-size: clamp(4.5rem, 12vw, 11rem);
-  font-weight: 700;
-  line-height: 0.8;
-  color: transparent;
-  -webkit-text-stroke: 1px var(--amber-mid);
+  font-style: italic;
+  font-weight: 420;
+  font-size: clamp(3.4rem, 8vw, 7rem);
+  line-height: 0.9;
+  color: var(--amber-deep);
   user-select: none;
+}
+
+/* ---------- hero ---------- */
+
+.hero {
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  display: flex;
+  align-items: stretch;
+}
+
+.hero-field {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6vh;
+  height: 56%;
+  pointer-events: none;
+}
+
+/* scrim: the field always dies out before it reaches the copy */
+.hero-field::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0) 42%);
+  pointer-events: none;
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding-top: clamp(7.5rem, 16vh, 11rem);
+  padding-bottom: clamp(3rem, 8vh, 5rem);
+}
+
+.hero-title {
+  max-width: 21ch;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.4rem;
+}
+
+/* wordless scroll cue: a slow drip of light */
+.scroll-cue {
+  position: absolute;
+  right: var(--gutter);
+  bottom: clamp(2.6rem, 7vh, 4.5rem);
+  z-index: 3;
+  width: 1px;
+  height: 64px;
+  background: rgba(201, 126, 91, 0.18);
+  overflow: hidden;
+}
+
+.scroll-cue::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(var(--gold), var(--ember));
+  animation: cue-drip 2.4s cubic-bezier(0.6, 0, 0.3, 1) infinite;
+}
+
+@keyframes cue-drip {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+/* ---------- signal band (Releases) ---------- */
+
+.signal-band {
+  position: relative;
+  height: clamp(300px, 46vh, 480px);
+  overflow: hidden;
+}
+
+.signal-band::before,
+.signal-band::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 22%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.signal-band::before {
+  top: 0;
+  background: linear-gradient(180deg, #000, rgba(0, 0, 0, 0));
+}
+
+.signal-band::after {
+  bottom: 0;
+  background: linear-gradient(0deg, #000, rgba(0, 0, 0, 0));
 }
 
 /* ---------- buttons + links ---------- */
@@ -230,14 +340,15 @@ main {
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.95rem 1.9rem;
+  padding: 1rem 2rem;
   border: 1px solid var(--amber-mid);
   border-radius: 2px;
   background: transparent;
   color: var(--ink);
-  font-weight: 500;
-  font-size: 0.95rem;
-  letter-spacing: 0.04em;
+  font-weight: 700;
+  font-size: 0.76rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -285,9 +396,13 @@ main {
   position: fixed;
   inset: 0 0 auto 0;
   z-index: 200;
-  background: linear-gradient(rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0));
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: linear-gradient(
+    rgba(0, 0, 0, 0.94) 0%,
+    rgba(0, 0, 0, 0.68) 60%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .nav-inner {
@@ -304,8 +419,13 @@ main {
   align-items: center;
   gap: 0.7rem;
   color: var(--ink);
-  font-weight: 600;
-  letter-spacing: 0.02em;
+}
+
+.nav-brand span {
+  font-family: var(--font-display);
+  font-weight: 560;
+  font-size: 1.08rem;
+  letter-spacing: 0.005em;
 }
 
 .nav-brand:hover {
@@ -315,29 +435,21 @@ main {
 .nav-links {
   display: flex;
   align-items: center;
-  gap: clamp(1rem, 2.4vw, 2.2rem);
+  gap: clamp(1rem, 2.4vw, 2.3rem);
   list-style: none;
 }
 
 .nav-links a {
-  font-size: 0.82rem;
-  font-weight: 500;
-  letter-spacing: 0.12em;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--ink-dim);
   position: relative;
   padding-block: 0.3rem;
 }
 
-.nav-links a:hover {
-  color: var(--ink);
-}
-
-.nav-links a[data-active="true"] {
-  color: var(--gold);
-}
-
-.nav-links a[data-active="true"]::after {
+.nav-links a::after {
   content: "";
   position: absolute;
   left: 0;
@@ -345,6 +457,25 @@ main {
   bottom: -4px;
   height: 2px;
   background: var(--melt);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-links a:hover {
+  color: var(--ink);
+}
+
+.nav-links a:hover::after {
+  transform: scaleX(1);
+}
+
+.nav-links a[data-active="true"] {
+  color: var(--gold);
+}
+
+.nav-links a[data-active="true"]::after {
+  transform: scaleX(1);
 }
 
 .nav-toggle {
@@ -354,7 +485,8 @@ main {
   border-radius: 2px;
   color: var(--ink);
   padding: 0.45rem 0.8rem;
-  font-size: 0.78rem;
+  font-size: 0.72rem;
+  font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   cursor: pointer;
@@ -364,16 +496,17 @@ main {
   position: fixed;
   inset: 0;
   z-index: 190;
-  background: rgba(0, 0, 0, 0.94);
+  background: rgba(0, 0, 0, 0.95);
   display: flex;
   flex-direction: column;
   justify-content: center;
   padding: var(--gutter);
-  gap: 0.4rem;
+  gap: 0.5rem;
 }
 
 .nav-sheet a {
   font-family: var(--font-display);
+  font-weight: 480;
   font-size: clamp(2.2rem, 9vw, 4rem);
   color: var(--ink);
   line-height: 1.15;
@@ -381,6 +514,7 @@ main {
 
 .nav-sheet a[data-active="true"] {
   color: var(--gold);
+  font-style: italic;
 }
 
 @media (max-width: 860px) {
@@ -409,8 +543,8 @@ main {
 
 .footer h4 {
   font-family: var(--font-body);
-  font-size: 0.72rem;
-  font-weight: 600;
+  font-size: 0.68rem;
+  font-weight: 700;
   letter-spacing: 0.32em;
   text-transform: uppercase;
   color: var(--ink-faint);
@@ -486,8 +620,8 @@ main {
 
 .credits-table th {
   text-align: left;
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-size: 0.66rem;
+  font-weight: 700;
   letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--ink-faint);
@@ -569,7 +703,7 @@ main {
 }
 
 .player-title {
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.95rem;
   white-space: nowrap;
   overflow: hidden;
@@ -615,8 +749,8 @@ main {
 
 .player-badge {
   flex: none;
-  font-size: 0.62rem;
-  font-weight: 600;
+  font-size: 0.6rem;
+  font-weight: 700;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--ink-faint);
@@ -639,8 +773,8 @@ main {
 }
 
 .field label {
-  font-size: 0.72rem;
-  font-weight: 600;
+  font-size: 0.68rem;
+  font-weight: 700;
   letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--ink-faint);
@@ -685,12 +819,14 @@ main {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: clamp(1.4rem, 4vw, 3.5rem);
+  gap: clamp(1.6rem, 4.5vw, 4rem);
 }
 
 .proof-item {
   font-family: var(--font-display);
-  font-size: clamp(1.3rem, 3vw, 2.3rem);
+  font-weight: 460;
+  font-size: clamp(1.35rem, 3vw, 2.4rem);
+  letter-spacing: -0.01em;
   color: var(--ink-dim);
   white-space: nowrap;
   transition: color 0.3s ease;
@@ -703,86 +839,15 @@ main {
 .proof-item small {
   display: block;
   font-family: var(--font-body);
-  font-size: 0.68rem;
+  font-size: 0.64rem;
+  font-weight: 700;
   letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--ink-faint);
-  margin-top: 0.3rem;
+  margin-top: 0.35rem;
 }
 
-/* ---------- hero ---------- */
-
-.hero-sticky {
-  position: sticky;
-  top: 0;
-  height: 100svh;
-  overflow: hidden;
-}
-
-.hero-canvas {
-  position: absolute;
-  inset: 0;
-}
-
-.hero-copy {
-  position: relative;
-  z-index: 5;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding-bottom: clamp(3rem, 9vh, 6rem);
-  pointer-events: none;
-}
-
-.hero-copy a,
-.hero-copy .btn {
-  pointer-events: auto;
-}
-
-.scroll-cue {
-  position: absolute;
-  right: var(--gutter);
-  bottom: clamp(3rem, 9vh, 6rem);
-  z-index: 6;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.8rem;
-  font-size: 0.62rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-  writing-mode: vertical-rl;
-}
-
-.scroll-cue::after {
-  content: "";
-  width: 1px;
-  height: 52px;
-  background: linear-gradient(var(--gold), var(--shadow-1));
-  animation: cue-drip 2.2s ease-in-out infinite;
-}
-
-@keyframes cue-drip {
-  0% {
-    transform: scaleY(0);
-    transform-origin: top;
-  }
-  55% {
-    transform: scaleY(1);
-    transform-origin: top;
-  }
-  56% {
-    transform-origin: bottom;
-  }
-  100% {
-    transform: scaleY(0);
-    transform-origin: bottom;
-  }
-}
-
-/* ---------- three doors ---------- */
+/* ---------- grids ---------- */
 
 .doors-grid {
   display: grid;
@@ -816,10 +881,11 @@ main {
 
 .door-num {
   font-family: var(--font-display);
-  font-size: 3rem;
+  font-style: italic;
+  font-weight: 420;
+  font-size: 2.6rem;
   line-height: 1;
-  color: transparent;
-  -webkit-text-stroke: 1px var(--amber-mid);
+  color: var(--amber-mid);
   margin-bottom: 1.4rem;
 }
 
@@ -827,21 +893,23 @@ main {
 
 .pull-quote {
   font-family: var(--font-display);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  font-size: clamp(1.7rem, 4.2vw, 3.2rem);
-  line-height: 1.25;
+  font-style: italic;
+  font-weight: 430;
+  letter-spacing: -0.005em;
+  font-size: clamp(1.7rem, 4vw, 3rem);
+  line-height: 1.28;
   color: var(--ink);
   border-left: 2px solid;
   border-image: linear-gradient(var(--gold), var(--shadow-1)) 1;
   padding-left: clamp(1.4rem, 3vw, 2.6rem);
+  text-wrap: balance;
 }
 
 /* ---------- work blocks ---------- */
 
 .work-block {
   display: grid;
-  grid-template-columns: minmax(0, 5rem) 1fr;
+  grid-template-columns: minmax(0, 6rem) 1fr;
   gap: clamp(1.2rem, 4vw, 3.5rem);
   padding-block: clamp(2.6rem, 6vh, 4.2rem);
   border-top: 1px solid var(--hairline);
@@ -850,6 +918,10 @@ main {
 @media (max-width: 700px) {
   .work-block {
     grid-template-columns: 1fr;
+  }
+
+  .work-block .glyph {
+    font-size: 2.6rem;
   }
 }
 
@@ -895,7 +967,7 @@ main {
 .daw {
   border: 1px solid var(--hairline);
   border-radius: 3px;
-  background: rgba(10, 5, 0, 0.78);
+  background: var(--lift);
   overflow: hidden;
 }
 
@@ -904,6 +976,7 @@ main {
   border-bottom: 1px solid var(--hairline);
   padding-block: 0.45rem;
   font-size: 0.6rem;
+  font-weight: 700;
   letter-spacing: 0.2em;
   color: var(--ink-faint);
 }
@@ -926,23 +999,24 @@ main {
 }
 
 .daw-lane-label {
-  font-size: 0.6rem;
-  font-weight: 600;
+  font-size: 0.58rem;
+  font-weight: 700;
   letter-spacing: 0.26em;
   text-transform: uppercase;
   color: var(--terracotta);
 }
 
 .daw-title {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 1.1rem;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1.02rem;
   letter-spacing: -0.01em;
   margin-top: 0.35rem;
 }
 
 .daw-copy {
   font-size: 0.82rem;
+  line-height: 1.55;
   color: var(--ink-dim);
   margin-top: 0.4rem;
   max-width: 34ch;
@@ -972,8 +1046,8 @@ main {
   position: absolute;
   top: 4px;
   left: 10px;
-  font-size: 0.58rem;
-  font-weight: 600;
+  font-size: 0.56rem;
+  font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-dim);
@@ -985,7 +1059,8 @@ main {
   align-items: center;
   gap: 0.5rem;
   padding: 0.55rem 1.2rem;
-  font-size: 0.62rem;
+  font-size: 0.6rem;
+  font-weight: 700;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--ink-faint);
@@ -1028,28 +1103,9 @@ main {
   inset: 0;
   z-index: 900;
   pointer-events: none;
-  opacity: 0.16;
+  opacity: 0.09;
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-/* Diagonal shafts of warm light — the blinds from the hero photography */
-.bg-shafts {
-  position: relative;
-}
-
-.bg-shafts::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: repeating-linear-gradient(
-    115deg,
-    rgba(252, 168, 24, 0.045) 0 70px,
-    rgba(0, 0, 0, 0) 70px 190px
-  );
-  mask-image: radial-gradient(120% 100% at 70% 0%, black 20%, transparent 75%);
-  -webkit-mask-image: radial-gradient(120% 100% at 70% 0%, black 20%, transparent 75%);
 }
 
 /* Deep ember glow pooling at a section's edge */
@@ -1063,12 +1119,11 @@ main {
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(60% 55% at 82% 18%, rgba(140, 56, 14, 0.32), transparent 70%),
-    radial-gradient(45% 45% at 8% 90%, rgba(84, 28, 0, 0.4), transparent 70%);
+    radial-gradient(55% 50% at 84% 12%, rgba(84, 28, 0, 0.4), transparent 70%),
+    radial-gradient(40% 40% at 6% 92%, rgba(42, 14, 0, 0.5), transparent 70%);
 }
 
-.bg-glow > .container,
-.bg-shafts > .container {
+.bg-glow > .container {
   position: relative;
 }
 
@@ -1078,10 +1133,11 @@ main {
   outline-offset: 3px;
 }
 
-/* ---------- reduced motion (secondary state, not the default) ---------- */
+/* ---------- reduced motion ---------- */
 
 @media (prefers-reduced-motion: reduce) {
-  .scroll-cue::after {
+  .scroll-cue::after,
+  .daw-dot {
     animation: none;
   }
 }

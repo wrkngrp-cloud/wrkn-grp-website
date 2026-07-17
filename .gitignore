@@ -1,6 +1,7 @@
 node_modules/
 .next/
 out/
+sitecheck/
 .DS_Store
 *.log
 .env*

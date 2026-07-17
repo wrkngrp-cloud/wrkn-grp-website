@@ -1,9 +1,15 @@
+import "@fontsource-variable/fraunces/opsz.css";
+import "@fontsource-variable/fraunces/opsz-italic.css";
+import "@fontsource/schibsted-grotesk/latin-400.css";
+import "@fontsource/schibsted-grotesk/latin-500.css";
+import "@fontsource/schibsted-grotesk/latin-700.css";
 import "./globals.css";
 import Nav from "../components/Nav";
 import Footer from "../components/Footer";
 import SmoothScroll from "../components/SmoothScroll";
 import Cursor from "../components/Cursor";
-import SceneMount from "../components/SceneMount";
+
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 export const metadata = {
   title: "Sweetness Studios · Music with soul at its core",
@@ -15,20 +21,14 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        <link rel="preconnect" href="https://api.fontshare.com" />
-        {/* Heuvel Grotesk (licensed, not yet self-hosted) is the single
-            house face. General Sans is the live Fontshare fallback; the
-            stack is set in globals.css. */}
-        <link
-          href="https://api.fontshare.com/v2/css?f[]=general-sans@400,401,500,600,700&display=swap"
-          rel="stylesheet"
-        />
-        <link rel="icon" href="/brand/mark.svg" type="image/svg+xml" />
+        {/* Type is self-hosted: Fraunces Variable (display voice) and
+            Schibsted Grotesk (body and UI), bundled via fontsource so
+            the base path is handled by the asset pipeline. */}
+        <link rel="icon" href={`${basePath}/brand/mark.svg`} type="image/svg+xml" />
       </head>
       <body>
         <SmoothScroll />
         <Cursor />
-        <SceneMount />
         <Nav />
         {children}
         <Footer />

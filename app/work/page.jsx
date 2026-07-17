@@ -1,6 +1,6 @@
 import DripDivider from "../../components/DripDivider";
 import Reveal from "../../components/Reveal";
-import Parallax from "../../components/Parallax";
+import Intro from "../../components/Intro";
 import AudioPlayer from "../../components/AudioPlayer";
 import { TRACKS } from "../../lib/credits";
 
@@ -13,64 +13,64 @@ export const metadata = {
 export default function Work() {
   return (
     <main>
-      <section className="section bg-glow" data-scene="vinyl-right" style={{ paddingTop: "clamp(8rem, 18vh, 12rem)" }}>
+      <section className="section bg-glow" style={{ paddingTop: "clamp(8.5rem, 20vh, 13rem)" }}>
         <div className="container">
-          <Reveal>
-            <p className="kicker mb-1">Work</p>
+          <Intro delay={0.1}>
+            <p className="kicker mb-2">Work</p>
+          </Intro>
+          <Intro delay={0.25} blur={8}>
             <h1 className="display-2" style={{ maxWidth: "20ch" }}>
-              Six years. One catalogue. Nothing rounded up.
+              Six years. One catalogue. <em>Nothing rounded up.</em>
             </h1>
+          </Intro>
+          <Intro delay={0.6}>
             <p className="body-lg dim mt-2">
               The real run of it: the records, the screens they found, the
               rooms they moved.
             </p>
-          </Reveal>
+          </Intro>
         </div>
       </section>
 
       <DripDivider hotIndex={4} />
 
       {/* Artists */}
-      <section className="section" data-scene="peek" style={{ paddingTop: 0 }}>
+      <section className="section" style={{ paddingTop: 0 }}>
         <div className="container">
           <Reveal>
             <p className="kicker mb-2">Artists we&rsquo;ve produced</p>
           </Reveal>
 
-          <Parallax amount={20}>
-            <Reveal>
-              <article className="work-block">
-                <span className="section-num" style={{ fontSize: "clamp(3rem, 7vw, 6rem)" }}>A</span>
-                <div>
-                  <h2 className="display-3 mb-1">Ric Hassani</h2>
-                  <p className="dim measure">
-                    Co-produced across his Lagos Lover Boy world, including{" "}
-                    <em>Intro (Lagos Lover Boy)</em>, <em>Canopy</em>,{" "}
-                    <em>Ngozi</em>, <em>For You</em>, <em>Catch Cruise</em>,{" "}
-                    <em>Ayiba</em>, <em>Holy Matrimony</em>, and more.
-                  </p>
-                </div>
-              </article>
-            </Reveal>
-          </Parallax>
+          <Reveal>
+            <article className="work-block">
+              <span className="glyph">A</span>
+              <div>
+                <h2 className="display-3 mb-1">Ric Hassani</h2>
+                <p className="dim measure">
+                  Co-produced across his Lagos Lover Boy world, including{" "}
+                  <em>Intro (Lagos Lover Boy)</em>, <em>Canopy</em>,{" "}
+                  <em>Ngozi</em>, <em>For You</em>, <em>Catch Cruise</em>,{" "}
+                  <em>Ayiba</em>, <em>Holy Matrimony</em>, and more.
+                </p>
+              </div>
+            </article>
+          </Reveal>
 
-          <Parallax amount={20}>
-            <Reveal>
-              <article className="work-block">
-                <span className="section-num" style={{ fontSize: "clamp(3rem, 7vw, 6rem)" }}>B</span>
-                <div>
-                  <h2 className="display-3 mb-1">Kotrell</h2>
-                  <p className="dim measure">
-                    Primary producer across <em>Ready</em>, <em>Safe</em>,{" "}
-                    <em>Heavy</em>, <em>Home</em>, <em>Whole World</em>,{" "}
-                    <em>Only You</em>, <em>Proud of You</em>, <em>Watch Me</em>,
-                    and more. Six years of friendship as much as work, and
-                    you can hear it in the records.
-                  </p>
-                </div>
-              </article>
-            </Reveal>
-          </Parallax>
+          <Reveal>
+            <article className="work-block">
+              <span className="glyph">B</span>
+              <div>
+                <h2 className="display-3 mb-1">Kotrell</h2>
+                <p className="dim measure">
+                  Primary producer across <em>Ready</em>, <em>Safe</em>,{" "}
+                  <em>Heavy</em>, <em>Home</em>, <em>Whole World</em>,{" "}
+                  <em>Only You</em>, <em>Proud of You</em>, <em>Watch Me</em>,
+                  and more. Six years of friendship as much as work, and
+                  you can hear it in the records.
+                </p>
+              </div>
+            </article>
+          </Reveal>
 
           <Reveal>
             <p className="dim measure mt-2">
@@ -89,7 +89,7 @@ export default function Work() {
       <DripDivider flip />
 
       {/* On screen */}
-      <section className="section section-lift" data-scene="eq-left">
+      <section className="section section-lift">
         <div className="container">
           <Reveal>
             <p className="kicker mb-1">On screen</p>
@@ -127,13 +127,11 @@ export default function Work() {
         </div>
       </section>
 
-      <DripDivider hotIndex={7} />
-
       {/* Live */}
-      <section className="section" id="live" data-scene="spots-center" style={{ paddingTop: 0 }}>
+      <section className="section" id="live">
         <div className="container">
           <Reveal>
-            <p className="kicker mb-2" style={{ marginTop: "3rem" }}>Live direction</p>
+            <p className="kicker mb-2">Live direction</p>
           </Reveal>
           <div className="grid-2">
             <Reveal>
@@ -158,7 +156,7 @@ export default function Work() {
       </section>
 
       {/* Full credits */}
-      <section className="section section-lift" data-scene="peek">
+      <section className="section section-lift">
         <div className="container">
           <Reveal>
             <p className="kicker mb-1">The catalogue</p>

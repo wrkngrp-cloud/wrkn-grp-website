@@ -29,9 +29,11 @@ npm run build    # static export of all 6 routes → out/
 - Every drip/divider/trail runs the same material grade:
   gold → burnt orange → ember → amber shadow (`--melt` in `globals.css`).
 
-**Type:** Heuvel Grotesk everywhere (licensed; General Sans is the live
-Fontshare fallback). Stack in `globals.css`; swap in the licensed files
-when self-hosted. No second face.
+**Type:** Fraunces Variable (display voice, optical sizing on, italics
+for the emotional register) over Schibsted Grotesk (body and UI).
+Both self-hosted via fontsource packages, imported in `app/layout.jsx`
+and bundled by Next, so the GitHub Pages base path is handled by the
+asset pipeline. Stacks in `globals.css`.
 
 ## Architecture
 
@@ -41,20 +43,23 @@ as the WRKN GRP build — don't bump three alone).
 
 Signature pieces:
 
-- `components/SceneRoot.jsx` + `components/WorldScene.jsx` — the one
-  continuous world behind every page: a fixed canvas holding the
-  melting lollipop (flat-disc logo replica, marching-cubes metaball
-  liquid that never stops dripping) plus per-section scenery: warm
-  blind-light slats, an ember glow, drifting dust, breathing sound
-  rings, and a circular spectrum of bars. Sections opt in with
-  data-scene="<preset>" (presets in SceneRoot); the lollipop travels,
-  scales, and the scenery crossfades as sections pass. Scroll turns
-  the lollipop continuously across the whole site.
-- `components/CursorTrail.jsx` — viscous melt trail, Home + Releases only.
-- `components/DripDivider.jsx` — graded SVG melt dividers.
-- `components/AudioPlayer.jsx` — inline player, fully styled; currently
-  in "Audio coming" state until real files/embeds are wired (`src` prop).
-- `app/template.jsx` — liquid pour page transition.
+- `components/SignalField.jsx` (mounted via `components/Signal.jsx`) —
+  the Signal: the site's one 3D moment. A stack of waveform lines
+  receding into darkness, graded gold through ember to amber shadow,
+  breathing slowly, tilting with the pointer. It renders in its own
+  space only (Home hero band, Releases signal band), never behind
+  running text. Pauses offscreen; near-freezes under reduced motion.
+  Per-placement props: lines, points, amp, speed, pinkLine, camY, camZ.
+- `components/DawSession.jsx` — the principles staged as a DAW
+  arrangement view; clips land track by track on scroll.
+- `components/DripDivider.jsx` — graded SVG melt dividers, the candy
+  language, used once or twice per page.
+- `components/AudioPlayer.jsx` — inline player, fully styled; Spotify
+  mode wired, file mode ready via the `src` prop.
+- `components/Intro.jsx` — load-sequence rise for hero copy;
+  `components/Reveal.jsx` for scroll reveals.
+- `app/template.jsx` — page transition: a gold hairline sweep while
+  the page rises into place.
 
 ## Content rules
 

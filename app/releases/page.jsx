@@ -1,8 +1,8 @@
 import Link from "next/link";
-import CursorTrail from "../../components/CursorTrail";
 import DripDivider from "../../components/DripDivider";
 import Reveal from "../../components/Reveal";
-import SoundWave from "../../components/SoundWave";
+import Intro from "../../components/Intro";
+import Signal from "../../components/Signal";
 
 export const metadata = {
   title: "Releases · Sweetness Studios",
@@ -13,26 +13,25 @@ export const metadata = {
 export default function Releases() {
   return (
     <main>
-      <CursorTrail />
-
-      <section className="section bg-glow" data-scene="eq-right" style={{ paddingTop: "clamp(8rem, 18vh, 12rem)" }}>
+      <section className="section bg-glow" style={{ paddingTop: "clamp(8.5rem, 20vh, 13rem)" }}>
         <div className="container">
-          <Reveal>
-            <p className="kicker mb-1">Releases</p>
-            <h1 className="display-2" style={{ maxWidth: "18ch" }}>
-              Sweetness Releases. Where the studio starts putting out its own.
+          <Intro delay={0.1}>
+            <p className="kicker mb-2">Releases</p>
+          </Intro>
+          <Intro delay={0.25} blur={8}>
+            <h1 className="display-2" style={{ maxWidth: "20ch" }}>
+              Sweetness Releases. Where the studio starts putting out{" "}
+              <em>its own.</em>
             </h1>
-          </Reveal>
+          </Intro>
         </div>
       </section>
 
       <DripDivider hotIndex={2} />
 
-      <section className="section" data-scene="glow-left" style={{ paddingTop: 0 }}>
+      <section className="section" style={{ paddingTop: 0 }}>
         <div className="container grid-2">
-          <Reveal>
-            <span className="section-num">05</span>
-          </Reveal>
+          <div />
           <Reveal delay={0.1}>
             <p className="body-lg measure">
               The producers this studio measures itself against didn&rsquo;t
@@ -47,18 +46,20 @@ export default function Releases() {
         </div>
       </section>
 
-      <section aria-hidden style={{ padding: "0 0 1rem" }}>
-        <div className="container">
-          <SoundWave height={140} />
-        </div>
+      {/* The signal, held back: quieter, tighter, one pink note inside
+          the melt. A record that exists but hasn't been let out yet. */}
+      <section className="signal-band" aria-hidden>
+        <Signal lines={30} points={130} amp={0.62} speed={0.5} pinkLine={7} camY={1.4} camZ={6.5} />
       </section>
 
-      <section className="section bg-shafts section-lift" data-scene="spots-center">
-        <div className="container">
+      <section className="section section-lift" style={{ paddingTop: 0 }}>
+        <div className="container" style={{ paddingTop: "clamp(4rem, 9vh, 7rem)" }}>
           <Reveal>
             <article className="card" style={{ padding: "clamp(2rem, 5vw, 4rem)" }}>
               <p className="kicker mb-1">First out the door</p>
-              <h2 className="display-3 mb-1">Still under wraps.</h2>
+              <h2 className="display-3 mb-1">
+                <em>Still under wraps.</em>
+              </h2>
               <p className="dim measure">
                 The first Sweetness project is on its way. What can be said:
                 it returns to the three things every Sweetness record returns
@@ -73,7 +74,7 @@ export default function Releases() {
         </div>
       </section>
 
-      <section className="section" data-scene="peek">
+      <section className="section">
         <div className="container grid-2">
           <div />
           <div className="stack-lg">

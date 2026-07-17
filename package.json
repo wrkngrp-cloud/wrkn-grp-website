@@ -8,6 +8,8 @@
     "start": "next start"
   },
   "dependencies": {
+    "@fontsource-variable/fraunces": "^5.2.9",
+    "@fontsource/schibsted-grotesk": "^5.2.8",
     "@react-three/fiber": "^8.18.0",
     "framer-motion": "^11.11.17",
     "lenis": "^1.1.18",

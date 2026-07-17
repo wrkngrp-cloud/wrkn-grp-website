@@ -1,5 +1,6 @@
 import DripDivider from "../../components/DripDivider";
 import Reveal from "../../components/Reveal";
+import Intro from "../../components/Intro";
 import AudioPlayer from "../../components/AudioPlayer";
 
 export const metadata = {
@@ -51,31 +52,33 @@ const CAPABILITIES = [
 export default function WhatWeDo() {
   return (
     <main>
-      <section className="section bg-glow" data-scene="rack-right" style={{ paddingTop: "clamp(8rem, 18vh, 12rem)" }}>
+      <section className="section bg-glow" style={{ paddingTop: "clamp(8.5rem, 20vh, 13rem)" }}>
         <div className="container">
-          <Reveal>
-            <p className="kicker mb-1">What We Do</p>
-            <h1 className="display-2" style={{ maxWidth: "18ch" }}>
-              Five capabilities. Every one starts with the feeling.
+          <Intro delay={0.1}>
+            <p className="kicker mb-2">What We Do</p>
+          </Intro>
+          <Intro delay={0.25} blur={8}>
+            <h1 className="display-2" style={{ maxWidth: "20ch" }}>
+              Five capabilities. Every one starts with <em>the feeling.</em>
             </h1>
+          </Intro>
+          <Intro delay={0.6}>
             <p className="body-lg dim measure mt-2">
               The deliverable comes second, because in this studio,
               that&rsquo;s the order it actually happens in.
             </p>
-          </Reveal>
+          </Intro>
         </div>
       </section>
 
       <DripDivider hotIndex={1} />
 
-      <section className="section" data-scene="peek" style={{ paddingTop: 0 }}>
+      <section className="section" style={{ paddingTop: 0 }}>
         <div className="container">
           {CAPABILITIES.map((c) => (
             <Reveal key={c.num}>
               <article className="work-block">
-                <span className="section-num" style={{ fontSize: "clamp(3rem, 7vw, 6rem)" }}>
-                  {c.num}
-                </span>
+                <span className="glyph">{c.num}</span>
                 <div>
                   <h2 className="display-3 mb-1">{c.title}</h2>
                   <p className="dim measure">{c.copy}</p>

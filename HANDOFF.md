@@ -2,20 +2,24 @@
 
 ## Decisions the brief asked to flag, not guess
 
-1. **3D material scope (brief §3/§7.2).** The full physical glass is
-   built and shipping: transmission 0.9, clearcoat 1.0, ior 1.45, plus
-   the blinds-gobo key light and warm PMREM environment. No fallback
-   downgrade was taken. If it proves heavy on low-end devices, the
-   documented fallback (gradient-map + fake fresnel, same grading) can
-   be added behind a capability check — say the word.
+1. **3D scope (July 2026 redesign).** The global 3D world (metaball
+   lollipop + per-section scenery) is removed: it sat behind every
+   page's copy and fought it. In its place, one curated 3D scene, the
+   Signal (`components/SignalField.jsx`): waveform lines receding into
+   darkness in the ember grade. It appears exactly twice, in its own
+   space: the Home hero band and a full-width band on Releases (dimmer,
+   tighter, one pink line, the record still held back). The lollipop
+   survives as the redrawn SVG mark (nav, footer, favicon); the melt
+   lives on in the divider gradient.
 2. **Audio (brief §7.3).** No track files or embeds were provided, so
    every player renders the fully styled UI in its "Audio coming" state.
    Wiring is one prop per player (`src`) once files or embed URLs land:
    Ready, Safe, The Awakening, The Welcome, Sweetness Vol 1.
-3. **Typography.** Heuvel Grotesk only, per Emmanuel (July 2026); Balkist
-   is dropped. The license still isn't self-hosted, so General Sans
-   (Fontshare) renders live. Drop the licensed woff2 files into
-   `public/fonts/`, add `@font-face` rules, done.
+3. **Typography.** The single-face lock was lifted by Emmanuel
+   (July 2026). The site now pairs Fraunces Variable (display, optical
+   sizing, italics as the emotional register) with Schibsted Grotesk
+   (body and UI). Both are self-hosted via fontsource npm packages
+   imported in `app/layout.jsx`; no CDN request at runtime.
 
 ## Content notes
 
@@ -28,12 +32,11 @@
 - **Kuda is removed site-wide** (per Emmanuel): no Kuda mention or
   sonic-logo players anywhere. Sonic Branding on What We Do describes
   the craft without naming the client.
-- **Scenes v2:** the world now stages real environments per section:
-  control room (console + pulsing monitors) on the hero, a DAW
-  arrangement view for the principles (DOM, `components/DawSession.jsx`),
-  spinning vinyl for story sections, three doorframes of light for
-  door moments, stage spotlight cones for live sections. Presets live
-  in `components/SceneRoot.jsx`; sections pick them via data-scene.
+- **Scenes (July 2026 redesign):** three purposeful moments instead of
+  a world: the Signal (3D, Home hero + Releases band), the DAW
+  arrangement view for the principles (DOM,
+  `components/DawSession.jsx`), and the melt dividers. Everything else
+  is type, spacing, and motion.
 - **The first release is under wraps** per Emmanuel: no "Sweetness
   Vol 1" name anywhere on the site. The Releases page teases it as
   "Still under wraps" with the Life/Love/God throughline only.

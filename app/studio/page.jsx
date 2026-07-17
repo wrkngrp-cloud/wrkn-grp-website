@@ -1,5 +1,6 @@
 import DripDivider from "../../components/DripDivider";
 import Reveal from "../../components/Reveal";
+import Intro from "../../components/Intro";
 
 export const metadata = {
   title: "Studio · Sweetness Studios",
@@ -10,25 +11,25 @@ export const metadata = {
 export default function Studio() {
   return (
     <main>
-      <section className="section bg-glow" data-scene="blinds-right" style={{ paddingTop: "clamp(8rem, 18vh, 12rem)" }}>
+      <section className="section bg-glow" style={{ paddingTop: "clamp(8.5rem, 20vh, 13rem)" }}>
         <div className="container">
-          <Reveal>
-            <p className="kicker mb-1">Studio</p>
-            <h1 className="display-2" style={{ maxWidth: "22ch" }}>
+          <Intro delay={0.1}>
+            <p className="kicker mb-2">Studio</p>
+          </Intro>
+          <Intro delay={0.25} blur={8}>
+            <h1 className="display-2" style={{ maxWidth: "24ch" }}>
               Built the way true things get built. Late, alone, and because it
-              couldn&rsquo;t not exist.
+              couldn&rsquo;t <em>not</em> exist.
             </h1>
-          </Reveal>
+          </Intro>
         </div>
       </section>
 
       <DripDivider hotIndex={6} />
 
-      <section className="section" data-scene="glow-left">
+      <section className="section">
         <div className="container grid-2">
-          <Reveal>
-            <span className="section-num">02</span>
-          </Reveal>
+          <div />
           <div className="stack-lg">
             <Reveal>
               <p className="body-lg">
@@ -64,10 +65,10 @@ export default function Studio() {
         </div>
       </section>
 
-      <section className="section bg-shafts section-lift" data-scene="rings-center">
+      <section className="section section-lift">
         <div className="container">
           <Reveal>
-            <blockquote className="pull-quote" style={{ maxWidth: "30ch" }}>
+            <blockquote className="pull-quote" style={{ maxWidth: "32ch" }}>
               We don&rsquo;t make sound that&rsquo;s nice. We make sound that
               means something, and we can always tell you why it does.
             </blockquote>
@@ -75,7 +76,7 @@ export default function Studio() {
         </div>
       </section>
 
-      <section className="section" data-scene="peek">
+      <section className="section">
         <div className="container grid-2">
           <div />
           <div className="stack-lg">
