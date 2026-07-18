@@ -16,11 +16,14 @@ const IntroScene = dynamic(() => import("./IntroScene"), { ssr: false });
 export default function Preloader() {
   const [count, setCount] = useState(0);
   const [done, setDone] = useState(false);
+  // `bursting` fades the wordmark/counter out while the field detonates.
+  const [bursting, setBursting] = useState(false);
   // Hard skip: unmount with no exit animation. Needed for reduced motion
   // and hidden tabs — rAF pauses while a tab is hidden, so an animated
   // exit would never play and the overlay would sit there wedged.
   const [skipped, setSkipped] = useState(false);
   const progressRef = useRef(0);
+  const burstRef = useRef(0);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || document.hidden) {
@@ -32,18 +35,31 @@ export default function Preloader() {
     };
     document.addEventListener("visibilitychange", onHide);
 
-    const start = performance.now();
-    const duration = 2200;
+    const bloom = 1950; // gold line draws, ceramic field blooms
+    const blast = 600; // field detonates outward into the hero
     let frame;
-    const tick = (now) => {
-      const p = Math.min(1, (now - start) / duration);
+    const start = performance.now();
+
+    const bloomTick = (now) => {
+      const p = Math.min(1, (now - start) / bloom);
       progressRef.current = p;
       // ease so the counter sprints then settles, like a press counter
       setCount(Math.round(100 * (1 - Math.pow(1 - p, 3))));
-      if (p < 1) frame = requestAnimationFrame(tick);
-      else setTimeout(() => setDone(true), 380);
+      if (p < 1) frame = requestAnimationFrame(bloomTick);
+      else {
+        setBursting(true);
+        const bStart = performance.now();
+        const blastTick = (t) => {
+          const b = Math.min(1, (t - bStart) / blast);
+          burstRef.current = b;
+          if (b < 1) frame = requestAnimationFrame(blastTick);
+          // reveal begins mid-detonation so the field spills onto the hero
+          else setDone(true);
+        };
+        frame = requestAnimationFrame(blastTick);
+      }
     };
-    frame = requestAnimationFrame(tick);
+    frame = requestAnimationFrame(bloomTick);
     return () => {
       cancelAnimationFrame(frame);
       document.removeEventListener("visibilitychange", onHide);
@@ -57,7 +73,7 @@ export default function Preloader() {
       {!done && (
         <motion.div
           key="preloader"
-          exit={{ y: "-100%", transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] } }}
+          exit={{ opacity: 0, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] } }}
           style={{
             position: "fixed",
             inset: 0,
@@ -66,11 +82,14 @@ export default function Preloader() {
             overflow: "hidden",
           }}
         >
-          {/* The tagline, made physical: gold line draws, ceramic field blooms */}
-          <IntroScene progressRef={progressRef} />
+          {/* The tagline, made physical: gold line draws, ceramic field blooms,
+              then detonates outward into the hero */}
+          <IntroScene progressRef={progressRef} burstRef={burstRef} />
 
-          {/* Wordmark + counter ride on top, centered */}
-          <div
+          {/* Wordmark + counter ride on top; they clear as the field detonates */}
+          <motion.div
+            animate={{ opacity: bursting ? 0 : 1, scale: bursting ? 1.04 : 1 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             style={{
               position: "absolute",
               inset: 0,
@@ -105,7 +124,7 @@ export default function Preloader() {
               </span>
               <span style={{ fontVariantNumeric: "tabular-nums", fontWeight: 600 }}>{count}%</span>
             </div>
-          </div>
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>

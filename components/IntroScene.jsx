@@ -16,13 +16,13 @@ import { Canvas, useFrame } from "@react-three/fiber";
  * `progressRef.current` (0..1) is the loader clock, read per frame.
  */
 
-const COUNT = 46;
+const COUNT = 60;
 const DEG = Math.PI / 180;
 const clamp01 = (v) => Math.min(1, Math.max(0, v));
 const easeOutCubic = (v) => 1 - Math.pow(1 - clamp01(v), 3);
 const easeInOut = (v) => (v < 0.5 ? 4 * v * v * v : 1 - Math.pow(-2 * v + 2, 3) / 2);
 
-export default function IntroScene({ progressRef }) {
+export default function IntroScene({ progressRef, burstRef }) {
   return (
     <Canvas
       dpr={[1, 1.5]}
@@ -34,12 +34,12 @@ export default function IntroScene({ progressRef }) {
       <directionalLight position={[4, 6, 8]} intensity={1.4} color="#fff3da" />
       <directionalLight position={[-5, -2, 4]} intensity={0.35} color="#f4efe6" />
       <pointLight position={[0, -0.2, 4]} intensity={9} color="#efc835" distance={13} decay={2} />
-      <Field progressRef={progressRef} />
+      <Field progressRef={progressRef} burstRef={burstRef} />
     </Canvas>
   );
 }
 
-function Field({ progressRef }) {
+function Field({ progressRef, burstRef }) {
   const group = useRef();
   const lineRef = useRef();
   const bricks = useRef([]);
@@ -48,7 +48,7 @@ function Field({ progressRef }) {
   const lineGeo = useMemo(() => new THREE.BoxGeometry(1, 0.055, 0.055), []);
 
   const creamMat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: "#f4efe6", roughness: 0.5, metalness: 0.06 }),
+    () => new THREE.MeshStandardMaterial({ color: "#f4efe6", roughness: 0.5, metalness: 0.06, transparent: true }),
     []
   );
   const goldMat = useMemo(
@@ -59,6 +59,7 @@ function Field({ progressRef }) {
         metalness: 0.2,
         emissive: new THREE.Color("#efc835"),
         emissiveIntensity: 0.3,
+        transparent: true,
       }),
     []
   );
@@ -70,6 +71,7 @@ function Field({ progressRef }) {
         metalness: 0.3,
         emissive: new THREE.Color("#efc835"),
         emissiveIntensity: 1,
+        transparent: true,
       }),
     []
   );
@@ -88,7 +90,9 @@ function Field({ progressRef }) {
         rx: ((i * 13) % 90 - 45) * DEG,
         ry: ((i * 29) % 90 - 45) * DEG,
         rz: ((i * 7) % 90 - 45) * DEG,
-        startFrac: Math.min(0.94, 0.4 + (rad / 6.4) * 0.5),
+        // Bloom early (0.12 → ~0.5) so the field settles and is seen before
+        // the counter finishes and the detonation begins.
+        startFrac: Math.min(0.55, 0.12 + (rad / 6.4) * 0.42),
         gold: i % 11 === 5,
         sc: 0.58 + (i % 4) * 0.12,
       });
@@ -98,12 +102,15 @@ function Field({ progressRef }) {
 
   useFrame((state) => {
     const raw = progressRef.current;
+    const burst = burstRef ? burstRef.current : 0;
+    const be = burst * burst; // accelerate as the detonation takes hold
 
-    // The strategic line: draws outward across the first half.
-    const lp = easeInOut(Math.min(1, raw / 0.5));
+    // The strategic line: draws outward early, holds, then blows out.
+    const lp = easeInOut(Math.min(1, raw / 0.38));
     if (lineRef.current) {
-      lineRef.current.scale.x = 0.4 + lp * 9.6;
-      lineMat.emissiveIntensity = 0.4 + lp * 0.9;
+      lineRef.current.scale.x = (0.4 + lp * 9.6) * (1 + be * 3);
+      lineMat.emissiveIntensity = (0.4 + lp * 0.9) * (1 - burst);
+      lineMat.opacity = 1 - burst;
     }
 
     // Fit to viewport width; a slow ambient drift keeps it alive.
@@ -112,16 +119,27 @@ function Field({ progressRef }) {
     group.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.16) * 0.05 + state.pointer.x * 0.05;
     group.current.rotation.x = state.pointer.y * -0.04;
 
+    // Culture spreads out into the world: the field detonates outward, staying
+    // lit and cream until the tail so the blast reads before it dissolves.
+    const expand = 1 + be * 7.4;
+    const f = clamp01((burst - 0.32) / 0.68);
+    const fade = 1 - f * f;
+    creamMat.opacity = fade;
+    goldMat.opacity = fade;
+
     field.forEach((b, i) => {
       const mesh = bricks.current[i];
       if (!mesh) return;
       const v = easeOutCubic((raw - b.startFrac) / (1 - b.startFrac));
-      // Emerge from the line (centre, y ≈ -0.2) out to the field slot.
-      mesh.position.set(b.tx * v, -0.2 * (1 - v) + b.ty * v, b.tz * v);
-      mesh.rotation.set(b.rx * v, b.ry * v, b.rz * v);
+      const bx = b.tx * v;
+      const by = -0.2 * (1 - v) + b.ty * v;
+      const bz = b.tz * v;
+      // Explode outward across the frame, with a little depth toward the camera.
+      mesh.position.set(bx * expand, by * expand, bz + be * 4.2);
+      mesh.rotation.set(b.rx * v + be * 3.4, b.ry * v + be * 2.8, b.rz * v);
       const sc = b.sc * v;
       mesh.scale.setScalar(Math.max(0.0001, sc));
-      mesh.visible = v > 0.002;
+      mesh.visible = v > 0.002 && fade > 0.02;
     });
   });
 
