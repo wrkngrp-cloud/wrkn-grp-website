@@ -21,7 +21,15 @@ const ROWS = 5;
 const SPACING = 1.04;
 
 const easeOutCubic = (v) => 1 - Math.pow(1 - Math.min(Math.max(v, 0), 1), 3);
+const clamp01 = (v) => Math.min(1, Math.max(0, v));
+const easeInOut = (v) => (v < 0.5 ? 4 * v * v * v : 1 - Math.pow(-2 * v + 2, 3) / 2);
 const DEG = Math.PI / 180;
+
+// The execution pieces stay face-out (labels readable) through the whole
+// assembly, then flip to their blank backs only in this late window, as the
+// gold "one true thing" is landing — so the last text standing is the gold.
+const FLIP_START = 0.64;
+const FLIP_END = 0.78;
 
 export default function AssemblyScene({ progressRef, blocks }) {
   return (
@@ -92,6 +100,10 @@ function BlockField({ progressRef, blocks }) {
   useFrame((state) => {
     const p = progressRef.current;
 
+    // Global late flip: 0 through assembly (labels read), ramps to 1 as the
+    // gold piece lands, turning the cream pieces to their blank backs.
+    const flipT = easeInOut(clamp01((p - FLIP_START) / (FLIP_END - FLIP_START)));
+
     // Fit the 7-wide mark inside narrow viewports
     const s = Math.min(1, state.viewport.width / 8.6);
     group.current.scale.setScalar(s);
@@ -111,9 +123,9 @@ function BlockField({ progressRef, blocks }) {
       const v = easeOutCubic((p - f.start) / (f.end - f.start));
       const inv = 1 - v;
       mesh.position.set(f.fx + f.sx * inv, f.fy + f.sy * inv, f.sz * inv);
-      // Y resolves to flipY (π for cream, 0 for gold) so the piece turns
-      // its labelled face away as it lands; X and Z resolve flat.
-      mesh.rotation.set(f.rx * inv, f.flipY + (f.ry - f.flipY) * inv, f.rz * inv);
+      // Assembly lands each piece flat and face-out so its label reads; the
+      // late flip window then turns the cream pieces (flipY = π) blank.
+      mesh.rotation.set(f.rx * inv, f.ry * inv + f.flipY * flipT, f.rz * inv);
       const sc = 0.84 + 0.16 * v;
       mesh.scale.setScalar(sc);
     });

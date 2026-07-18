@@ -95,12 +95,14 @@ export default function CursorField({ tone = "dark", opacity = 1 }) {
         d.ox += (px - d.ox) * 0.14;
         d.oy += (py - d.oy) * 0.14;
 
-        const cr = (base[0] + (gold[0] - base[0]) * glow) | 0;
-        const cg = (base[1] + (gold[1] - base[1]) * glow) | 0;
-        const cb = (base[2] + (gold[2] - base[2]) * glow) | 0;
+        // Warm toward gold only faintly — the accent should whisper, not glare.
+        const warm = glow * 0.4;
+        const cr = (base[0] + (gold[0] - base[0]) * warm) | 0;
+        const cg = (base[1] + (gold[1] - base[1]) * warm) | 0;
+        const cb = (base[2] + (gold[2] - base[2]) * warm) | 0;
         ctx.beginPath();
-        ctx.arc(d.x + d.ox + driftX, d.y + d.oy + driftY, 1 + glow * 1.8, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${cr},${cg},${cb},${baseAlpha + glow * 0.7})`;
+        ctx.arc(d.x + d.ox + driftX, d.y + d.oy + driftY, 1 + glow * 1.4, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${cr},${cg},${cb},${baseAlpha + glow * 0.4})`;
         ctx.fill();
       }
       raf = requestAnimationFrame(frame);
