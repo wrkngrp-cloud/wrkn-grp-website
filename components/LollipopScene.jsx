@@ -155,12 +155,19 @@ function makeDripGeometry() {
 
 /* ---------- the melt: drip layout ---------- */
 
+// Drips clustered toward the bottom of the disc so the melt reads as
+// pooling off the BASE, not the flanks. ROOT_TUCK lifts each root just
+// inside the candy surface so the drip flows out of it seamlessly.
+const ROOT_TUCK = 0.07;
 const DRIPS = [
-  { x: -0.64, color: PINK, rest: 0.34, extend: 0.42, phase: 0.05, girth: 0.9 },
-  { x: -0.27, color: BURNT, rest: 0.5, extend: 0.7, phase: 0.0, girth: 1.15, droplet: true },
-  { x: 0.33, color: GOLD, rest: 0.44, extend: 0.54, phase: 0.03, girth: 1.05 },
-  { x: 0.68, color: HOT, rest: 0.3, extend: 0.36, phase: 0.07, girth: 0.82 },
+  { x: -0.44, color: PINK, rest: 0.34, extend: 0.42, phase: 0.05, girth: 0.92 },
+  { x: -0.15, color: BURNT, rest: 0.5, extend: 0.7, phase: 0.0, girth: 1.18, droplet: true },
+  { x: 0.16, color: GOLD, rest: 0.46, extend: 0.56, phase: 0.03, girth: 1.08 },
+  { x: 0.45, color: HOT, rest: 0.32, extend: 0.4, phase: 0.07, girth: 0.86 },
 ];
+
+// y of the base silhouette at a given x, tucked slightly up into the candy
+const rootYAt = (x) => -Math.sqrt(Math.max(0, 1 - x * x)) + ROOT_TUCK;
 
 const CYCLE = 13; // seconds per melt loop
 
@@ -236,7 +243,7 @@ function Lolli({ reduced }) {
     const drop = dropRef.current;
     if (drop) {
       const d = DRIPS[1];
-      const rootY = -Math.sqrt(1 - d.x * d.x) + 0.12;
+      const rootY = rootYAt(d.x);
       const rise = smooth(0.24 + d.phase, 0.56 + d.phase, tc);
       const fall = 1 - smooth(0.66 + d.phase, 0.94 + d.phase, tc);
       const len = d.rest * (1 + (d.extend / d.rest) * rise * fall);
@@ -288,7 +295,7 @@ function Lolli({ reduced }) {
             key={d.x}
             ref={(el) => (dripRefs.current[i] = el)}
             geometry={dripGeo}
-            position={[d.x, -Math.sqrt(1 - d.x * d.x) + 0.12, 0]}
+            position={[d.x, rootYAt(d.x), 0.02]}
           >
             <meshPhysicalMaterial
               color={d.color}
