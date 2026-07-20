@@ -1,101 +1,116 @@
 "use client";
 
-import { useId } from "react";
+import { useState, useRef, useLayoutEffect, useMemo, useId } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 
 /*
  * Section divider: a single signal passing through the black. A smooth
- * audio waveform, stroked (never filled), amplitude peaking at centre and
- * tapering to a flat baseline at both edges, graded in the lollipop embers.
- * It draws itself in on scroll, then breathes almost imperceptibly. This
- * replaces the old drip: quieter, on-theme for a sound studio, and it reads
- * as craft rather than decoration.
+ * audio waveform, stroked (never filled), graded in the lollipop embers.
+ *
+ * Rendered in real pixels sized to the container, NOT a fixed viewBox
+ * stretched with preserveAspectRatio="none". Stretching distorted the
+ * wave on wide/landscape screens (bunched to the sides, flat through the
+ * middle). Here the wavelength is fixed in px, so the signal reads at the
+ * same density and proportion at any width, portrait or ultrawide. The
+ * amplitude tapers to the baseline at both ends so the line lands clean.
  */
 
-const W = 1000;
-const MID = 60;
-const STEPS = 260;
+const HEIGHT = 120;
+const MID = HEIGHT / 2;
+const AMP = 26; // peak amplitude in px
+const LAMBDA = 210; // px per primary cycle — fixed, so density is width-independent
+const EDGE = 130; // px over which amplitude fades in/out at each end
+const STEP = 5; // px between samples
 
-// Build the waveform once, deterministically, so server and client match.
-// A few detuned harmonics under a raised-cosine window: organic, but it
-// always resolves to zero at both ends so the line lands clean on the rule.
-function buildWave(amp) {
+function smoothstep(e0, e1, x) {
+  const t = Math.min(1, Math.max(0, (x - e0) / (e1 - e0)));
+  return t * t * (3 - 2 * t);
+}
+
+function buildPath(width) {
+  const w = Math.max(320, Math.round(width));
   let d = "";
-  for (let i = 0; i <= STEPS; i++) {
-    const t = i / STEPS; // 0..1
-    const x = t * W;
-    const envelope = 0.5 * (1 - Math.cos(2 * Math.PI * t)); // 0 → 1 → 0
+  for (let x = 0; x <= w; x += STEP) {
+    // fade amplitude in over the first EDGE px and out over the last EDGE px
+    const env = Math.min(smoothstep(0, EDGE, x), smoothstep(0, EDGE, w - x));
     const wave =
-      Math.sin(t * Math.PI * 2 * 3 + 0.2) * 0.6 +
-      Math.sin(t * Math.PI * 2 * 7 + 1.1) * 0.28 +
-      Math.sin(t * Math.PI * 2 * 13 + 2.3) * 0.12;
-    const y = MID - envelope * wave * amp;
-    d += `${i === 0 ? "M" : "L"} ${x.toFixed(2)} ${y.toFixed(2)} `;
+      Math.sin((x / LAMBDA) * Math.PI * 2) * 0.62 +
+      Math.sin((x / (LAMBDA * 0.42)) * Math.PI * 2 + 1.1) * 0.26 +
+      Math.sin((x / (LAMBDA * 2.3)) * Math.PI * 2 + 0.4) * 0.12;
+    const y = MID - env * wave * AMP;
+    d += `${x === 0 ? "M" : "L"} ${x} ${y.toFixed(2)} `;
   }
   return d.trim();
 }
 
-const PATH = buildWave(40);
-
 export default function WaveDivider({ flip = false }) {
   const id = useId().replace(/:/g, "");
   const reduce = useReducedMotion();
+  const wrapRef = useRef(null);
+  const [width, setWidth] = useState(1440); // SSR default; corrected on mount
 
+  useLayoutEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const measure = () => setWidth(el.clientWidth || window.innerWidth);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const path = useMemo(() => buildPath(width), [width]);
   const draw = reduce
     ? { pathLength: 1, opacity: 1 }
     : {
         pathLength: 1,
         opacity: 1,
-        transition: { pathLength: { duration: 1.7, ease: [0.22, 1, 0.36, 1] }, opacity: { duration: 0.4 } },
+        transition: {
+          pathLength: { duration: 1.7, ease: [0.22, 1, 0.36, 1] },
+          opacity: { duration: 0.4 },
+        },
       };
 
   return (
     <div
+      ref={wrapRef}
       aria-hidden
-      style={{
-        lineHeight: 0,
-        overflow: "hidden",
-        transform: flip ? "scaleX(-1)" : undefined,
-      }}
+      style={{ lineHeight: 0, overflow: "hidden", transform: flip ? "scaleX(-1)" : undefined }}
     >
       <motion.svg
-        viewBox="0 0 1000 120"
+        width={width}
+        height={HEIGHT}
+        viewBox={`0 0 ${width} ${HEIGHT}`}
         preserveAspectRatio="none"
+        style={{ width: "100%", height: "clamp(56px, 8vw, 116px)", display: "block", transformOrigin: "50% 50%" }}
         initial={reduce ? undefined : { scaleY: 1 }}
-        animate={
-          reduce
-            ? undefined
-            : { scaleY: [1, 1.05, 1], transition: { duration: 7, repeat: Infinity, ease: "easeInOut" } }
-        }
-        style={{ width: "100%", height: "clamp(64px, 9vw, 128px)", display: "block", transformOrigin: "50% 50%" }}
+        animate={reduce ? undefined : { scaleY: [1, 1.05, 1], transition: { duration: 7, repeat: Infinity, ease: "easeInOut" } }}
       >
         <defs>
           <linearGradient id={`wave-${id}`} x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#5A2208" stopOpacity="0.25" />
-            <stop offset="18%" stopColor="#C8560E" />
+            <stop offset="0%" stopColor="#5A2208" stopOpacity="0.2" />
+            <stop offset="16%" stopColor="#C8560E" />
             <stop offset="42%" stopColor="#FC8A18" />
             <stop offset="50%" stopColor="#FCB828" />
             <stop offset="58%" stopColor="#FC8A18" />
-            <stop offset="82%" stopColor="#C8560E" />
-            <stop offset="100%" stopColor="#5A2208" stopOpacity="0.25" />
+            <stop offset="84%" stopColor="#C8560E" />
+            <stop offset="100%" stopColor="#5A2208" stopOpacity="0.2" />
           </linearGradient>
         </defs>
 
-        {/* faint baseline the signal rides on */}
         <line
           x1="0"
           y1={MID}
-          x2={W}
+          x2={width}
           y2={MID}
           stroke={`url(#wave-${id})`}
           strokeWidth="1"
-          strokeOpacity="0.18"
+          strokeOpacity="0.16"
           vectorEffect="non-scaling-stroke"
         />
 
-        {/* soft under-stroke for glow */}
         <motion.path
-          d={PATH}
+          d={path}
           fill="none"
           stroke={`url(#wave-${id})`}
           strokeWidth="5"
@@ -106,10 +121,8 @@ export default function WaveDivider({ flip = false }) {
           whileInView={draw}
           viewport={{ once: true, margin: "-60px" }}
         />
-
-        {/* crisp signal */}
         <motion.path
-          d={PATH}
+          d={path}
           fill="none"
           stroke={`url(#wave-${id})`}
           strokeWidth="1.75"
