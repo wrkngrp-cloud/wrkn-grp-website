@@ -50,7 +50,7 @@ export default function Footer() {
 
         <div className="footer-bottom">
           <span>© {new Date().getFullYear()} Sweetness Studios · A WRKN GRP subsidiary</span>
-          <span>Music with soul at its core.</span>
+          <span>Made to be felt, and remembered.</span>
         </div>
       </div>
     </footer>

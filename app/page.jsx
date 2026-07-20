@@ -1,5 +1,5 @@
 import Link from "next/link";
-import DripDivider from "../components/DripDivider";
+import WaveDivider from "../components/WaveDivider";
 import Reveal from "../components/Reveal";
 import Intro from "../components/Intro";
 import Parallax from "../components/Parallax";
@@ -75,8 +75,8 @@ export default function Home() {
               </Intro>
               <Intro delay={0.75}>
                 <p className="body-lg dim measure mt-2">
-                  Music with soul at its core, written to become the soundtrack
-                  of somebody&rsquo;s life.
+                  The kind that stays with you long after the room goes
+                  quiet.
                 </p>
               </Intro>
               <Intro delay={0.95}>
@@ -99,7 +99,7 @@ export default function Home() {
         <div className="scroll-cue" aria-hidden />
       </section>
 
-      <DripDivider hotIndex={3} />
+      <WaveDivider />
 
       {/* Manifesto */}
       <section className="section bg-glow">
@@ -107,7 +107,7 @@ export default function Home() {
           <Reveal>
             <p className="kicker mb-1">Why Sweetness exists</p>
             <h2 className="display-2 mb-2" style={{ maxWidth: "18ch" }}>
-              Every life has a soundtrack. We&rsquo;re here to write it.
+              Every life has a soundtrack. We&rsquo;re here to write yours.
             </h2>
           </Reveal>
           <div className="grid-2">
@@ -178,7 +178,7 @@ export default function Home() {
         </div>
       </section>
 
-      <DripDivider flip />
+      <WaveDivider flip />
 
       {/* Selected work */}
       <section className="section section-lift">

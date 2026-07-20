@@ -1,4 +1,4 @@
-import DripDivider from "../../components/DripDivider";
+import WaveDivider from "../../components/WaveDivider";
 import Reveal from "../../components/Reveal";
 import Intro from "../../components/Intro";
 import AudioPlayer from "../../components/AudioPlayer";
@@ -72,7 +72,7 @@ export default function WhatWeDo() {
         </div>
       </section>
 
-      <DripDivider hotIndex={1} />
+      <WaveDivider />
 
       <section className="section" style={{ paddingTop: 0 }}>
         <div className="container">

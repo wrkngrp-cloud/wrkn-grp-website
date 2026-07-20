@@ -1,4 +1,4 @@
-import DripDivider from "../../components/DripDivider";
+import WaveDivider from "../../components/WaveDivider";
 import Reveal from "../../components/Reveal";
 import Intro from "../../components/Intro";
 import AudioPlayer from "../../components/AudioPlayer";
@@ -32,7 +32,7 @@ export default function Work() {
         </div>
       </section>
 
-      <DripDivider hotIndex={4} />
+      <WaveDivider />
 
       {/* Artists */}
       <section className="section" style={{ paddingTop: 0 }}>
@@ -86,7 +86,7 @@ export default function Work() {
         </div>
       </section>
 
-      <DripDivider flip />
+      <WaveDivider flip />
 
       {/* On screen */}
       <section className="section section-lift">

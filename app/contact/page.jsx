@@ -1,4 +1,4 @@
-import DripDivider from "../../components/DripDivider";
+import WaveDivider from "../../components/WaveDivider";
 import Reveal from "../../components/Reveal";
 import Intro from "../../components/Intro";
 import ContactForm from "../../components/ContactForm";
@@ -40,7 +40,7 @@ export default function Contact() {
         </div>
       </section>
 
-      <DripDivider hotIndex={5} />
+      <WaveDivider />
 
       <section className="section" style={{ paddingTop: 0 }}>
         <div className="container grid-2">

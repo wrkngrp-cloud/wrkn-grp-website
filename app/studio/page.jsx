@@ -1,4 +1,4 @@
-import DripDivider from "../../components/DripDivider";
+import WaveDivider from "../../components/WaveDivider";
 import Reveal from "../../components/Reveal";
 import Intro from "../../components/Intro";
 import ControlRoom from "../../components/ControlRoom";
@@ -26,7 +26,7 @@ export default function Studio() {
         </div>
       </section>
 
-      <DripDivider hotIndex={6} />
+      <WaveDivider />
 
       <section className="section">
         <div className="container grid-2">
@@ -76,8 +76,8 @@ export default function Studio() {
         <div className="container">
           <Reveal>
             <blockquote className="pull-quote" style={{ maxWidth: "32ch" }}>
-              We don&rsquo;t make sound that&rsquo;s nice. We make sound that
-              means something, and we can always tell you why it does.
+              We don&rsquo;t just make sound that&rsquo;s nice. We make sound
+              that means something, and we can always tell you why it does.
             </blockquote>
           </Reveal>
         </div>

@@ -12,9 +12,9 @@ import Cursor from "../components/Cursor";
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 export const metadata = {
-  title: "Sweetness Studios · Music with soul at its core",
+  title: "Sweetness Studios · Made to be felt, and remembered",
   description:
-    "Music with soul at its core, built to become the soundtrack of people's lives. Records for artists, a voice for brands, direction for the nights nobody forgets.",
+    "Sound made to be felt first and remembered after. Records for artists, a voice for brands, direction for the nights nobody forgets.",
 };
 
 export default function RootLayout({ children }) {

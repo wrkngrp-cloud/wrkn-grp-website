@@ -1,5 +1,5 @@
 import Link from "next/link";
-import DripDivider from "../../components/DripDivider";
+import WaveDivider from "../../components/WaveDivider";
 import Reveal from "../../components/Reveal";
 import Intro from "../../components/Intro";
 import Signal from "../../components/Signal";
@@ -27,20 +27,19 @@ export default function Releases() {
         </div>
       </section>
 
-      <DripDivider hotIndex={2} />
+      <WaveDivider />
 
       <section className="section" style={{ paddingTop: 0 }}>
         <div className="container grid-2">
           <div />
           <Reveal delay={0.1}>
             <p className="body-lg measure">
-              The producers this studio measures itself against didn&rsquo;t
-              stop at making other people&rsquo;s records. Sarz. DJ Neptune.
-              Spinall. Jae5. Juls. Each of them eventually built a house
-              and started calling artists home to it. That&rsquo;s the model
-              being built here. Not because it&rsquo;s a smart business move
-              (though it is), but because a producer&rsquo;s ear is its own
-              kind of artist statement.
+              A producer&rsquo;s ear is its own kind of artist statement. For
+              years, this studio made other people&rsquo;s records. Now it&rsquo;s
+              building a house of its own, and calling the voices home. Not
+              because it&rsquo;s a smart business move (though it is), but
+              because the ear that shaped all those records has something to
+              say on its own.
             </p>
           </Reveal>
         </div>
