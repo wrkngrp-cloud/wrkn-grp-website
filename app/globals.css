@@ -681,57 +681,78 @@ main {
 
 /* ---------- audio player ---------- */
 
+/* Borderless: the player lives inside a card and must not become a second
+   card. A hairline divides it from the copy above; the control is a flat
+   ring, never a gradient orb. */
 .player {
   display: flex;
   align-items: center;
-  gap: 1.1rem;
-  background: var(--lift);
-  border: 1px solid var(--hairline);
-  border-radius: 2px;
-  padding: 0.9rem 1.2rem;
-  transition: border-color 0.3s ease;
+  gap: 0.9rem;
 }
 
-.player:hover {
-  border-color: var(--amber-mid);
+.player-link {
+  text-decoration: none;
+  color: inherit;
+  padding-top: 1.05rem;
+  margin-top: 0.4rem;
+  border-top: 1px solid var(--hairline);
+}
+
+.player-link.is-compact {
+  gap: 0.8rem;
 }
 
 .player-btn {
   flex: none;
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  border: 1px solid var(--amber-mid);
-  background: radial-gradient(circle at 32% 28%, var(--amber-deep), var(--shadow-2) 75%);
+  border: 1px solid var(--ember);
+  background: transparent;
   display: grid;
   place-items: center;
   cursor: pointer;
-  transition: transform 0.25s ease, border-color 0.25s ease;
+  transition: background 0.28s ease, border-color 0.28s ease, transform 0.28s ease;
 }
 
+.player-link:hover .player-btn,
 .player-btn:hover {
-  transform: scale(1.06);
+  background: var(--gold);
   border-color: var(--gold);
+  transform: translateY(-1px);
 }
 
 .player-btn svg {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
+  margin-left: 1px; /* optically centre the triangle */
   fill: var(--gold);
+  transition: fill 0.28s ease;
+}
+
+.player-link:hover .player-btn svg,
+.player-btn:hover svg {
+  fill: #170a02;
 }
 
 .player-btn[disabled] {
-  opacity: 0.45;
+  opacity: 0.4;
   cursor: default;
+  transform: none;
+  background: transparent;
+  border-color: var(--hairline);
 }
 
 .player-meta {
   min-width: 0;
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
 }
 
 .player-title {
-  font-weight: 700;
+  font-weight: 600;
   font-size: 0.95rem;
   white-space: nowrap;
   overflow: hidden;
@@ -741,7 +762,26 @@ main {
 .player-sub {
   font-size: 0.78rem;
   color: var(--ink-faint);
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
+}
+
+/* The listen affordance: a quiet text link, not an uppercase pill. */
+.player-cta {
+  flex: none;
+  margin-left: auto;
+  font-size: 0.82rem;
+  color: var(--gold);
+  white-space: nowrap;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.25s ease;
+}
+
+.player-link.is-compact .player-cta {
+  margin-left: 0;
+}
+
+.player-link:hover .player-cta {
+  border-bottom-color: currentColor;
 }
 
 .player-track {
@@ -775,16 +815,25 @@ main {
   color: var(--ink-faint);
 }
 
-.player-badge {
+.player-coming {
   flex: none;
-  font-size: 0.6rem;
-  font-weight: 700;
+  margin-left: auto;
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  letter-spacing: 0.02em;
+}
+
+/* A single status chip (Releases "Coming soon"), not a per-player pill. */
+.player-badge {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 600;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--ink-faint);
-  border: 1px solid var(--hairline);
+  color: var(--gold);
+  border: 1px solid var(--ember);
   border-radius: 2px;
-  padding: 0.28rem 0.55rem;
+  padding: 0.32rem 0.62rem;
 }
 
 @media (max-width: 640px) {

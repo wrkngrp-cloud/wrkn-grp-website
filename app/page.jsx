@@ -200,6 +200,7 @@ export default function Home() {
                   sounds exactly like being chosen.
                 </p>
                 <AudioPlayer
+                  compact
                   title="Ngozi"
                   sub="Ric Hassani"
                   spotify="https://open.spotify.com/track/6YHRw6MptcrYWv7JYROGTk"
@@ -215,6 +216,7 @@ export default function Home() {
                   found its film in <em>My Body, God&rsquo;s Temple</em>.
                 </p>
                 <AudioPlayer
+                  compact
                   title="Safe"
                   sub="Kotrell · Zikoko"
                   spotify="https://open.spotify.com/track/6tPzBJptprIjA8hk4ir3rz"
@@ -230,6 +232,7 @@ export default function Home() {
                   they mean it.
                 </p>
                 <AudioPlayer
+                  compact
                   title="For You"
                   sub="Ric Hassani"
                   spotify="https://open.spotify.com/search/Ric%20Hassani%20For%20You"
@@ -245,6 +248,7 @@ export default function Home() {
                   actually happens.
                 </p>
                 <AudioPlayer
+                  compact
                   title="Love Me Slow"
                   sub="Kotrell · Trelly Music"
                   spotify="https://open.spotify.com/search/Kotrell%20Love%20Me%20Slow"

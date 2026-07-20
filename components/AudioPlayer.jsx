@@ -3,11 +3,16 @@
 import { useRef, useState } from "react";
 
 /*
- * Inline audio player. Three states:
- * - `src`: plays the file inline, full transport.
- * - `spotify`: no file yet, so the play button opens the track on
- *   Spotify in a new tab and the badge says so.
- * - neither: fully styled, disabled "Audio coming" state.
+ * Inline audio affordance. Three states:
+ * - `src`: plays the file inline with a slim scrubber.
+ * - `spotify`: no file yet, so the row is a link that opens the track on
+ *   Spotify. `compact` drops the title/sub when the surrounding card
+ *   already names the track (Home selected work).
+ * - neither: a quiet "Audio coming" line.
+ *
+ * Deliberately borderless: it sits inside a card, so it must not become a
+ * second card. A hairline separates it from the copy above; the play
+ * control is a flat ring, not a gradient orb.
  */
 function fmt(s) {
   if (!isFinite(s)) return "0:00";
@@ -16,7 +21,13 @@ function fmt(s) {
   return `${m}:${sec.toString().padStart(2, "0")}`;
 }
 
-export default function AudioPlayer({ title, sub, src = null, spotify = null }) {
+const Triangle = () => (
+  <svg viewBox="0 0 16 16" aria-hidden>
+    <path d="M4 2l10 6-10 6z" />
+  </svg>
+);
+
+export default function AudioPlayer({ title, sub, src = null, spotify = null, compact = false }) {
   const audioRef = useRef(null);
   const trackRef = useRef(null);
   const [playing, setPlaying] = useState(false);
@@ -27,11 +38,7 @@ export default function AudioPlayer({ title, sub, src = null, spotify = null }) 
   const toggle = () => {
     const a = audioRef.current;
     if (!a) return;
-    if (playing) {
-      a.pause();
-    } else {
-      a.play();
-    }
+    playing ? a.pause() : a.play();
   };
 
   const seek = (e) => {
@@ -43,30 +50,34 @@ export default function AudioPlayer({ title, sub, src = null, spotify = null }) 
     a.currentTime = f * a.duration;
   };
 
+  // Spotify link (current default: no files yet)
   if (!src && spotify) {
     return (
-      <div className="player" data-cursor="Listen">
-        <a
-          className="player-btn"
-          href={spotify}
-          target="_blank"
-          rel="noreferrer"
-          aria-label={`Listen to ${title} on Spotify`}
-          style={{ display: "grid", placeItems: "center" }}
-        >
-          <svg viewBox="0 0 16 16" aria-hidden>
-            <path d="M3 1l12 7-12 7z" />
-          </svg>
-        </a>
-        <div className="player-meta">
-          <div className="player-title">{title}</div>
-          {sub && <div className="player-sub">{sub}</div>}
-        </div>
-        <span className="player-badge">Listen on Spotify ↗</span>
-      </div>
+      <a
+        className={`player player-link${compact ? " is-compact" : ""}`}
+        href={spotify}
+        target="_blank"
+        rel="noreferrer"
+        data-cursor="Listen"
+        aria-label={`Listen to ${title} on Spotify`}
+      >
+        <span className="player-btn" aria-hidden>
+          <Triangle />
+        </span>
+        {!compact && (
+          <span className="player-meta">
+            <span className="player-title">{title}</span>
+            {sub && <span className="player-sub">{sub}</span>}
+          </span>
+        )}
+        <span className="player-cta">
+          Listen on Spotify <span aria-hidden>↗</span>
+        </span>
+      </a>
     );
   }
 
+  // Inline file playback
   return (
     <div className="player" data-cursor={src ? "Play" : undefined}>
       <button
@@ -77,13 +88,11 @@ export default function AudioPlayer({ title, sub, src = null, spotify = null }) 
       >
         {playing ? (
           <svg viewBox="0 0 16 16" aria-hidden>
-            <rect x="2" y="1" width="4" height="14" />
-            <rect x="10" y="1" width="4" height="14" />
+            <rect x="3" y="2" width="3.5" height="12" />
+            <rect x="9.5" y="2" width="3.5" height="12" />
           </svg>
         ) : (
-          <svg viewBox="0 0 16 16" aria-hidden>
-            <path d="M3 1l12 7-12 7z" />
-          </svg>
+          <Triangle />
         )}
       </button>
 
@@ -111,14 +120,12 @@ export default function AudioPlayer({ title, sub, src = null, spotify = null }) 
             onLoadedMetadata={(e) => setDuration(e.target.duration)}
             onTimeUpdate={(e) => {
               setTime(e.target.currentTime);
-              setProgress(
-                e.target.duration ? e.target.currentTime / e.target.duration : 0
-              );
+              setProgress(e.target.duration ? e.target.currentTime / e.target.duration : 0);
             }}
           />
         </>
       ) : (
-        <span className="player-badge">Audio coming</span>
+        <span className="player-coming">Audio coming</span>
       )}
     </div>
   );
