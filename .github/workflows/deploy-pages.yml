@@ -37,15 +37,15 @@ jobs:
 
       - run: npm ci
 
-          - name: Build static export
-     env:
-       # Custom domain (wrkngrp.com) serves from root, not a repo
-       # subpath, so base path must stay empty even though this is a
-       # project (non-org) Pages repo. Do not wire this back to
-       # steps.pages.outputs.base_path — that's derived from the repo
-       # name, not the custom domain, and will reintroduce the subpath.
-       NEXT_PUBLIC_BASE_PATH: ""
-     run: npm run build
+      - name: Build static export
+        env:
+          # Custom domain (wrkngrp.com) serves from root, not a repo
+          # subpath, so base path must stay empty even though this is a
+          # project (non-org) Pages repo. Do not wire this back to
+          # steps.pages.outputs.base_path — that's derived from the repo
+          # name, not the custom domain, and will reintroduce the subpath.
+          NEXT_PUBLIC_BASE_PATH: ""
+        run: npm run build
 
       # Bypass Jekyll so the _next/ asset folder is served as-is.
       - run: touch out/.nojekyll
