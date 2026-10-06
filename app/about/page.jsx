@@ -144,10 +144,10 @@ export default function AboutPage() {
         </SplitText>
         <Reveal delay={0.15}>
           <p className="lede" style={{ maxWidth: "48rem", marginTop: "2rem", opacity: 0.8 }}>
-            WRKN GRP&rsquo;s strategic edge is earned inside one of Africa&rsquo;s most significant
-            fintech brands: leading campaigns, managing brand equity under real growth pressure, and
-            learning what it takes to keep a brand resonant in a market as demanding as Lagos, and
-            credible in the international rooms where capital gets decided.
+            Everything we recommend has been tested on real brands before it reaches yours. Between
+            us, we have led campaigns, held brand equity together under growth pressure, and learned
+            what it takes to stay resonant in a market as demanding as Lagos, and credible in the
+            rooms where capital gets decided.
           </p>
         </Reveal>
         <Reveal delay={0.25}>
