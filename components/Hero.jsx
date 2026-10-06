@@ -92,9 +92,9 @@ export default function Hero() {
             style={{ display: "flex", alignItems: "center", gap: "2rem", flexWrap: "wrap" }}
           >
             <Magnetic>
-              <Link href="/work" className="btn btn--gold">
-                See the Work
-              </Link>
+              <a href="#how-we-work" className="btn btn--gold">
+                See How We Work
+              </a>
             </Magnetic>
             <Link href="/contact" className="link-draw small-caps">
               Start a Conversation

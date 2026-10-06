@@ -2,7 +2,9 @@
 
 Led by Strategy. Built in Culture.
 
-Next.js (App Router) + Framer Motion + Lenis. All seven routes prerender as static HTML, so every URL (`/work/nyla`, etc.) resolves directly and is shareable.
+Next.js (App Router) + Framer Motion + Lenis. All routes prerender as static HTML, so every URL (`/services`, `/about`, etc.) resolves directly and is shareable.
+
+**The Work section is hidden for now.** The case-study pages live in `app/_work/` (Next.js skips `_`-prefixed folders, so they aren't routed or built). To bring them back: rename `app/_work` to `app/work`, re-add the `Work` link in `components/Nav.jsx`, and restore the homepage "Selected Work" rail (see git history for `app/page.jsx`). Clients are named in a line on the About page in the meantime.
 
 ## Run it
 
@@ -48,7 +50,7 @@ Swap each slot for a real `<img>` (with descriptive alt text) when assets arrive
 | Split-text headline reveals | `components/SplitText.jsx` |
 | 3D tilt scroll reveals | `components/Reveal.jsx`, `components/TiltCard.jsx` |
 | Card flips (hover / scroll-trigger on touch) | `components/FlipCard.jsx`, `components/WorkCard.jsx` |
-| Horizontal drag rail | `components/WorkRail.jsx` |
+| Horizontal drag rail (unused while Work is hidden) | `components/WorkRail.jsx` |
 | Sticky case-study panels | `components/StickyPanels.jsx` |
 | Cream "page flip" section inversion | `components/CreamSection.jsx` |
 | Chapter numerals + wayfinding bars | `components/SectionDivider.jsx` |

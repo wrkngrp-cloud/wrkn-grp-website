@@ -7,8 +7,6 @@ import SplitText from "../components/SplitText";
 import Reveal from "../components/Reveal";
 import Stat from "../components/Stat";
 import Marquee from "../components/Marquee";
-import WorkRail from "../components/WorkRail";
-import WorkCard from "../components/WorkCard";
 import Magnetic from "../components/Magnetic";
 import GlowBlob from "../components/GlowBlob";
 import CursorField from "../components/CursorField";
@@ -161,51 +159,6 @@ export default function HomePage() {
           "Motion",
         ]}
       />
-
-      {/* Selected Work */}
-      <section className="theme-dark" style={{ padding: "5rem 0 6rem" }}>
-        <SectionDivider numeral="03" title="Selected Work." label="03 — The Work" right="Drag to Explore" />
-        <WorkRail>
-          <div className="rail-card">
-            <WorkCard
-              href="/work/nyla"
-              client="Nyla"
-              title="Keeping a digital bank's brand disciplined through its most important year."
-              tags={["Creative Direction", "Motion", "Social", "Events"]}
-              stat="40% uptake"
-              statNote="in brand association and positioning within the ethical finance space."
-              coverLabel="Nyla campaign visual — cover"
-            />
-          </div>
-          <div className="rail-card">
-            <WorkCard
-              href="/work/aliko-dangote-foundation"
-              client="Aliko Dangote Foundation"
-              title="A 25th-anniversary campaign built to win a room in New York."
-              tags={["Print", "Editorial", "Institutional"]}
-              stat="100+ investors"
-              statNote="reached at a single institutional fundraising event in New York."
-              coverLabel="ADF anniversary brochure — cover"
-            />
-          </div>
-          <div className="rail-card rail-card--cta">
-            <Link
-              href="/work"
-              data-cursor="Explore"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                height: "30rem",
-                border: "1px dashed var(--cream-faint)",
-                borderRadius: 6,
-              }}
-            >
-              <span className="display display-sm">All Work →</span>
-            </Link>
-          </div>
-        </WorkRail>
-      </section>
 
       {/* Services — the ladder as a pinned 3D climb */}
       <HomeLadder />

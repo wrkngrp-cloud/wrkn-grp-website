@@ -7,7 +7,7 @@ This is the WRKN GRP website. A previous local Claude Code session built it; thi
 ```bash
 npm install
 npm run dev      # http://localhost:3000
-npm run build    # static export of all 7 routes
+npm run build    # static export (Work pages hidden in app/_work)
 ```
 
 See `README.md` for the full component/motion map. Brief lived in the original chat; the locked essentials are below.
@@ -25,7 +25,7 @@ Next.js App Router (JS, not TS). Framer Motion + Lenis smooth scroll. Three.js v
 
 Signature WebGL pieces:
 - `components/AssemblySequence.jsx` + `AssemblyScene.jsx` — homepage hero mechanic: 13 labeled ceramic bricks scatter in 3D and assemble into the modular "W", gold "One True Thing" brick lands last, resolves into the wordmark.
-- `components/HomeLadder.jsx` + `LadderScene.jsx` — **section 04 "What We Do"**: a pinned ~340vh scroll that climbs a 3D ladder rung by rung (01→05); the active rung turns gold + pulls forward while a text panel swaps the product name/summary. **This was just built and compiles; it still needs a real in-browser scroll-through to confirm rung sync, panel timing, and mobile layout.** That's the first thing to verify.
+- `components/HomeLadder.jsx` + `LadderScene.jsx` — **section 03 "What We Do"** (anchor `#how-we-work`, target of the hero's "See How We Work" button): a pinned ~340vh scroll that climbs a 3D ladder rung by rung (01→05); the active rung turns gold + pulls forward while a text panel swaps the product name/summary. **This was just built and compiles; it still needs a real in-browser scroll-through to confirm rung sync, panel timing, and mobile layout.** That's the first thing to verify.
 - `components/CursorField.jsx` — cursor-reactive dot-field canvas (hero, assembly, CTA, contact, ladder).
 - `components/ServiceLadder.jsx` — the interactive accordion ladder on the `/services` page (separate from the homepage 3D ladder).
 
@@ -37,4 +37,4 @@ Signature WebGL pieces:
 
 ## Immediate next step
 
-Verify the section-04 3D ladder (`HomeLadder`) in the browser: scroll through it, confirm each rung lights gold in sync with its panel copy, and check the mobile (single-column) layout where the ladder stacks above the text.
+Verify the section-03 3D ladder (`HomeLadder`) in the browser: scroll through it, confirm each rung lights gold in sync with its panel copy, and check the mobile (single-column) layout where the ladder stacks above the text.
