@@ -11,6 +11,8 @@ export default function SmoothScroll() {
       duration: 1.15,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
+      // Smooth-scroll same-page anchors (e.g. the hero's "See How We Work").
+      anchors: true,
     });
 
     let frame;

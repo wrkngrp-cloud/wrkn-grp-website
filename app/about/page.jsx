@@ -150,6 +150,12 @@ export default function AboutPage() {
             credible in the international rooms where capital gets decided.
           </p>
         </Reveal>
+        <Reveal delay={0.25}>
+          <p style={{ maxWidth: "56ch", marginTop: "1.6rem", opacity: 0.8 }}>
+            We&rsquo;ve worked with brands like <span style={{ color: "var(--gold)" }}>Nyla</span> and
+            the <span style={{ color: "var(--gold)" }}>Aliko Dangote Foundation</span>, amongst others.
+          </p>
+        </Reveal>
       </section>
 
       {/* Stats band */}

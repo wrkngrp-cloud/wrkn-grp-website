@@ -17,7 +17,7 @@ import { useInView } from "./perf";
 const LadderScene = dynamic(() => import("./LadderScene"), { ssr: false });
 
 /*
- * Section 04 — the service ladder as a pinned 3D climb.
+ * Section 03 — the service ladder as a pinned 3D climb.
  *
  * The section pins for ~340vh while scroll climbs a WebGL ladder rung
  * by rung. The rung underfoot turns gold and pulls forward; the panel
@@ -92,10 +92,10 @@ export default function HomeLadder() {
   // Reduced motion: the flat editorial grid, no pin, no WebGL
   if (reduced) {
     return (
-      <section className="theme-cream" style={{ padding: "6rem 0" }}>
+      <section id="how-we-work" className="theme-cream" style={{ padding: "6rem 0" }}>
         <div className="container">
           <div className="wayfinding wayfinding--bottom" style={{ marginBottom: "3rem" }}>
-            <span>04 — What We Do</span>
+            <span>03 — What We Do</span>
             <span>The Ascent</span>
           </div>
           <h2 className="display display-md" style={{ maxWidth: "20ch", marginBottom: "3rem" }}>
@@ -120,7 +120,7 @@ export default function HomeLadder() {
   }
 
   return (
-    <section ref={wrapperRef} className="theme-dark" style={{ height: "460vh", position: "relative" }}>
+    <section id="how-we-work" ref={wrapperRef} className="theme-dark" style={{ height: "460vh", position: "relative" }}>
       <div className="home-ascent">
         {/* Full-bleed corridor you climb through — mounted only when near */}
         <div className="home-ascent__scene">
@@ -134,7 +134,7 @@ export default function HomeLadder() {
         {/* Top wayfinding */}
         <div className="container home-ascent__top">
           <div className="wayfinding">
-            <span>04 — What We Do</span>
+            <span>03 — What We Do</span>
             <span style={{ color: "var(--gold)" }}>The Ascent — Step {item.n} / 05</span>
           </div>
         </div>
